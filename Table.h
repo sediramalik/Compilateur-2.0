@@ -1,17 +1,19 @@
-#define TAILLE 1000
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#define SIZEMAX 1000
 
-typedef struct symbole {
-    char nomVariable[16];
-    char typeVariable[16];
-    int declare;
-    int profondeur;
-} symbole;
+typedef struct {
+    char varname[16];
+    char type0[16];
+    char type[16];
+    int value;
+    int depth;
+    int addr;
 
-symbole* init();
+} symbol;
 
-void print_table(symbole* tab);
-void print_symbole(symbole s);
+int addSymbol(symbol * t,symbol s);
 
-void ajouter_symbole(symbole* tab, symbole s);
-void supprimer_symbole(symbole* tab);
+int deleteSymbols(symbol * t);
 

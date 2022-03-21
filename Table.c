@@ -1,77 +1,90 @@
+
 #include <stdio.h>
-#include <stdlib.h>
-#include "symboles.h"
+#include <string.h>
+#include "Table.h"
 
-int taille = 0;
-int profondeurMAX = 0;
+int tableDepth=0;
+int tableSize=0;
 
-int main() {
-    symbole* tab;
-    tab = init();
-    int a = 2;
-    int b;
-        
-    
-    symbole s1 = {nomVariable:"a", typeVariable:"int", declare:0, profondeur:1};
-    ajouter_symbole(tab, s1);
-    
-    symbole s2 = {nomVariable:"b", typeVariable:"char", declare:1, profondeur:0};
-    ajouter_symbole(tab, s2);
-    
-    print_table(tab);
-    supprimer_symbole(tab);
-    print_table(tab);
-    
-    return 0;
+
+int main(){
+
+//Allocate memory for table
+symbol t[SIZEMAX];
+
+symbol sa = {varname:"a", type0:"var  ", type:"int", value:5};
+symbol sb = {varname:"b", type0:"const", type:"int", value:10};
+
+symbol sc = {varname:"c", type0:"var  ", type:"int", value:15};
+symbol sd = {varname:"d", type0:"const", type:"int", value:20};
+
+addSymbol(t,sa);
+addSymbol(t,sb);
+
+printf("Added a & b ");
+printTable(t);
+
+incrementDepth(); //To simulate presence of if/while
+
+addSymbol(t,sc);
+addSymbol(t,sd);
+
+printf("Added c & d ");
+
+printTable(t);
+
+deleteSymbols(t);
+
+printf("Deleted symbols of max depth ");
+
+printTable(t);
+
 }
 
-symbole* init() {
-    return malloc(TAILLE*sizeof(symbole*));
-}
-
-
-void print_table(symbole* tab) {
-    int i = 0;
-    for (i; i < taille; i++) {
-        print_symbole(tab[i]);
+void printTable(symbol * t){
+    printf("Content of table: \n");
+    for (int i; i<tableSize; i++) {
+        printf("varname : %s\t",t[i].varname);
+        printf("type0 : %s\t",t[i].type0);
+        printf("type : %s\t",t[i].type);
+        printf("value : %d\t",t[i].value);
+        printf("depth : %d\t",t[i].depth);
+        printf("addr : %d\t",t[i].addr);
         printf("\n");
     }
 }
 
-void print_symbole(symbole s) {
-    printf("%s (%s, %d, %d) ", s.nomVariable, s.typeVariable, s.declare, s.profondeur);
+int addSymbol(symbol * t, symbol s){
+    s.depth=tableDepth;
+    s.addr=tableSize;
+    t[tableSize]=s;
+    tableSize++;
 }
 
-void ajouter_symbole(symbole* tab, symbole s) {
-    if (taille >= TAILLE) printf("TAILLE MAXIMALE DEPASSEE\n");
-    if (s.profondeur >= profondeurMAX) {profondeurMAX++;}
-    tab[taille] = s;
-    taille++;
-}
+//We decrease the size of the table by the number of symbols to delete
+//which are the symbols of depth equal to table depth (max depth)
 
-void supprimer_symbole(symbole * tab) {
-    int i = 0;
-    int nb = 0;
-    for (i; i < taille; i++) {
-        symbole s = tab[i];
-        if (s.profondeur == profondeurMAX) {
-            nb++;
+int deleteSymbols(symbol * t){
+    int cnt = 0;
+    for (int i; i <tableSize; i++) {
+        symbol s = t[i];
+        if (s.depth == tableDepth) {
+            cnt++;
         }
     }
-    taille -= nb;
+    tableSize -= cnt;
+
 }
 
+void incrementDepth(){
+    tableDepth++;
+}
 
-int get_addr(symbole* tab, char* nom) {
-    int i = 0;
-    for (i; i < taille; i++) {
-        if (tab[i].nomVariable == nom) {
+int getAddr(symbol * t,char * targetname){
+    for (int i=0; i<tableSize; i++){
+        if (t[i].varname==targetname){
             return i;
+            break;
         }
     }
 }
-
-
-
-
-
