@@ -66,7 +66,7 @@
 
 
 /* First part of user prologue.  */
-#line 1 "rules.y"
+#line 1 "Yacc.y"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -178,7 +178,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 9 "rules.y"
+#line 9 "Yacc.y"
 int nb; char string[16];
 
 #line 185 "y.tab.c"
@@ -1636,7 +1636,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 65 "rules.y"
+#line 65 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 int main(void) {

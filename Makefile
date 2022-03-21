@@ -1,5 +1,5 @@
-GRM=rules.y
-LEX=rules.l
+GRM=Yacc.y
+LEX=Lex.l
 BIN=comp
 
 CC=gcc
@@ -25,4 +25,4 @@ clean:
 	rm $(OBJ) y.tab.c y.tab.h lex.yy.c
 
 test:   all
-	./$(BIN) < test.c
+	./$(BIN) < Test.c
