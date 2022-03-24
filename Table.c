@@ -44,14 +44,18 @@ printTable(t);
 void printTable(symbol * t){
     printf("Content of table: \n");
     for (int i; i<tableSize; i++) {
-        printf("varname : %s\t",t[i].varname);
-        printf("type0 : %s\t",t[i].type0);
-        printf("type : %s\t",t[i].type);
-        printf("value : %d\t",t[i].value);
-        printf("depth : %d\t",t[i].depth);
-        printf("addr : %d\t",t[i].addr);
-        printf("\n");
+        printSymbol(t[i]);
     }
+}
+
+void printSymbol(symbol s){
+        printf("varname : %s\t",s.varname);
+        printf("type0 : %s\t",s.type0);
+        printf("type : %s\t",s.type);
+        printf("value : %d\t",s.value);
+        printf("depth : %d\t",s.depth);
+        printf("addr : %d\t",s.addr);
+        printf("\n");
 }
 
 int addSymbol(symbol * t, symbol s){
@@ -87,4 +91,16 @@ int getAddr(symbol * t,char * targetname){
             break;
         }
     }
+}
+
+symbol unstack(symbol * t) {
+    symbol head = t[tableSize];
+    tableSize--;
+    return head;
+}
+
+void addTmp(symbol * t, int depth) {
+    symbol tmp = {varname:"tmp", type0:"var", type:"tmp", value:NULL};
+    addSymbol(t,tmp);
+    tableSize++;
 }

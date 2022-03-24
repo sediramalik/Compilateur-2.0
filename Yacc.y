@@ -1,9 +1,10 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
+#include "Table.c"
 int string[16]; //Taille max du nom de variable
 void yyerror(char *s);
-
+symbol* t; //table
 %}
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
@@ -46,8 +47,19 @@ FunName: tMAIN | tID;
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
-Instruction: FunCall tPV | VarDeclaration tPV | VarAssign tPV | Condition tAO Body tAF;
-VarDeclaration : Type0 Type tID ;
+Instruction: FunCall tPV 
+          | VarDeclaration tPV;
+          | VarAssign tPV;
+          | Condition tAO {tableDepth++;} Body tAF {deleteSymbols(t);tableDepth--;};
+
+VarDeclaration : Type0 Type tID {
+  symbol s = {varname:$3, type0:$1, type:$2, value:NULL};
+  printf("Created symbol: ");
+  printSymbol(s);
+  addSymbol(t,$3);
+  printf("Added symbol: ");
+  printSymbol(t[tableSize-1])
+};
 
 Operand:  FunCall | Operations | tNB | tID;
 Operator: tSUB | tADD | tDIV | tMUL;
