@@ -20,6 +20,8 @@ tINF tSUP
 
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
+%type <string> Type0
+%type <string> Type
 %start Program
 
 %left tADD tSUB //Priorité à gauche
@@ -41,6 +43,7 @@ CallArgNext: tV CallArgs |;
 
 Type0: tCONST |;
 Type: tINT | tSTRING;
+
 FunType: tVOID | Type;
 
 FunName: tMAIN | tID; 
@@ -53,12 +56,12 @@ Instruction: FunCall tPV
           | Condition tAO {tableDepth++;} Body tAF {deleteSymbols(t);tableDepth--;};
 
 VarDeclaration : Type0 Type tID {
-  symbol s = {varname:$3, type0:$1, type:$2, value:NULL};
-  printf("Created symbol: ");
-  printSymbol(s);
-  addSymbol(t,$3);
-  printf("Added symbol: ");
-  printSymbol(t[tableSize-1])
+  
+  symbol s = addSymbol(t,$3,$1,$2);
+  // printf("Added symbol: ");
+  // printSymbol(s);
+  // printf("Last symbol in table: ");
+  // printSymbol(t[tableSize-1]);
 };
 
 Operand:  FunCall | Operations | tNB | tID;
@@ -76,8 +79,10 @@ Comparaison: Operand Comparator Operand;
 
 %%
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
+
 int main(void) {
-  printf("Compilateur\n");
+  printf("Start\n");
+  t = initTable();
   yydebug=1;
   yyparse();
   return 0;

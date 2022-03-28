@@ -7,38 +7,37 @@ int tableDepth=0;
 int tableSize=0;
 
 
-int main(){
+// int main(){
 
-//Allocate memory for table
-symbol t[SIZEMAX];
+// symbol * t = initTable();
+// symbol sa,sb,sc,sd;
 
-symbol sa = {varname:"a", type0:"var  ", type:"int", value:5};
-symbol sb = {varname:"b", type0:"const", type:"int", value:10};
+// sa=addSymbol(t,"a","var","int");
+// sb=addSymbol(t,"b","conxt","int");
 
-symbol sc = {varname:"c", type0:"var  ", type:"int", value:15};
-symbol sd = {varname:"d", type0:"const", type:"int", value:20};
+// printf("Added a & b ");
+// printTable(t);
 
-addSymbol(t,sa);
-addSymbol(t,sb);
+// incrementDepth(); //To simulate presence of if/while
 
-printf("Added a & b ");
-printTable(t);
+// sc=addSymbol(t,"a","var","int");
+// sd=addSymbol(t,"b","conxt","int");
 
-incrementDepth(); //To simulate presence of if/while
+// printf("Added c & d ");
 
-addSymbol(t,sc);
-addSymbol(t,sd);
+// printTable(t);
 
-printf("Added c & d ");
+// deleteSymbols(t);
 
-printTable(t);
+// printf("Deleted symbols of max depth ");
 
-deleteSymbols(t);
+// printTable(t);
 
-printf("Deleted symbols of max depth ");
+// }
 
-printTable(t);
-
+symbol * initTable(){
+    //Allocate memory for table
+    return malloc(SIZEMAX*sizeof(symbol*));
 }
 
 void printTable(symbol * t){
@@ -52,23 +51,27 @@ void printSymbol(symbol s){
         printf("varname : %s\t",s.varname);
         printf("type0 : %s\t",s.type0);
         printf("type : %s\t",s.type);
-        printf("value : %d\t",s.value);
         printf("depth : %d\t",s.depth);
         printf("addr : %d\t",s.addr);
         printf("\n");
 }
 
-int addSymbol(symbol * t, symbol s){
+symbol addSymbol(symbol * t, char * name, char * type0, char * type){
+    symbol s;
     s.depth=tableDepth;
     s.addr=tableSize;
+    strcpy(s.varname,name);
+    strcpy(s.type0,type0);
+    strcpy(s.type,type);
     t[tableSize]=s;
     tableSize++;
+    return s;
 }
 
 //We decrease the size of the table by the number of symbols to delete
 //which are the symbols of depth equal to table depth (max depth)
 
-int deleteSymbols(symbol * t){
+void deleteSymbols(symbol * t){
     int cnt = 0;
     for (int i; i <tableSize; i++) {
         symbol s = t[i];
@@ -86,10 +89,9 @@ void incrementDepth(){
 
 int getAddr(symbol * t,char * targetname){
     for (int i=0; i<tableSize; i++){
-        if (t[i].varname==targetname){
+        if (strcmp(t[i].varname,targetname)==0)
             return i;
-            break;
-        }
+        else return -1;
     }
 }
 
@@ -100,7 +102,5 @@ symbol unstack(symbol * t) {
 }
 
 void addTmp(symbol * t, int depth) {
-    symbol tmp = {varname:"tmp", type0:"var", type:"tmp", value:NULL};
-    addSymbol(t,tmp);
-    tableSize++;
+    addSymbol(t,"tmp","var","tmp");
 }

@@ -5,7 +5,8 @@
 %}
 
 %option noyywrap
-
+%option nounput
+%option noinput
 %%
 
 [ \t\n]+  {}; //les espaces et les tabs sont ignorés
