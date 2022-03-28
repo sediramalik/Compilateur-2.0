@@ -47,7 +47,7 @@ void printTable(symbol * t){
 }
 
 void printSymbol(symbol s){
-        printf("varname : %s\t",s.varname);
+        printf("varname : %s\t",s.sName);
         printf("type0 : %d\t",s.type0);
         printf("type : %d\t",s.type);
         printf("depth : %d\t",s.depth);
@@ -59,7 +59,7 @@ symbol addSymbol(symbol * t, char * name, int type0, int type){
     symbol s;
     s.depth=tableDepth;
     s.addr=tableSize;
-    strcpy(s.varname,name);
+    strcpy(s.sName,name);
     s.type0=type0;
     s.type=type;
     t[tableSize]=s;
@@ -88,7 +88,7 @@ void incrementDepth(){
 
 int getAddr(symbol * t,char * targetname){
     for (int i=0; i<tableSize; i++){
-        if (strcmp(t[i].varname,targetname)==0)
+        if (strcmp(t[i].sName,targetname)==0)
             return i;
         else return -1;
     }

@@ -4,7 +4,7 @@
 #define SIZEMAX 1000
 
 typedef struct {
-    char varname[16];
+    char sName[16];
     int type0;
     int type;
     int depth;
