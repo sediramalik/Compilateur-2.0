@@ -70,12 +70,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "Table.c"
+#include "sTable.c"
+
 int string[16]; //Taille max du nom de variable
 void yyerror(char *s);
-symbol* t; //table
+symbol * t; //table
 
-#line 79 "y.tab.c"
+#line 80 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -179,10 +180,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 10 "Yacc.y"
+#line 11 "Yacc.y"
 int nb; char string[16];
 
-#line 186 "y.tab.c"
+#line 187 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -560,11 +561,11 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    32,    32,    34,    34,    35,    36,    38,    38,    39,
-      39,    41,    41,    42,    42,    44,    44,    45,    45,    46,
-      46,    48,    48,    50,    51,    51,    52,    53,    54,    55,
-      55,    57,    66,    66,    66,    66,    67,    67,    67,    67,
-      69,    70,    72,    72,    73,    75,    75,    76,    76,    77
+       0,    33,    33,    35,    35,    36,    37,    39,    39,    40,
+      40,    42,    42,    43,    43,    45,    45,    46,    46,    47,
+      47,    49,    49,    51,    52,    52,    53,    54,    55,    56,
+      56,    58,    70,    70,    70,    70,    71,    71,    71,    71,
+      73,    74,    76,    76,    77,    79,    79,    80,    80,    81
 };
 #endif
 
@@ -1405,56 +1406,59 @@ yyreduce:
   switch (yyn)
     {
   case 15:
-#line 44 "Yacc.y"
+#line 45 "Yacc.y"
               {(yyval.nb) = 1;}
-#line 1411 "y.tab.c"
+#line 1412 "y.tab.c"
     break;
 
   case 16:
-#line 44 "Yacc.y"
+#line 45 "Yacc.y"
                           {(yyval.nb) = 0; }
-#line 1417 "y.tab.c"
+#line 1418 "y.tab.c"
     break;
 
   case 17:
-#line 45 "Yacc.y"
+#line 46 "Yacc.y"
            { (yyval.nb) = 1; }
-#line 1423 "y.tab.c"
+#line 1424 "y.tab.c"
     break;
 
   case 18:
-#line 45 "Yacc.y"
+#line 46 "Yacc.y"
                                 { (yyval.nb) = 2; }
-#line 1429 "y.tab.c"
+#line 1430 "y.tab.c"
     break;
 
   case 29:
-#line 55 "Yacc.y"
+#line 56 "Yacc.y"
                           {tableDepth++;}
-#line 1435 "y.tab.c"
+#line 1436 "y.tab.c"
     break;
 
   case 30:
-#line 55 "Yacc.y"
+#line 56 "Yacc.y"
                                                    {deleteSymbols(t);tableDepth--;}
-#line 1441 "y.tab.c"
+#line 1442 "y.tab.c"
     break;
 
   case 31:
-#line 57 "Yacc.y"
+#line 58 "Yacc.y"
                                 {
   
   symbol s = addSymbol(t,(yyvsp[0].string),(yyvsp[-2].nb),(yyvsp[-1].nb));
   printf("Added symbol: ");
   printSymbol(s);
-  // printf("Last symbol in table: ");
-  // printSymbol(t[tableSize-1]);
+  printf("Last symbol in table: ");
+  printSymbol(t[tableSize-1]);
+  printf("Content of table: ");
+  printTable(t);
+
 }
-#line 1454 "y.tab.c"
+#line 1458 "y.tab.c"
     break;
 
 
-#line 1458 "y.tab.c"
+#line 1462 "y.tab.c"
 
       default: break;
     }
@@ -1686,7 +1690,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 79 "Yacc.y"
+#line 83 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 

@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "Table.h"
+#include "sTable.h"
 
 int tableDepth=0;
 int tableSize=0;
@@ -37,12 +37,11 @@ int tableSize=0;
 
 symbol * initTable(){
     //Allocate memory for table
-    return malloc(SIZEMAX*sizeof(symbol*));
+    return malloc(SIZEMAX*sizeof(symbol));
 }
 
 void printTable(symbol * t){
-    printf("Content of table: \n");
-    for (int i; i<tableSize; i++) {
+    for (int i=0; i<tableSize; i++) {
         printSymbol(t[i]);
     }
 }
