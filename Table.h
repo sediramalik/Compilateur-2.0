@@ -5,8 +5,8 @@
 
 typedef struct {
     char varname[16];
-    char type0[16];
-    char type[16];
+    int type0;
+    int type;
     int depth;
     int addr;
 
@@ -15,7 +15,7 @@ typedef struct {
 symbol * initTable();
 void printTable(symbol * t);
 void printSymbol(symbol s);
-symbol addSymbol(symbol * t, char * name, char * type0, char * type);
+symbol addSymbol(symbol * t, char * name, int type0, int type);
 void deleteSymbols(symbol * t);
 void incrementDepth();
 int getAddr(symbol * t,char * targetname);

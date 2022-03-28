@@ -49,20 +49,20 @@ void printTable(symbol * t){
 
 void printSymbol(symbol s){
         printf("varname : %s\t",s.varname);
-        printf("type0 : %s\t",s.type0);
-        printf("type : %s\t",s.type);
+        printf("type0 : %d\t",s.type0);
+        printf("type : %d\t",s.type);
         printf("depth : %d\t",s.depth);
         printf("addr : %d\t",s.addr);
         printf("\n");
 }
 
-symbol addSymbol(symbol * t, char * name, char * type0, char * type){
+symbol addSymbol(symbol * t, char * name, int type0, int type){
     symbol s;
     s.depth=tableDepth;
     s.addr=tableSize;
     strcpy(s.varname,name);
-    strcpy(s.type0,type0);
-    strcpy(s.type,type);
+    s.type0=type0;
+    s.type=type;
     t[tableSize]=s;
     tableSize++;
     return s;
@@ -102,5 +102,5 @@ symbol unstack(symbol * t) {
 }
 
 void addTmp(symbol * t, int depth) {
-    addSymbol(t,"tmp","var","tmp");
+    addSymbol(t,"tmp",-1,-1);
 }

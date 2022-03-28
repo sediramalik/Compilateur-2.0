@@ -20,8 +20,8 @@ tINF tSUP
 
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
-%type <string> Type0
-%type <string> Type
+%type <nb> Type0
+%type <nb> Type
 %start Program
 
 %left tADD tSUB //Priorité à gauche
@@ -41,9 +41,8 @@ NextDecArg: tV DecArgs |;
 CallArgs: Operand CallArgNext |;
 CallArgNext: tV CallArgs |;
 
-Type0: tCONST |;
-Type: tINT | tSTRING;
-
+Type0: tCONST {$$ = 1;} | {$$ = 0; }; 
+Type: tINT { $$ = 1; } | tSTRING{ $$ = 2; }; 
 FunType: tVOID | Type;
 
 FunName: tMAIN | tID; 
@@ -58,8 +57,8 @@ Instruction: FunCall tPV
 VarDeclaration : Type0 Type tID {
   
   symbol s = addSymbol(t,$3,$1,$2);
-  // printf("Added symbol: ");
-  // printSymbol(s);
+  printf("Added symbol: ");
+  printSymbol(s);
   // printf("Last symbol in table: ");
   // printSymbol(t[tableSize-1]);
 };

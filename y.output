@@ -145,10 +145,10 @@ Nonterminals, with rules where they appear
     CallArgNext (35)
         on left: 12 13
         on right: 10
-    Type0 <string> (36)
+    Type0 <nb> (36)
         on left: 14 15
         on right: 30
-    Type <string> (37)
+    Type <nb> (37)
         on left: 16 17
         on right: 6 19 30
     FunType (38)

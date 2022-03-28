@@ -561,10 +561,10 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int8 yyrline[] =
 {
        0,    32,    32,    34,    34,    35,    36,    38,    38,    39,
-      39,    41,    41,    42,    42,    44,    44,    45,    45,    47,
-      47,    49,    49,    51,    52,    52,    53,    54,    55,    56,
-      56,    58,    67,    67,    67,    67,    68,    68,    68,    68,
-      70,    71,    73,    73,    74,    76,    76,    77,    77,    78
+      39,    41,    41,    42,    42,    44,    44,    45,    45,    46,
+      46,    48,    48,    50,    51,    51,    52,    53,    54,    55,
+      55,    57,    66,    66,    66,    66,    67,    67,    67,    67,
+      69,    70,    72,    72,    73,    75,    75,    76,    76,    77
 };
 #endif
 
@@ -1404,33 +1404,57 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 29:
-#line 56 "Yacc.y"
-                          {tableDepth++;}
+  case 15:
+#line 44 "Yacc.y"
+              {(yyval.nb) = 1;}
 #line 1411 "y.tab.c"
     break;
 
-  case 30:
-#line 56 "Yacc.y"
-                                                   {deleteSymbols(t);tableDepth--;}
+  case 16:
+#line 44 "Yacc.y"
+                          {(yyval.nb) = 0; }
 #line 1417 "y.tab.c"
     break;
 
+  case 17:
+#line 45 "Yacc.y"
+           { (yyval.nb) = 1; }
+#line 1423 "y.tab.c"
+    break;
+
+  case 18:
+#line 45 "Yacc.y"
+                                { (yyval.nb) = 2; }
+#line 1429 "y.tab.c"
+    break;
+
+  case 29:
+#line 55 "Yacc.y"
+                          {tableDepth++;}
+#line 1435 "y.tab.c"
+    break;
+
+  case 30:
+#line 55 "Yacc.y"
+                                                   {deleteSymbols(t);tableDepth--;}
+#line 1441 "y.tab.c"
+    break;
+
   case 31:
-#line 58 "Yacc.y"
+#line 57 "Yacc.y"
                                 {
   
-  symbol s = addSymbol(t,(yyvsp[0].string),(yyvsp[-2].string),(yyvsp[-1].string));
-  // printf("Added symbol: ");
-  // printSymbol(s);
+  symbol s = addSymbol(t,(yyvsp[0].string),(yyvsp[-2].nb),(yyvsp[-1].nb));
+  printf("Added symbol: ");
+  printSymbol(s);
   // printf("Last symbol in table: ");
   // printSymbol(t[tableSize-1]);
 }
-#line 1430 "y.tab.c"
+#line 1454 "y.tab.c"
     break;
 
 
-#line 1434 "y.tab.c"
+#line 1458 "y.tab.c"
 
       default: break;
     }
@@ -1662,7 +1686,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 80 "Yacc.y"
+#line 79 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 
