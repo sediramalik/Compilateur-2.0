@@ -12,12 +12,13 @@ typedef struct {
 
 } symbol;
 
-symbol * initTable();
-void printTable(symbol * t);
+symbol * init_sTable();
+void print_sTable(symbol * t);
 void printSymbol(symbol s);
 symbol addSymbol(symbol * t, char * name, int type0, int type);
 void deleteSymbols(symbol * t);
 void incrementDepth();
+void decrementDepth();
 int getAddr(symbol * t,char * targetname);
 symbol unstack(symbol * t);
 void addTmp(symbol * t, int depth);
