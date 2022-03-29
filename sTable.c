@@ -3,8 +3,8 @@
 #include <string.h>
 #include "sTable.h"
 
-int tableDepth=0;
-int tableSize=0;
+int sTableDepth=0;
+int sTableSize=0;
 
 
 // int main(){
@@ -16,7 +16,7 @@ int tableSize=0;
 // sb=addSymbol(t,"b","conxt","int");
 
 // printf("Added a & b ");
-// printTable(t);
+// print_sTable(t);
 
 // incrementDepth(); //To simulate presence of if/while
 
@@ -25,23 +25,23 @@ int tableSize=0;
 
 // printf("Added c & d ");
 
-// printTable(t);
+// print_sTable(t);
 
 // deleteSymbols(t);
 
 // printf("Deleted symbols of max depth ");
 
-// printTable(t);
+// print_sTable(t);
 
 // }
 
-symbol * initTable(){
+symbol * init_sTable(){
     //Allocate memory for table
     return malloc(SIZEMAX*sizeof(symbol));
 }
 
-void printTable(symbol * t){
-    for (int i=0; i<tableSize; i++) {
+void print_sTable(symbol * t){
+    for (int i=0; i<sTableSize; i++) {
         printSymbol(t[i]);
     }
 }
@@ -55,15 +55,15 @@ void printSymbol(symbol s){
         printf("\n");
 }
 
-symbol addSymbol(symbol * t, char * name, int type0, int type){
+symbol addSymbol(symbol * t, char * sName, int type0, int type){
     symbol s;
-    s.depth=tableDepth;
-    s.addr=tableSize;
-    strcpy(s.sName,name);
+    s.depth=sTableDepth;
+    s.addr=sTableSize;
+    strcpy(s.sName,sName);
     s.type0=type0;
     s.type=type;
-    t[tableSize]=s;
-    tableSize++;
+    t[sTableSize]=s;
+    sTableSize++;
     return s;
 }
 
@@ -72,31 +72,35 @@ symbol addSymbol(symbol * t, char * name, int type0, int type){
 
 void deleteSymbols(symbol * t){
     int cnt = 0;
-    for (int i; i <tableSize; i++) {
+    for (int i; i <sTableSize; i++) {
         symbol s = t[i];
-        if (s.depth == tableDepth) {
+        if (s.depth == sTableDepth) {
             cnt++;
         }
     }
-    tableSize -= cnt;
+    sTableSize -= cnt;
 
 }
 
 void incrementDepth(){
-    tableDepth++;
+    sTableDepth++;
+}
+
+void decrementDepth(){
+    sTableDepth--;
 }
 
 int getAddr(symbol * t,char * targetname){
-    for (int i=0; i<tableSize; i++){
-        if (strcmp(t[i].sName,targetname)==0)
+    for (int i=0; i<sTableSize; i++){
+        if (strcmp(t[i].sName,targetname)==0) //IF THEY'RE EQUAL
             return i;
-        else return -1;
     }
+        return -1; //NO SUCH SYMBOL FOUND IN TABLE
 }
 
 symbol unstack(symbol * t) {
-    symbol head = t[tableSize];
-    tableSize--;
+    symbol head = t[sTableSize];
+    sTableSize--;
     return head;
 }
 
