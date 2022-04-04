@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "sTable.c"
+#include "iTable.c"
+
 
 int string[16]; //Taille max du nom de variable
 void yyerror(char *s);
-symbol * t; //table
+symbol * st; //symbol table
+instruction * it; //instruction table
 %}
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
@@ -22,7 +25,6 @@ tINF tSUP
 
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
-%type <nb> Type0
 %type <nb> Type
 %start Program
 
@@ -43,7 +45,6 @@ NextDecArg: tV DecArgs |;
 CallArgs: Operand CallArgNext |;
 CallArgNext: tV CallArgs |;
 
-Type0: tCONST {$$ = 1; } | {$$ = 0; }; //IF CONST THEN 1 ELSE 0
 Type: tINT { $$ = 1; } | tSTRING{ $$ = 2; }; //IF INT THEN 1 IF STRING THEN 2
 FunType: tVOID | Type;
 
@@ -54,24 +55,31 @@ Instructions: Instruction Instructions |;
 Instruction: FunCall 
            | VarDeclaration 
            | VarAssign 
-           | Condition tAO {incrementDepth();} Body tAF {deleteSymbols(t);decrementDepth();};
+           | Condition tAO {incrementDepth();} Body tAF {deleteSymbols(st);decrementDepth();};
 
-VarDeclaration : Type0 Type tID {
+//NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
+VarDeclaration : Type tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
-  symbol s = addSymbol(t,$3,$1,$2);
+  symbol s = addSymbol(st,$2,$1,-1);
   printf("Added symbol: \n");
   printSymbol(s);
   printf("Last symbol in table: \n");
-  printSymbol(t[sTableSize-1]);
+  printSymbol(st[sTableSize-1]);
   printf("Content of table: \n");
-  print_sTable(t);
+  print_sTable(st);
 
 } tPV;
 
 Operand:  FunCall
         | Operations
-        | tNB{}; //MUST BE STORED IN A TMP VARIABLE
-        | tID{}; //MUST BE STORED IN A TMP VARIABLE
+        | tNB{ //MUST BE STORED IN A TMP VARIABLE
+
+          symbol tmp = addSymbol(symbol * st, char * "tmp",1,$1);
+          //addInstruction(it,"AFC",tmp.addr,$1,-1);
+        }; 
+        | tID{ //MUST BE STORED IN A TMP VARIABLE
+
+        }; 
 
 Operator: tSUB | tADD | tDIV | tMUL;
 
@@ -90,8 +98,15 @@ void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 
 int main(void) {
   printf("Start\n");
-  t = init_sTable();
+  st = init_sTable();
+  it = init_iTable();
   yydebug=1;
   yyparse();
+
+  printf("Printing table of symbols: \n");
+  //print_iTable(st);
+
+  printf("Printing table of instructions: \n");
+  //print_iTable(it);  
   return 0;
 }
