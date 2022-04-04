@@ -8,31 +8,20 @@ int sTableSize=0;
 
 
 // int main(){
-
 // symbol * t = initTable();
 // symbol sa,sb,sc,sd;
-
 // sa=addSymbol(t,"a","var","int");
 // sb=addSymbol(t,"b","conxt","int");
-
 // printf("Added a & b ");
 // print_sTable(t);
-
 // incrementDepth(); //To simulate presence of if/while
-
 // sc=addSymbol(t,"a","var","int");
 // sd=addSymbol(t,"b","conxt","int");
-
 // printf("Added c & d ");
-
 // print_sTable(t);
-
 // deleteSymbols(t);
-
 // printf("Deleted symbols of max depth ");
-
 // print_sTable(t);
-
 // }
 
 symbol * init_sTable(){
@@ -48,20 +37,20 @@ void print_sTable(symbol * t){
 
 void printSymbol(symbol s){
         printf("varname : %s\t",s.sName);
-        printf("type0 : %d\t",s.type0);
         printf("type : %d\t",s.type);
         printf("depth : %d\t",s.depth);
         printf("addr : %d\t",s.addr);
+        printf("value : %d\t",s.value);
         printf("\n");
 }
 
-symbol addSymbol(symbol * t, char * sName, int type0, int type){
+symbol addSymbol(symbol * t, char * sName, int type, int value){
     symbol s;
     s.depth=sTableDepth;
     s.addr=sTableSize;
     strcpy(s.sName,sName);
-    s.type0=type0;
     s.type=type;
+    s.value=value;
     t[sTableSize]=s;
     sTableSize++;
     return s;
@@ -104,6 +93,6 @@ symbol unstack(symbol * t) {
     return head;
 }
 
-void addTmp(symbol * t, int depth) {
-    addSymbol(t,"tmp",-1,-1);
+void addTmp(symbol * t, int arg) {
+    addSymbol(t,"tmp",1,arg);
 }

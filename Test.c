@@ -1,6 +1,8 @@
 int main() {
-    const int a;
+    int a;
     int b;
+    int c;
     a = 2;
     b = 3;
+    c = a + b;
 }

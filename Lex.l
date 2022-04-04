@@ -13,7 +13,6 @@
 	
 "main"  {return tMAIN;}	
 "int"   {return tINT;}
-"const" {return tCONST;}
 "printf" {return tPRINT;}
 "if"    {return tIF;}
 "while"    {return tWHILE;}
