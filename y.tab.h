@@ -50,65 +50,63 @@ extern int yydebug;
   enum yytokentype
   {
     tMAIN = 258,
-    tCONST = 259,
-    tIF = 260,
-    tWHILE = 261,
-    tPRINT = 262,
-    tELSE = 263,
-    tAO = 264,
-    tAF = 265,
-    tPO = 266,
-    tPF = 267,
-    tV = 268,
-    tPV = 269,
-    tEQUAL = 270,
-    tVOID = 271,
-    tINT = 272,
-    tSTRING = 273,
-    tSUB = 274,
-    tADD = 275,
-    tMUL = 276,
-    tDIV = 277,
-    tINF = 278,
-    tSUP = 279,
-    tNB = 280,
-    tID = 281
+    tIF = 259,
+    tWHILE = 260,
+    tPRINT = 261,
+    tELSE = 262,
+    tAO = 263,
+    tAF = 264,
+    tPO = 265,
+    tPF = 266,
+    tV = 267,
+    tPV = 268,
+    tEQUAL = 269,
+    tVOID = 270,
+    tINT = 271,
+    tSTRING = 272,
+    tSUB = 273,
+    tADD = 274,
+    tMUL = 275,
+    tDIV = 276,
+    tINF = 277,
+    tSUP = 278,
+    tNB = 279,
+    tID = 280
   };
 #endif
 /* Tokens.  */
 #define tMAIN 258
-#define tCONST 259
-#define tIF 260
-#define tWHILE 261
-#define tPRINT 262
-#define tELSE 263
-#define tAO 264
-#define tAF 265
-#define tPO 266
-#define tPF 267
-#define tV 268
-#define tPV 269
-#define tEQUAL 270
-#define tVOID 271
-#define tINT 272
-#define tSTRING 273
-#define tSUB 274
-#define tADD 275
-#define tMUL 276
-#define tDIV 277
-#define tINF 278
-#define tSUP 279
-#define tNB 280
-#define tID 281
+#define tIF 259
+#define tWHILE 260
+#define tPRINT 261
+#define tELSE 262
+#define tAO 263
+#define tAF 264
+#define tPO 265
+#define tPF 266
+#define tV 267
+#define tPV 268
+#define tEQUAL 269
+#define tVOID 270
+#define tINT 271
+#define tSTRING 272
+#define tSUB 273
+#define tADD 274
+#define tMUL 275
+#define tDIV 276
+#define tINF 277
+#define tSUP 278
+#define tNB 279
+#define tID 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "Yacc.y"
+#line 13 "Yacc.y"
 int nb; char string[16];
 
-#line 112 "y.tab.h"
+#line 110 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

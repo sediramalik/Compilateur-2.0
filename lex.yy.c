@@ -354,8 +354,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 25
-#define YY_END_OF_BUFFER 26
+#define YY_NUM_RULES 26
+#define YY_END_OF_BUFFER 27
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -365,12 +365,12 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[61] =
     {   0,
-        0,    0,   26,   25,    1,   12,   13,   19,   18,   14,
-       17,   20,   24,   15,   21,   16,   22,   23,   23,   23,
-       23,   23,   23,   23,   23,   10,   11,    1,   24,    0,
-       23,   23,   23,    5,   23,   23,   23,   23,   23,   23,
-       24,   23,    3,   23,   23,   23,   23,   23,    7,    2,
-       23,   23,    8,   23,   23,   23,    6,    4,    9,    0
+        0,    0,   27,   26,    1,   13,   14,   20,   19,   15,
+       18,   21,   25,   16,   22,   17,   23,   24,   24,   24,
+       24,   24,   24,   24,   24,   11,   12,    1,   25,    0,
+       24,   24,   24,    5,   24,   24,   24,   24,   24,   24,
+       25,   24,    3,   24,   24,   24,   24,   24,    7,    2,
+       24,   24,    8,   24,   10,   24,    6,    4,    9,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -825,85 +825,90 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 23 "Lex.l"
-{return tAO;}
+#line 22 "Lex.l"
+{return tPRINT;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 24 "Lex.l"
-{return tAF;}
+{return tAO;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 25 "Lex.l"
-{return tPO;}
+{return tAF;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 26 "Lex.l"
-{return tPF;}
+{return tPO;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 27 "Lex.l"
-{return tV;}
+{return tPF;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 28 "Lex.l"
-{return tPV;}
+#line 29 "Lex.l"
+{return tV;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 29 "Lex.l"
-{return tEQUAL;}
+#line 30 "Lex.l"
+{return tPV;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 30 "Lex.l"
-{return tSUB;}
+#line 31 "Lex.l"
+{return tEQUAL;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 31 "Lex.l"
-{return tADD;}
+#line 32 "Lex.l"
+{return tSUB;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 32 "Lex.l"
-{return tMUL;}
+#line 33 "Lex.l"
+{return tADD;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 33 "Lex.l"
-{return tDIV;}
+#line 34 "Lex.l"
+{return tMUL;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 34 "Lex.l"
-{return tINF;}
+#line 35 "Lex.l"
+{return tDIV;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 35 "Lex.l"
-{return tSUP;}
+#line 36 "Lex.l"
+{return tINF;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 37 "Lex.l"
-{strcpy(yylval.string, yytext);return tID;}
+{return tSUP;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 38 "Lex.l"
-{yylval.nb = (int) strtold(yytext, NULL);return tNB;}
+#line 39 "Lex.l"
+{strcpy(yylval.string, yytext);return tID;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 41 "Lex.l"
+#line 40 "Lex.l"
+{yylval.nb = (int) strtold(yytext, NULL);return tNB;}
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 43 "Lex.l"
 ECHO;
 	YY_BREAK
-#line 907 "lex.yy.c"
+#line 912 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1871,7 +1876,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 41 "Lex.l"
+#line 43 "Lex.l"
 
 
 

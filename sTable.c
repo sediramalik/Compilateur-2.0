@@ -79,7 +79,15 @@ void decrementDepth(){
     sTableDepth--;
 }
 
-int getAddr(symbol * t,char * targetname){
+int getAddr(symbol * t,symbol target){
+    for (int i=0; i<sTableSize; i++){
+        if (t[i].addr==target.addr)//IF THEY'RE EQUAL
+            return t[i].addr;
+    }
+        return -1; //NO SUCH SYMBOL FOUND IN TABLE
+}
+
+int getAddrName(symbol * t,char * targetname){
     for (int i=0; i<sTableSize; i++){
         if (strcmp(t[i].sName,targetname)==0) //IF THEY'RE EQUAL
             return i;
@@ -87,13 +95,8 @@ int getAddr(symbol * t,char * targetname){
         return -1; //NO SUCH SYMBOL FOUND IN TABLE
 }
 
-symbol unstack(symbol * t) { //FOR OPERATIONS
+int unstack(symbol * t) { //FOR OPERATIONS
     sTableSize--;
-    symbol head = t[sTableSize];
-    return head;
+    return sTableSize;
 }
 
-
-void addTmp(symbol * t, int arg) {
-    addSymbol(t,"tmp",1,arg);
-}

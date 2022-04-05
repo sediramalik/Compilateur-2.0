@@ -4,7 +4,6 @@
 #include "sTable.c"
 #include "iTable.c"
 
-
 int string[16]; //Taille max du nom de variable
 void yyerror(char *s);
 symbol * st; //symbol table
@@ -13,7 +12,7 @@ instruction * it; //instruction table
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
 %token 
-tMAIN tCONST
+tMAIN
 tIF tWHILE
 tPRINT tELSE
 tAO tAF tPO tPF tV tPV
@@ -52,13 +51,14 @@ FunName: tMAIN | tID;
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
-Instruction: FunCall 
+Instruction:   
+           | FunCall 
            | VarDeclaration 
            | VarAssign 
            | Condition tAO {incrementDepth();} Body tAF {deleteSymbols(st);decrementDepth();};
 
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
-VarDeclaration : Type tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
+VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
   printf("***************************************\n");
   printf("DECLARATION FOUND\n");
@@ -71,7 +71,7 @@ VarDeclaration : Type tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   print_sTable(st);
   printf("***************************************\n");
 
-} tPV;
+};
 
 Operand:  FunCall
         | Operations
@@ -79,7 +79,8 @@ Operand:  FunCall
           printf("***************************************\n");
           printf("OPERAND tID FOUND \n");
           printf("***************************************\n");
-        }; 
+          //TO BE COMPLETED TO TEST c = a + b
+        }
         | tNB{ //MUST BE STORED IN A TMP VARIABLE
           printf("***************************************\n");
           printf("OPERAND tNB \n");
@@ -97,24 +98,39 @@ Operand:  FunCall
           printf("***************************************\n");
         }; 
 
+Operations: Operand tADD Operand{
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf(addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf(addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"ADD",addrArg1,addrArg2,getAddr(st,result));
+  printf("Added instruction: \n");
+  printInstruction(i);
+}
+            |Operand tSUB Operand{
 
-Operator: tSUB | tADD | tDIV | tMUL;
+            }
+            |Operand tMUL Operand{
 
-Operations: Operand Operator Operand;
-VarAssign : tID tEQUAL Operand {
+            }
+            |Operand tDIV Operand{};
+
+VarAssign : tID tEQUAL Operand tPV {
   printf("***************************************\n");
   printf("VAR ASSIGN FOUND \n");
   printf("Content of symbol table before unstacking: \n");
   print_sTable(st);
-  printf("Name of the variable unstacked: \n");
-  instruction i = addInstruction(it,"COP",getAddr(st,$1),sTableSize-1,-1);
+  instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
   unstack(st);
   printf("Added instruction: \n");
   printInstruction(i);
   printf("Content of symbol table after unstacking: \n");
   print_sTable(st);
   printf("***************************************\n");
-} tPV;
+};
 
 Condition: tIF ArgCondition | tWHILE ArgCondition;
 ArgCondition: tPO BoolExpression tPF;

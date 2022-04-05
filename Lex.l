@@ -19,11 +19,13 @@
 "else"    {return tELSE;}
 "void" {return tVOID;}
 "string" {return tSTRING;}
+"print" {return tPRINT;}
 
 "{"     {return tAO;}
 "}"     {return tAF;}
 "("     {return tPO;}
 ")"     {return tPF;}
+
 "," {return tV;}
 ";" {return tPV;}
 "="	{return tEQUAL;}
