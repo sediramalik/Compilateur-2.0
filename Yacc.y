@@ -60,31 +60,61 @@ Instruction: FunCall
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
 VarDeclaration : Type tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
+  printf("***************************************\n");
+  printf("DECLARATION FOUND\n");
   symbol s = addSymbol(st,$2,$1,-1);
   printf("Added symbol: \n");
   printSymbol(s);
-  printf("Last symbol in table: \n");
-  printSymbol(st[sTableSize-1]);
-  printf("Content of table: \n");
+  // printf("Last symbol in symbol table: \n");
+  // printSymbol(st[sTableSize-1]);
+  printf("Content of symbol table: \n");
   print_sTable(st);
+  printf("***************************************\n");
 
 } tPV;
 
 Operand:  FunCall
         | Operations
-        | tNB{ //MUST BE STORED IN A TMP VARIABLE
-
-          symbol tmp = addSymbol(symbol * st, char * "tmp",1,$1);
-          //addInstruction(it,"AFC",tmp.addr,$1,-1);
-        }; 
         | tID{ //MUST BE STORED IN A TMP VARIABLE
-
+          printf("***************************************\n");
+          printf("OPERAND tID FOUND \n");
+          printf("***************************************\n");
         }; 
+        | tNB{ //MUST BE STORED IN A TMP VARIABLE
+          printf("***************************************\n");
+          printf("OPERAND tNB \n");
+          printf("tNB to add in symbol table as tmp: \n");
+          symbol tmp = addSymbol(st,"tmp",1,$1);
+          printf("Added tmp in symbol table: \n");
+          printSymbol(tmp);
+
+          instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
+          printf("Added instruction: \n");
+          printInstruction(i);
+
+          printf("Content of symbol table: \n");
+          print_sTable(st);
+          printf("***************************************\n");
+        }; 
+
 
 Operator: tSUB | tADD | tDIV | tMUL;
 
 Operations: Operand Operator Operand;
-VarAssign : tID tEQUAL Operand tPV;
+VarAssign : tID tEQUAL Operand {
+  printf("***************************************\n");
+  printf("VAR ASSIGN FOUND \n");
+  printf("Content of symbol table before unstacking: \n");
+  print_sTable(st);
+  printf("Name of the variable unstacked: \n");
+  instruction i = addInstruction(it,"COP",getAddr(st,$1),sTableSize-1,-1);
+  unstack(st);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("Content of symbol table after unstacking: \n");
+  print_sTable(st);
+  printf("***************************************\n");
+} tPV;
 
 Condition: tIF ArgCondition | tWHILE ArgCondition;
 ArgCondition: tPO BoolExpression tPF;
@@ -102,11 +132,13 @@ int main(void) {
   it = init_iTable();
   yydebug=1;
   yyparse();
-
+  printf("***************************************\n");
+  printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");
-  //print_iTable(st);
+  print_sTable(st);
 
   printf("Printing table of instructions: \n");
-  //print_iTable(it);  
+  print_iTable(it);  
+  printf("***************************************\n");
   return 0;
 }

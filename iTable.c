@@ -15,17 +15,19 @@ void print_iTable(instruction * t){
         printInstruction(t[i]);
     }
 }
-
 void printInstruction(instruction i){
-        printf("instruction_name : %s\t",i.iName);
+        printf("iName : %s\t",i.iName);
+        printf("iArg1 : %d\t",i.arg1);
+        printf("iArg2 : %d\t",i.arg2);
+        printf("iResult : %d\t",i.result);
         printf("\n");
 }
 
-instruction addInstruction(instruction * t, char * iName, int var1, int var2, int result){
+instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, int result){
     instruction i;
     strcpy(i.iName,iName);
-    i.rightVarIndex=var1;
-    i.leftVarIndex=var2;
+    i.arg1=arg1;
+    i.arg2=arg2;
     i.result=result;
     t[iTableSize]=i;
     iTableSize++;

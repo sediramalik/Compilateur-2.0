@@ -36,11 +36,11 @@ void print_sTable(symbol * t){
 }
 
 void printSymbol(symbol s){
-        printf("varname : %s\t",s.sName);
-        printf("type : %d\t",s.type);
-        printf("depth : %d\t",s.depth);
-        printf("addr : %d\t",s.addr);
-        printf("value : %d\t",s.value);
+        printf("sName : %s\t",s.sName);
+        printf("sAddr : %d\t",s.addr);
+        printf("sType : %d\t",s.type);
+        printf("sValue : %d\t",s.value);
+        printf("sDepth : %d\t",s.depth);
         printf("\n");
 }
 
@@ -87,11 +87,12 @@ int getAddr(symbol * t,char * targetname){
         return -1; //NO SUCH SYMBOL FOUND IN TABLE
 }
 
-symbol unstack(symbol * t) {
-    symbol head = t[sTableSize];
+symbol unstack(symbol * t) { //FOR OPERATIONS
     sTableSize--;
+    symbol head = t[sTableSize];
     return head;
 }
+
 
 void addTmp(symbol * t, int arg) {
     addSymbol(t,"tmp",1,arg);
