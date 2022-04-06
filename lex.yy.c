@@ -781,7 +781,7 @@ case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
 #line 12 "Lex.l"
-{}; //les espaces et les tabs sont ignorés
+{}; 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP

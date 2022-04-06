@@ -9,7 +9,7 @@
 %option noinput
 %%
 
-[ \t\n]+  {}; //les espaces et les tabs sont ignorés
+[ \t\n]+  {}; 
 	
 "main"  {return tMAIN;}	
 "int"   {return tINT;}

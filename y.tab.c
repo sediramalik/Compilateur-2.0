@@ -509,7 +509,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  25
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  47
+#define YYNRULES  46
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  78
 
@@ -563,9 +563,9 @@ static const yytype_uint8 yyrline[] =
 {
        0,    35,    35,    37,    37,    38,    39,    41,    41,    42,
       42,    44,    44,    45,    45,    47,    47,    48,    48,    50,
-      50,    52,    53,    53,    54,    55,    56,    57,    58,    58,
-      61,    76,    77,    78,    83,   100,   112,   115,   118,   120,
-     134,   134,   135,   137,   137,   138,   138,   139
+      50,    52,    53,    53,    54,    55,    56,    57,    57,    60,
+      75,    76,    77,    91,   107,   119,   122,   125,   127,   141,
+     141,   142,   144,   144,   145,   145,   146
 };
 #endif
 
@@ -601,7 +601,7 @@ static const yytype_int16 yytoknum[] =
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-45)
+#define YYTABLE_NINF (-44)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -627,12 +627,12 @@ static const yytype_int8 yydefact[] =
 {
        0,    17,    15,    16,     0,     2,     3,    18,     0,     1,
        4,    19,    20,     0,     8,     0,     0,     0,    10,    23,
-       8,     7,     0,     0,    20,    25,     0,     0,     0,    21,
-      23,    26,    27,     0,     9,     0,    40,    41,     0,     0,
-      12,     5,    22,    28,    34,    33,    31,     0,    32,     0,
-      43,    33,     0,    30,     0,    14,    23,     0,     0,     0,
-       0,    45,    46,     0,    42,    39,     0,    12,    11,     0,
-      36,    35,    37,    38,    47,     6,    13,    29
+       8,     7,     0,     0,    20,    24,     0,     0,     0,    21,
+      23,    25,    26,     0,     9,     0,    39,    40,     0,     0,
+      12,     5,    22,    27,    33,    32,    30,     0,    31,     0,
+      42,    32,     0,    29,     0,    14,    23,     0,     0,     0,
+       0,    44,    45,     0,    41,    38,     0,    12,    11,     0,
+      35,    34,    36,    37,    46,     6,    13,    28
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -658,7 +658,7 @@ static const yytype_int8 yytable[] =
 {
       25,    47,     2,     3,    52,    11,    22,    23,     7,    11,
       11,    25,    11,     9,     7,     1,     2,     3,     2,     3,
-     -20,   -44,    16,    70,    71,    72,    73,    24,    16,    74,
+     -20,   -43,    16,    70,    71,    72,    73,    24,    16,    74,
       44,    45,    12,    44,    51,    67,    14,    25,    59,    60,
       65,    57,    58,    59,    60,    57,    58,    59,    60,    57,
       58,    59,    60,    61,    62,    57,    58,    59,    60,    17,
@@ -699,9 +699,9 @@ static const yytype_int8 yyr1[] =
 {
        0,    26,    27,    28,    28,    29,    30,    31,    31,    32,
       32,    33,    33,    34,    34,    35,    35,    36,    36,    37,
-      37,    38,    39,    39,    40,    40,    40,    40,    41,    40,
-      42,    43,    43,    43,    43,    44,    44,    44,    44,    45,
-      46,    46,    47,    48,    48,    49,    49,    50
+      37,    38,    39,    39,    40,    40,    40,    41,    40,    42,
+      43,    43,    43,    43,    44,    44,    44,    44,    45,    46,
+      46,    47,    48,    48,    49,    49,    50
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -709,9 +709,9 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     1,     2,     8,     5,     3,     0,     2,
        0,     2,     0,     2,     0,     1,     1,     1,     1,     1,
-       1,     1,     2,     0,     0,     1,     1,     1,     0,     5,
-       3,     1,     1,     1,     1,     3,     3,     3,     3,     4,
-       2,     2,     3,     1,     1,     1,     1,     3
+       1,     1,     2,     0,     1,     1,     1,     0,     5,     3,
+       1,     1,     1,     1,     3,     3,     3,     3,     4,     2,
+       2,     3,     1,     1,     1,     1,     3
 };
 
 
@@ -1418,20 +1418,20 @@ yyreduce:
 #line 1419 "y.tab.c"
     break;
 
-  case 28:
-#line 58 "Yacc.y"
+  case 27:
+#line 57 "Yacc.y"
                            {incrementDepth();}
 #line 1425 "y.tab.c"
     break;
 
-  case 29:
-#line 58 "Yacc.y"
+  case 28:
+#line 57 "Yacc.y"
                                                         {deleteSymbols(st);decrementDepth();}
 #line 1431 "y.tab.c"
     break;
 
-  case 30:
-#line 61 "Yacc.y"
+  case 29:
+#line 60 "Yacc.y"
                               { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
   printf("***************************************\n");
@@ -1449,26 +1449,34 @@ yyreduce:
 #line 1450 "y.tab.c"
     break;
 
-  case 33:
-#line 78 "Yacc.y"
+  case 32:
+#line 77 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
           printf("***************************************\n");
           printf("OPERAND tID FOUND \n");
+          printf("tID to add in symbol table as tmp: \n");
+          symbol tmp = addSymbol(st,"tmp",1,-1);
+          printf("Added tmp in symbol table: \n");
+          printSymbol(tmp);
+          instruction i = addInstruction(it,"AFC",tmp.addr,getAddrName(st,(yyvsp[0].string)),-1);
+          printf("Added instruction: \n");
+          printInstruction(i);
+          printf("Content of symbol table: \n");
+          print_sTable(st);
           printf("***************************************\n");
         }
-#line 1460 "y.tab.c"
+#line 1469 "y.tab.c"
     break;
 
-  case 34:
-#line 83 "Yacc.y"
+  case 33:
+#line 91 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
           printf("***************************************\n");
-          printf("OPERAND tNB \n");
+          printf("OPERAND tNB FOUND \n");
           printf("tNB to add in symbol table as tmp: \n");
           symbol tmp = addSymbol(st,"tmp",1,(yyvsp[0].nb));
           printf("Added tmp in symbol table: \n");
           printSymbol(tmp);
-
           instruction i = addInstruction(it,"AFC",tmp.addr,(yyvsp[0].nb),-1);
           printf("Added instruction: \n");
           printInstruction(i);
@@ -1477,50 +1485,50 @@ yyreduce:
           print_sTable(st);
           printf("***************************************\n");
         }
-#line 1481 "y.tab.c"
+#line 1489 "y.tab.c"
     break;
 
-  case 35:
-#line 100 "Yacc.y"
+  case 34:
+#line 107 "Yacc.y"
                                 {
   int addrArg2 = unstack(st);
   printf("Variable arg2 unstacked had address: \n");
-  printf(addrArg2);
+  printf("%d\n",addrArg2);
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
-  printf(addrArg1);
+  printf("%d\n",addrArg1);
   symbol result = addSymbol(st,"tmp",1,-1);
-  instruction i = addInstruction(it,"ADD",addrArg1,addrArg2,getAddr(st,result));
+  instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
 }
-#line 1498 "y.tab.c"
-    break;
-
-  case 36:
-#line 112 "Yacc.y"
-                                 {
-
-            }
 #line 1506 "y.tab.c"
     break;
 
-  case 37:
-#line 115 "Yacc.y"
+  case 35:
+#line 119 "Yacc.y"
                                  {
 
             }
 #line 1514 "y.tab.c"
     break;
 
-  case 38:
-#line 118 "Yacc.y"
-                                 {}
-#line 1520 "y.tab.c"
+  case 36:
+#line 122 "Yacc.y"
+                                 {
+
+            }
+#line 1522 "y.tab.c"
     break;
 
-  case 39:
-#line 120 "Yacc.y"
+  case 37:
+#line 125 "Yacc.y"
+                                 {}
+#line 1528 "y.tab.c"
+    break;
+
+  case 38:
+#line 127 "Yacc.y"
                                    {
   printf("***************************************\n");
   printf("VAR ASSIGN FOUND \n");
@@ -1534,11 +1542,11 @@ yyreduce:
   print_sTable(st);
   printf("***************************************\n");
 }
-#line 1538 "y.tab.c"
+#line 1546 "y.tab.c"
     break;
 
 
-#line 1542 "y.tab.c"
+#line 1550 "y.tab.c"
 
       default: break;
     }
@@ -1770,7 +1778,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 141 "Yacc.y"
+#line 148 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 

@@ -51,8 +51,7 @@ FunName: tMAIN | tID;
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
-Instruction:   
-           | FunCall 
+Instruction: FunCall 
            | VarDeclaration 
            | VarAssign 
            | Condition tAO {incrementDepth();} Body tAF {deleteSymbols(st);decrementDepth();};
@@ -78,17 +77,24 @@ Operand:  FunCall
         | tID{ //MUST BE STORED IN A TMP VARIABLE
           printf("***************************************\n");
           printf("OPERAND tID FOUND \n");
+          printf("tID to add in symbol table as tmp: \n");
+          symbol tmp = addSymbol(st,"tmp",1,-1);
+          printf("Added tmp in symbol table: \n");
+          printSymbol(tmp);
+          instruction i = addInstruction(it,"AFC",tmp.addr,getAddrName(st,$1),-1);
+          printf("Added instruction: \n");
+          printInstruction(i);
+          printf("Content of symbol table: \n");
+          print_sTable(st);
           printf("***************************************\n");
-          //TO BE COMPLETED TO TEST c = a + b
         }
         | tNB{ //MUST BE STORED IN A TMP VARIABLE
           printf("***************************************\n");
-          printf("OPERAND tNB \n");
+          printf("OPERAND tNB FOUND \n");
           printf("tNB to add in symbol table as tmp: \n");
           symbol tmp = addSymbol(st,"tmp",1,$1);
           printf("Added tmp in symbol table: \n");
           printSymbol(tmp);
-
           instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
           printf("Added instruction: \n");
           printInstruction(i);
@@ -101,12 +107,12 @@ Operand:  FunCall
 Operations: Operand tADD Operand{
   int addrArg2 = unstack(st);
   printf("Variable arg2 unstacked had address: \n");
-  printf(addrArg2);
+  printf("%d\n",addrArg2);
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
-  printf(addrArg1);
+  printf("%d\n",addrArg1);
   symbol result = addSymbol(st,"tmp",1,-1);
-  instruction i = addInstruction(it,"ADD",addrArg1,addrArg2,getAddr(st,result));
+  instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
 }

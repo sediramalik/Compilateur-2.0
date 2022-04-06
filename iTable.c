@@ -19,16 +19,16 @@ void printInstruction(instruction i){
         printf("iName : %s\t",i.iName);
         printf("iArg1 : %d\t",i.arg1);
         printf("iArg2 : %d\t",i.arg2);
-        printf("iResult : %d\t",i.result);
+        printf("iArg3 : %d\t",i.arg3);
         printf("\n");
 }
 
-instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, int result){
+instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, int arg3){
     instruction i;
     strcpy(i.iName,iName);
     i.arg1=arg1;
     i.arg2=arg2;
-    i.result=result;
+    i.arg3=arg3;
     t[iTableSize]=i;
     iTableSize++;
     return i;
