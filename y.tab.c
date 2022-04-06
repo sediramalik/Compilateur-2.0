@@ -564,8 +564,8 @@ static const yytype_uint8 yyrline[] =
        0,    35,    35,    37,    37,    38,    39,    41,    41,    42,
       42,    44,    44,    45,    45,    47,    47,    48,    48,    50,
       50,    52,    53,    53,    54,    55,    56,    57,    57,    60,
-      75,    76,    77,    91,   107,   119,   122,   125,   127,   141,
-     141,   142,   144,   144,   145,   145,   146
+      75,    76,    77,    91,   107,   122,   137,   152,   168,   182,
+     182,   183,   185,   185,   186,   186,   187
 };
 #endif
 
@@ -1434,7 +1434,7 @@ yyreduce:
 #line 60 "Yacc.y"
                               { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("DECLARATION FOUND\n");
   symbol s = addSymbol(st,(yyvsp[-1].string),(yyvsp[-2].nb),-1);
   printf("Added symbol: \n");
@@ -1443,7 +1443,7 @@ yyreduce:
   // printSymbol(st[sTableSize-1]);
   printf("Content of symbol table: \n");
   print_sTable(st);
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 
 }
 #line 1450 "y.tab.c"
@@ -1452,7 +1452,7 @@ yyreduce:
   case 32:
 #line 77 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
           printf("OPERAND tID FOUND \n");
           printf("tID to add in symbol table as tmp: \n");
           symbol tmp = addSymbol(st,"tmp",1,-1);
@@ -1463,7 +1463,7 @@ yyreduce:
           printInstruction(i);
           printf("Content of symbol table: \n");
           print_sTable(st);
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
         }
 #line 1469 "y.tab.c"
     break;
@@ -1471,7 +1471,7 @@ yyreduce:
   case 33:
 #line 91 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
           printf("OPERAND tNB FOUND \n");
           printf("tNB to add in symbol table as tmp: \n");
           symbol tmp = addSymbol(st,"tmp",1,(yyvsp[0].nb));
@@ -1483,7 +1483,7 @@ yyreduce:
 
           printf("Content of symbol table: \n");
           print_sTable(st);
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
         }
 #line 1489 "y.tab.c"
     break;
@@ -1491,6 +1491,8 @@ yyreduce:
   case 34:
 #line 107 "Yacc.y"
                                 {
+  printf("+++++++++++++++++++++++++++++++++++++++\n");
+  printf("ADD OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
   printf("Variable arg2 unstacked had address: \n");
   printf("%d\n",addrArg2);
@@ -1501,36 +1503,75 @@ yyreduce:
   instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
+  printf("+++++++++++++++++++++++++++++++++++++++\n");
 }
-#line 1506 "y.tab.c"
+#line 1509 "y.tab.c"
     break;
 
   case 35:
-#line 119 "Yacc.y"
+#line 122 "Yacc.y"
                                  {
-
-            }
-#line 1514 "y.tab.c"
+  printf("---------------------------------------\n");
+  printf("SUB OPERATION FOUND: \n");
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf("%d\n",addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf("%d\n",addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"SUB",getAddr(st,result),addrArg1,addrArg2);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("---------------------------------------\n");
+}
+#line 1529 "y.tab.c"
     break;
 
   case 36:
-#line 122 "Yacc.y"
+#line 137 "Yacc.y"
                                  {
-
+  printf("***************************************\n");
+  printf("MUL OPERATION FOUND: \n");
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf("%d\n",addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf("%d\n",addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"MUL",getAddr(st,result),addrArg1,addrArg2);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("***************************************\n");
             }
-#line 1522 "y.tab.c"
+#line 1549 "y.tab.c"
     break;
 
   case 37:
-#line 125 "Yacc.y"
-                                 {}
-#line 1528 "y.tab.c"
+#line 152 "Yacc.y"
+                                 {
+  printf("///////////////////////////////////////\n");
+  printf("DIV OPERATION FOUND: \n");
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf("%d\n",addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf("%d\n",addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"DIV",getAddr(st,result),addrArg1,addrArg2);
+  printf("Added instruction: \n");
+  printInstruction(i);    
+  printf("///////////////////////////////////////\n");        
+            }
+#line 1569 "y.tab.c"
     break;
 
   case 38:
-#line 127 "Yacc.y"
+#line 168 "Yacc.y"
                                    {
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("VAR ASSIGN FOUND \n");
   printf("Content of symbol table before unstacking: \n");
   print_sTable(st);
@@ -1540,13 +1581,13 @@ yyreduce:
   printInstruction(i);
   printf("Content of symbol table after unstacking: \n");
   print_sTable(st);
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
-#line 1546 "y.tab.c"
+#line 1587 "y.tab.c"
     break;
 
 
-#line 1550 "y.tab.c"
+#line 1591 "y.tab.c"
 
       default: break;
     }
@@ -1778,7 +1819,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 148 "Yacc.y"
+#line 189 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 
@@ -1788,13 +1829,13 @@ int main(void) {
   it = init_iTable();
   yydebug=1;
   yyparse();
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");
   print_sTable(st);
 
   printf("Printing table of instructions: \n");
   print_iTable(it);  
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   return 0;
 }

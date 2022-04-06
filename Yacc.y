@@ -59,7 +59,7 @@ Instruction: FunCall
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
 VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("DECLARATION FOUND\n");
   symbol s = addSymbol(st,$2,$1,-1);
   printf("Added symbol: \n");
@@ -68,14 +68,14 @@ VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   // printSymbol(st[sTableSize-1]);
   printf("Content of symbol table: \n");
   print_sTable(st);
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 
 };
 
 Operand:  FunCall
         | Operations
         | tID{ //MUST BE STORED IN A TMP VARIABLE
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
           printf("OPERAND tID FOUND \n");
           printf("tID to add in symbol table as tmp: \n");
           symbol tmp = addSymbol(st,"tmp",1,-1);
@@ -86,10 +86,10 @@ Operand:  FunCall
           printInstruction(i);
           printf("Content of symbol table: \n");
           print_sTable(st);
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
         }
         | tNB{ //MUST BE STORED IN A TMP VARIABLE
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
           printf("OPERAND tNB FOUND \n");
           printf("tNB to add in symbol table as tmp: \n");
           symbol tmp = addSymbol(st,"tmp",1,$1);
@@ -101,10 +101,12 @@ Operand:  FunCall
 
           printf("Content of symbol table: \n");
           print_sTable(st);
-          printf("***************************************\n");
+          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
         }; 
 
 Operations: Operand tADD Operand{
+  printf("+++++++++++++++++++++++++++++++++++++++\n");
+  printf("ADD OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
   printf("Variable arg2 unstacked had address: \n");
   printf("%d\n",addrArg2);
@@ -115,17 +117,56 @@ Operations: Operand tADD Operand{
   instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
+  printf("+++++++++++++++++++++++++++++++++++++++\n");
 }
             |Operand tSUB Operand{
-
-            }
+  printf("---------------------------------------\n");
+  printf("SUB OPERATION FOUND: \n");
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf("%d\n",addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf("%d\n",addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"SUB",getAddr(st,result),addrArg1,addrArg2);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("---------------------------------------\n");
+}
             |Operand tMUL Operand{
-
+  printf("***************************************\n");
+  printf("MUL OPERATION FOUND: \n");
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf("%d\n",addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf("%d\n",addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"MUL",getAddr(st,result),addrArg1,addrArg2);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("***************************************\n");
             }
-            |Operand tDIV Operand{};
+            |Operand tDIV Operand{
+  printf("///////////////////////////////////////\n");
+  printf("DIV OPERATION FOUND: \n");
+  int addrArg2 = unstack(st);
+  printf("Variable arg2 unstacked had address: \n");
+  printf("%d\n",addrArg2);
+  int addrArg1 = unstack(st);
+  printf("Variable arg1 unstacked had address: \n");
+  printf("%d\n",addrArg1);
+  symbol result = addSymbol(st,"tmp",1,-1);
+  instruction i = addInstruction(it,"DIV",getAddr(st,result),addrArg1,addrArg2);
+  printf("Added instruction: \n");
+  printInstruction(i);    
+  printf("///////////////////////////////////////\n");        
+            };
 
 VarAssign : tID tEQUAL Operand tPV {
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("VAR ASSIGN FOUND \n");
   printf("Content of symbol table before unstacking: \n");
   print_sTable(st);
@@ -135,7 +176,7 @@ VarAssign : tID tEQUAL Operand tPV {
   printInstruction(i);
   printf("Content of symbol table after unstacking: \n");
   print_sTable(st);
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 };
 
 Condition: tIF ArgCondition | tWHILE ArgCondition;
@@ -154,13 +195,13 @@ int main(void) {
   it = init_iTable();
   yydebug=1;
   yyparse();
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");
   print_sTable(st);
 
   printf("Printing table of instructions: \n");
   print_iTable(it);  
-  printf("***************************************\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   return 0;
 }
