@@ -1458,7 +1458,7 @@ yyreduce:
           symbol tmp = addSymbol(st,"tmp",1,-1);
           printf("Added tmp in symbol table: \n");
           printSymbol(tmp);
-          instruction i = addInstruction(it,"AFC",tmp.addr,getAddrName(st,(yyvsp[0].string)),-1);
+          instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,(yyvsp[0].string)),-1);
           printf("Added instruction: \n");
           printInstruction(i);
           printf("Content of symbol table: \n");

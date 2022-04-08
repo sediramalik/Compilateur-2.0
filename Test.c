@@ -5,7 +5,7 @@ int main() {
     int d;
     a = 2;
     b = 3;
-    c = a + b;
+    c = a;
     a = b - c;
     b = a * c;
     d = b / c;
