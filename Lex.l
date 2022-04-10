@@ -20,6 +20,8 @@
 "void" {return tVOID;}
 "string" {return tSTRING;}
 "print" {return tPRINT;}
+"true" {return tTRUE;}
+"false" {return tFALSE;}
 
 "{"     {return tAO;}
 "}"     {return tAF;}

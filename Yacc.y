@@ -21,6 +21,7 @@ tVOID
 tINT tSTRING
 tSUB tADD tMUL tDIV
 tINF tSUP
+tTRUE tFALSE
 
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
@@ -54,7 +55,16 @@ Instructions: Instruction Instructions |;
 Instruction: FunCall 
            | VarDeclaration 
            | VarAssign 
-           | Condition tAO {incrementDepth();} Body tAF {deleteSymbols(st);decrementDepth();};
+           | Condition tAO {
+  printf("Entering condition. Increasing depth\n");
+  incrementDepth();
+} Body tAF {
+  printf("Exiting condition. Deleting symbols\n");
+  deleteSymbols(st);
+  print_sTable(st);
+  printf("Decrementing depth\n");
+  decrementDepth();
+};
 
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
 VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
@@ -75,33 +85,32 @@ VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
 Operand:  FunCall
         | Operations
         | tID{ //MUST BE STORED IN A TMP VARIABLE
-          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-          printf("OPERAND tID FOUND \n");
-          printf("tID to add in symbol table as tmp: \n");
-          symbol tmp = addSymbol(st,"tmp",1,-1);
-          printf("Added tmp in symbol table: \n");
-          printSymbol(tmp);
-          instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
-          printf("Added instruction: \n");
-          printInstruction(i);
-          printf("Content of symbol table: \n");
-          print_sTable(st);
-          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-        }
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  printf("OPERAND tID FOUND \n");
+  printf("tID to add in symbol table as tmp: \n");
+  symbol tmp = addSymbol(st,"tmp",1,-1);
+  printf("Added tmp in symbol table: \n");
+  printSymbol(tmp);
+  instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("Content of symbol table: \n");
+  print_sTable(st);
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+}
         | tNB{ //MUST BE STORED IN A TMP VARIABLE
-          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-          printf("OPERAND tNB FOUND \n");
-          printf("tNB to add in symbol table as tmp: \n");
-          symbol tmp = addSymbol(st,"tmp",1,$1);
-          printf("Added tmp in symbol table: \n");
-          printSymbol(tmp);
-          instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
-          printf("Added instruction: \n");
-          printInstruction(i);
-
-          printf("Content of symbol table: \n");
-          print_sTable(st);
-          printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  printf("OPERAND tNB FOUND \n");
+  printf("tNB to add in symbol table as tmp: \n");
+  symbol tmp = addSymbol(st,"tmp",1,$1);
+  printf("Added tmp in symbol table: \n");
+  printSymbol(tmp);
+  instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
+  printf("Added instruction: \n");
+  printInstruction(i);
+  printf("Content of symbol table: \n");
+  print_sTable(st);
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
         }; 
 
 Operations: Operand tADD Operand{
@@ -182,7 +191,7 @@ VarAssign : tID tEQUAL Operand tPV {
 Condition: tIF ArgCondition | tWHILE ArgCondition;
 ArgCondition: tPO BoolExpression tPF;
 
-BoolExpression: Comparaison | tID;
+BoolExpression: Comparaison | tID | tTRUE | tFALSE;
 Comparator: tINF | tSUP;
 Comparaison: Operand Comparator Operand;
 

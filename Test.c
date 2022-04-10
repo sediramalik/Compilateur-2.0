@@ -9,4 +9,11 @@ int main() {
     a = b - c;
     b = a * c;
     d = b / c;
+
+    if (true){
+        int sa;
+        int sb;
+        int sc;
+    }
+
 }

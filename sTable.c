@@ -6,24 +6,6 @@
 int sTableDepth=0;
 int sTableSize=0;
 
-
-// int main(){
-// symbol * t = initTable();
-// symbol sa,sb,sc,sd;
-// sa=addSymbol(t,"a","var","int");
-// sb=addSymbol(t,"b","conxt","int");
-// printf("Added a & b ");
-// print_sTable(t);
-// incrementDepth(); //To simulate presence of if/while
-// sc=addSymbol(t,"a","var","int");
-// sd=addSymbol(t,"b","conxt","int");
-// printf("Added c & d ");
-// print_sTable(t);
-// deleteSymbols(t);
-// printf("Deleted symbols of max depth ");
-// print_sTable(t);
-// }
-
 symbol * init_sTable(){
     //Allocate memory for table
     return malloc(SIZEMAX*sizeof(symbol));
@@ -61,7 +43,7 @@ symbol addSymbol(symbol * t, char * sName, int type, int value){
 
 void deleteSymbols(symbol * t){
     int cnt = 0;
-    for (int i; i <sTableSize; i++) {
+    for (int i=0; i <sTableSize; i++) {
         symbol s = t[i];
         if (s.depth == sTableDepth) {
             cnt++;
