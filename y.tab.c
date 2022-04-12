@@ -1921,6 +1921,7 @@ void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 
 int main(void) {
   printf("Start\n");
+  ASM=fopen("ASM","w");
   st = init_sTable();
   it = init_iTable();
   yydebug=1;
@@ -1933,5 +1934,6 @@ int main(void) {
   printf("Printing table of instructions: \n");
   print_iTable(it);  
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  fclose (ASM);
   return 0;
 }
