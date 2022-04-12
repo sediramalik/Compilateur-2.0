@@ -31,6 +31,7 @@
 "," {return tV;}
 ";" {return tPV;}
 "="	{return tEQUAL;}
+"==" {return tEQEQ;}
 "-"	{return tSUB;}
 "+"	{return tADD;}
 "*"	{return tMUL;}

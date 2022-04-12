@@ -70,10 +70,11 @@ extern int yydebug;
     tDIV = 276,
     tINF = 277,
     tSUP = 278,
-    tTRUE = 279,
-    tFALSE = 280,
-    tNB = 281,
-    tID = 282
+    tEQEQ = 279,
+    tTRUE = 280,
+    tFALSE = 281,
+    tNB = 282,
+    tID = 283
   };
 #endif
 /* Tokens.  */
@@ -98,19 +99,20 @@ extern int yydebug;
 #define tDIV 276
 #define tINF 277
 #define tSUP 278
-#define tTRUE 279
-#define tFALSE 280
-#define tNB 281
-#define tID 282
+#define tEQEQ 279
+#define tTRUE 280
+#define tFALSE 281
+#define tNB 282
+#define tID 283
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "Yacc.y"
+#line 14 "Yacc.y"
 int nb; char string[16];
 
-#line 114 "y.tab.h"
+#line 116 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

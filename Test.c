@@ -3,17 +3,17 @@ int main() {
     int b;
     int c;
     int d;
-    a = 2;
-    b = 3;
-    c = a;
-    a = b - c;
-    b = a * c;
-    d = b / c;
-
-    if (true){
-        int sa;
-        int sb;
-        int sc;
+    b = a;
+    if (c == d)
+    {
+        c = 10;
     }
+    else
+    {
+        c = 20;
+    }
+    a = b;
+    b = 40;
+
 
 }

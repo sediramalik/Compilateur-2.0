@@ -16,6 +16,7 @@ void print_iTable(instruction * t){
     }
 }
 void printInstruction(instruction i){
+        printf("%d\t",i.num);
         printf("iName : %s\t",i.iName);
         printf("iArg1 : %d\t",i.arg1);
         printf("iArg2 : %d\t",i.arg2);
@@ -25,6 +26,7 @@ void printInstruction(instruction i){
 
 instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, int arg3){
     instruction i;
+    i.num=iTableSize;
     strcpy(i.iName,iName);
     i.arg1=arg1;
     i.arg2=arg2;
@@ -34,3 +36,16 @@ instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, in
     return i;
 
 }
+
+//UPDATES THE MOST RECENT JMF INSTRUCTION WITH THE NUMBER OF INSTRUCTION LINES GENERATED IN THE BODY OF THE IF CONDITION
+void updateJumpInstruction(instruction * t, int numAsmLines){
+    for (int i=iTableSize; i>0; i-=1){
+        printInstruction(t[i]);
+        if (strcmp("JMF",t[i].iName)==0){
+            printf("FOUND JMF INSTRUCTION AT INDEX %d\n",t[i].num);
+            t[i].arg2=numAsmLines+t[i].num;
+            break;
+        }
+    }
+}
+
