@@ -54,7 +54,7 @@ process(A,B,CTRL_ALU)
         elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SUB
         elsif CTRL_ALU="010" then OP<= A * B; --OP MUL
         elsif CTRL_ALU="100" then OP<= shr(A,"1"); --OP DIV (ONLY BY 2 : LEFT SHIFT)
-    end if;
+        end if;
 end process;
 
 --UPDATE FLAGS

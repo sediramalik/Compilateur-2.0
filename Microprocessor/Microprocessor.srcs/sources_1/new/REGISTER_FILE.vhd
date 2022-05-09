@@ -21,6 +21,8 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -43,14 +45,27 @@ entity REGISTER_FILE is
            QB : out STD_LOGIC_VECTOR (7 downto 0));
 end REGISTER_FILE;
 
-architecture Behavioral of REGISTER_FILE is
-
-begin
-
-process (CLK)
+--REG IS A 16-REGISTER ARRAY (REGISTERS ARE 8 bits)
+architecture Behavioral of REGISTER_FILE is type reg_array is array (0 to 15) of STD_LOGIC_VECTOR  (7 downto 0);
+--INIT OF ARRAY
+signal REG : reg_array := (others=>(others=>'0'));
+begin    
+--WRITE & RESET SYNC WITH CLOCK
+    process          
     begin
-    if CLK ='1' then  
-    end process;
-
+        wait until(CLK'event);
+        if (CLK='1') then
+            --RESET REG IF RST=0
+            if  ( RST = '0') then REG <= (others=>(others=>'0')); 
+            --WRITE MODE ACTIVATED, COPY CONTENT OF DATA IN REGISTER THAT HAS THE ADDRESS aW
+            elsif ( W = '1') then REG(to_integer(unsigned(aW))) <= DATA;
+            end if;
+        end if;
+    end process;   
+     
+--READ ASYNC
+--WE READ THE CONTENT OF aA WHEN WRITE MODE IS NOT ACTIVATED OR WHEN aX /= aW
+    QA <= REG(to_integer(unsigned(aA))) when aA /= aW or W='0' else DATA ;
+    QB <= REG(to_integer(unsigned(aB))) when aB /= aW or W='0' else DATA ;
 
 end Behavioral;
