@@ -8,13 +8,12 @@ typedef struct {
     int type;
     int depth;
     int addr;
-    int value;
 } symbol;
 
 symbol * init_sTable();
 void print_sTable(symbol * t);
 void printSymbol(symbol s);
-symbol addSymbol(symbol * t, char * name, int type, int value);
+symbol addSymbol(symbol * t, char * name, int type);
 void deleteSymbols(symbol * t);
 void incrementDepth();
 void decrementDepth();

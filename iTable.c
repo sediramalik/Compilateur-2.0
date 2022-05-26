@@ -17,11 +17,11 @@ void print_iTable(instruction * t){
     }
 }
 void printInstruction(instruction i){
-        printf("%d\t",i.num);
-        printf("iName : %s\t",i.iName);
-        printf("iArg1 : %d\t",i.arg1);
-        printf("iArg2 : %d\t",i.arg2);
-        printf("iArg3 : %d\t",i.arg3);
+        printf("  %d\t",i.num);
+        printf("  %s\t",i.iName);
+        printf("  %d\t",i.arg1);
+        printf("  %d\t",i.arg2);
+        printf("  %d\t",i.arg3);
         printf("\n");
 }
 

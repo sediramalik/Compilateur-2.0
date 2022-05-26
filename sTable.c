@@ -21,18 +21,16 @@ void printSymbol(symbol s){
         printf("sName : %s\t",s.sName);
         printf("sAddr : %d\t",s.addr);
         printf("sType : %d\t",s.type);
-        printf("sValue : %d\t",s.value);
         printf("sDepth : %d\t",s.depth);
         printf("\n");
 }
 
-symbol addSymbol(symbol * t, char * sName, int type, int value){
+symbol addSymbol(symbol * t, char * sName, int type){
     symbol s;
     s.depth=sTableDepth;
     s.addr=sTableSize;
     strcpy(s.sName,sName);
     s.type=type;
-    s.value=value;
     t[sTableSize]=s;
     sTableSize++;
     return s;

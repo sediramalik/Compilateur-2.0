@@ -572,10 +572,10 @@ static const yytype_int16 yyrline[] =
 {
        0,    39,    39,    41,    41,    42,    43,    45,    45,    46,
       46,    48,    48,    49,    49,    51,    51,    52,    52,    54,
-      54,    56,    57,    57,    58,    59,    60,    62,    68,    61,
-      85,    85,   100,   115,   116,   117,   132,   147,   162,   177,
-     192,   208,   229,   229,   235,   234,   258,   260,   264,   266,
-     266,   266,   266,   269
+      54,    56,    57,    57,    58,    59,    60,    62,    70,    61,
+      91,    91,   112,   127,   128,   129,   144,   159,   174,   189,
+     204,   220,   241,   241,   247,   246,   271,   273,   277,   279,
+     279,   279,   279,   282
 };
 #endif
 
@@ -1442,20 +1442,24 @@ yyreduce:
   case 27:
 #line 62 "Yacc.y"
     { //DEPTH HANDELING
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Entering if ondition. Increasing depth\n");
   incrementDepth();
   countIF=iTableSize;
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
-#line 1450 "y.tab.c"
+#line 1452 "y.tab.c"
     break;
 
   case 28:
-#line 68 "Yacc.y"
+#line 70 "Yacc.y"
     {
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   int ifAsmLines=iTableSize-countIF;
   updateJMFInstruction(it, ifAsmLines); //PATCH
   printf("Exiting if condition. Deleting symbols\n");
   deleteSymbols(st);
+  printf("Content of symbol table: \n");
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
@@ -1465,38 +1469,46 @@ yyreduce:
   instruction i = addInstruction(it,"JMP",-1,-1,-1);
   printf("Added instruction: \n");
   printInstruction(i);
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+
 }
-#line 1470 "y.tab.c"
+#line 1476 "y.tab.c"
     break;
 
   case 30:
-#line 85 "Yacc.y"
+#line 91 "Yacc.y"
                                 { //DEPTH HANDELING
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Entering while condition. Increasing depth\n");
   incrementDepth();
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+
 }
-#line 1479 "y.tab.c"
+#line 1488 "y.tab.c"
     break;
 
   case 31:
-#line 90 "Yacc.y"
+#line 99 "Yacc.y"
     {
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Exiting while condition. Deleting symbols\n");
   deleteSymbols(st);
+  printf("Content of symbol table: \n");
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
-#line 1491 "y.tab.c"
+#line 1503 "y.tab.c"
     break;
 
   case 32:
-#line 100 "Yacc.y"
+#line 112 "Yacc.y"
                               { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("VAR DECLARATION FOUND\n");
-  symbol s = addSymbol(st,(yyvsp[-1].string),(yyvsp[-2].nb),-1);
+  symbol s = addSymbol(st,(yyvsp[-1].string),(yyvsp[-2].nb));
   printf("Added symbol: \n");
   printSymbol(s);
   // printf("Last symbol in symbol table: \n");
@@ -1506,16 +1518,16 @@ yyreduce:
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 
 }
-#line 1510 "y.tab.c"
+#line 1522 "y.tab.c"
     break;
 
   case 35:
-#line 117 "Yacc.y"
+#line 129 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_id",1,-1); //INT FOR NOW
+  symbol tmp = addSymbol(st,"tmp_id",1); //INT FOR NOW
   printf("Added tmp_id in symbol table: \n");
   printSymbol(tmp);
   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,(yyvsp[0].string)),-1);
@@ -1526,16 +1538,16 @@ yyreduce:
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 
 }
-#line 1530 "y.tab.c"
+#line 1542 "y.tab.c"
     break;
 
   case 36:
-#line 132 "Yacc.y"
+#line 144 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("OPERAND tNB FOUND \n");
   printf("tNB to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_nb",1,(yyvsp[0].nb)); //INT FOR NOW
+  symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
   printf("Added tmp_nb in symbol table: \n");
   printSymbol(tmp);
   instruction i = addInstruction(it,"AFC",tmp.addr,(yyvsp[0].nb),-1);
@@ -1545,11 +1557,11 @@ yyreduce:
   print_sTable(st);
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
         }
-#line 1549 "y.tab.c"
+#line 1561 "y.tab.c"
     break;
 
   case 37:
-#line 147 "Yacc.y"
+#line 159 "Yacc.y"
                                 {
   printf("+++++++++++++++++++++++++++++++++++++++\n");
   printf("ADD OPERATION FOUND: \n");
@@ -1559,17 +1571,17 @@ yyreduce:
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_add",1,-1); //INT FOR NOW
+  symbol result = addSymbol(st,"tmp_add",1); //INT FOR NOW
   instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
   printf("+++++++++++++++++++++++++++++++++++++++\n");
 }
-#line 1569 "y.tab.c"
+#line 1581 "y.tab.c"
     break;
 
   case 38:
-#line 162 "Yacc.y"
+#line 174 "Yacc.y"
                                  {
   printf("---------------------------------------\n");
   printf("SUB OPERATION FOUND: \n");
@@ -1579,17 +1591,17 @@ yyreduce:
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_sub",1,-1);
+  symbol result = addSymbol(st,"tmp_sub",1);
   instruction i = addInstruction(it,"SUB",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
   printf("---------------------------------------\n");
 }
-#line 1589 "y.tab.c"
+#line 1601 "y.tab.c"
     break;
 
   case 39:
-#line 177 "Yacc.y"
+#line 189 "Yacc.y"
                                  {
   printf("***************************************\n");
   printf("MUL OPERATION FOUND: \n");
@@ -1599,17 +1611,17 @@ yyreduce:
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_mul",1,-1);
+  symbol result = addSymbol(st,"tmp_mul",1);
   instruction i = addInstruction(it,"MUL",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
   printf("***************************************\n");
             }
-#line 1609 "y.tab.c"
+#line 1621 "y.tab.c"
     break;
 
   case 40:
-#line 192 "Yacc.y"
+#line 204 "Yacc.y"
                                  {
   printf("///////////////////////////////////////\n");
   printf("DIV OPERATION FOUND: \n");
@@ -1619,17 +1631,17 @@ yyreduce:
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_div",1,-1);
+  symbol result = addSymbol(st,"tmp_div",1);
   instruction i = addInstruction(it,"DIV",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);    
   printf("///////////////////////////////////////\n");        
             }
-#line 1629 "y.tab.c"
+#line 1641 "y.tab.c"
     break;
 
   case 41:
-#line 208 "Yacc.y"
+#line 220 "Yacc.y"
                                    {
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("VAR ASSIGN FOUND \n");
@@ -1650,20 +1662,20 @@ yyreduce:
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   }
 }
-#line 1654 "y.tab.c"
+#line 1666 "y.tab.c"
     break;
 
   case 42:
-#line 229 "Yacc.y"
+#line 241 "Yacc.y"
                               {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE
 
 }
-#line 1663 "y.tab.c"
+#line 1675 "y.tab.c"
     break;
 
   case 44:
-#line 235 "Yacc.y"
+#line 247 "Yacc.y"
    {
   countELSE=iTableSize;
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
@@ -1672,11 +1684,11 @@ yyreduce:
   countELSE=iTableSize;
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
-#line 1676 "y.tab.c"
+#line 1688 "y.tab.c"
     break;
 
   case 45:
-#line 244 "Yacc.y"
+#line 256 "Yacc.y"
     {
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Content of symbol table: \n");
@@ -1687,24 +1699,25 @@ yyreduce:
   updateJMPInstruction(it, elseAsmLines); //PATCH
   printf("Exiting else. Deleting symbols\n");
   deleteSymbols(st);
+  printf("Content of symbol table: \n");
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
-#line 1696 "y.tab.c"
+#line 1709 "y.tab.c"
     break;
 
   case 47:
-#line 260 "Yacc.y"
+#line 273 "Yacc.y"
                                     {
 
 }
-#line 1704 "y.tab.c"
+#line 1717 "y.tab.c"
     break;
 
   case 53:
-#line 269 "Yacc.y"
+#line 282 "Yacc.y"
                                    {
   printf("=====================================\n");
   printf("EQEQ COMPARAISON FOUND: \n");
@@ -1716,7 +1729,7 @@ yyreduce:
   int eqeqArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",eqeqArg1);
-  symbol result = addSymbol(st,"tmp_eqeq",1,-1);
+  symbol result = addSymbol(st,"tmp_eqeq",1);
   printf("Added symbol: \n");
   printSymbol(result);
   printf("Content of symbol table after unstacking: \n");
@@ -1732,11 +1745,11 @@ yyreduce:
   unstack(st); //TO GET RID OF TMP_EQEQ
   printf("=====================================\n");
 }
-#line 1736 "y.tab.c"
+#line 1749 "y.tab.c"
     break;
 
 
-#line 1740 "y.tab.c"
+#line 1753 "y.tab.c"
 
       default: break;
     }
@@ -1968,7 +1981,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 297 "Yacc.y"
+#line 310 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 

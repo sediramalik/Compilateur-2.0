@@ -60,16 +60,20 @@ Instruction: FunCall
            | VarAssign 
            | ifCondition
 tAO { //DEPTH HANDELING
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Entering if ondition. Increasing depth\n");
   incrementDepth();
   countIF=iTableSize;
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 Body
 tAF {
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   int ifAsmLines=iTableSize-countIF;
   updateJMFInstruction(it, ifAsmLines); //PATCH
   printf("Exiting if condition. Deleting symbols\n");
   deleteSymbols(st);
+  printf("Content of symbol table: \n");
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
@@ -79,20 +83,28 @@ tAF {
   instruction i = addInstruction(it,"JMP",-1,-1,-1);
   printf("Added instruction: \n");
   printInstruction(i);
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+
 }
 elseCondition
 
            | whileCondition tAO { //DEPTH HANDELING
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Entering while condition. Increasing depth\n");
   incrementDepth();
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+
 }
 Body
 tAF {
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Exiting while condition. Deleting symbols\n");
   deleteSymbols(st);
+  printf("Content of symbol table: \n");
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 };
 
 
@@ -101,7 +113,7 @@ VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("VAR DECLARATION FOUND\n");
-  symbol s = addSymbol(st,$2,$1,-1);
+  symbol s = addSymbol(st,$2,$1);
   printf("Added symbol: \n");
   printSymbol(s);
   // printf("Last symbol in symbol table: \n");
@@ -118,7 +130,7 @@ Operand:  FunCall
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_id",1,-1); //INT FOR NOW
+  symbol tmp = addSymbol(st,"tmp_id",1); //INT FOR NOW
   printf("Added tmp_id in symbol table: \n");
   printSymbol(tmp);
   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
@@ -133,7 +145,7 @@ Operand:  FunCall
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("OPERAND tNB FOUND \n");
   printf("tNB to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_nb",1,$1); //INT FOR NOW
+  symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
   printf("Added tmp_nb in symbol table: \n");
   printSymbol(tmp);
   instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
@@ -153,7 +165,7 @@ Operations: Operand tADD Operand{
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_add",1,-1); //INT FOR NOW
+  symbol result = addSymbol(st,"tmp_add",1); //INT FOR NOW
   instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
@@ -168,7 +180,7 @@ Operations: Operand tADD Operand{
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_sub",1,-1);
+  symbol result = addSymbol(st,"tmp_sub",1);
   instruction i = addInstruction(it,"SUB",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
@@ -183,7 +195,7 @@ Operations: Operand tADD Operand{
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_mul",1,-1);
+  symbol result = addSymbol(st,"tmp_mul",1);
   instruction i = addInstruction(it,"MUL",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
@@ -198,7 +210,7 @@ Operations: Operand tADD Operand{
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_div",1,-1);
+  symbol result = addSymbol(st,"tmp_div",1);
   instruction i = addInstruction(it,"DIV",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);    
@@ -251,6 +263,7 @@ Body
   updateJMPInstruction(it, elseAsmLines); //PATCH
   printf("Exiting else. Deleting symbols\n");
   deleteSymbols(st);
+  printf("Content of symbol table: \n");
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
@@ -277,7 +290,7 @@ Comparaison: Operand tEQEQ Operand {
   int eqeqArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",eqeqArg1);
-  symbol result = addSymbol(st,"tmp_eqeq",1,-1);
+  symbol result = addSymbol(st,"tmp_eqeq",1);
   printf("Added symbol: \n");
   printSymbol(result);
   printf("Content of symbol table after unstacking: \n");
