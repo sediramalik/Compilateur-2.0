@@ -12,6 +12,7 @@ symbol * init_sTable(){
 }
 
 void print_sTable(symbol * t){
+    printf("Content of symbol table: \n");
     for (int i=0; i<sTableSize; i++) {
         printSymbol(t[i]);
     }
@@ -33,6 +34,9 @@ symbol addSymbol(symbol * t, char * sName, int type){
     s.type=type;
     t[sTableSize]=s;
     sTableSize++;
+    printf("Added following symbol: \n");
+    printSymbol(s);
+    print_sTable(t);
     return s;
 }
 
@@ -40,6 +44,7 @@ symbol addSymbol(symbol * t, char * sName, int type){
 //which are the symbols of depth equal to table depth (max depth)
 
 void deleteSymbols(symbol * t){
+    printf("Deleting symbols of depth %d\n",sTableDepth);
     int cnt = 0;
     for (int i=0; i <sTableSize; i++) {
         symbol s = t[i];
@@ -47,16 +52,20 @@ void deleteSymbols(symbol * t){
             cnt++;
         }
     }
+    print_sTable(t);
     sTableSize -= cnt;
-
 }
 
-void incrementDepth(){
+void incrementDepth(char * condition){
+    printf("Entering %s condition\n",condition);
     sTableDepth++;
+    printf("Imcrementing depth. Depth is now %d\n",sTableDepth);
 }
 
-void decrementDepth(){
+void decrementDepth(char * condition){
+    printf("Exiting %s condition\n",condition);
     sTableDepth--;
+    printf("Decrementing depth. Depth is now %d\n",sTableDepth);
 }
 
 int getAddr(symbol * t,symbol target){
@@ -77,6 +86,9 @@ int getAddrName(symbol * t,char * targetname){
 
 int unstack(symbol * t) { //FOR OPERATIONS
     sTableSize--;
+    printf("Unstacked following symbol: \n");
+    printSymbol(t[sTableSize]);
+    print_sTable(t);
     return sTableSize;
 }
 
