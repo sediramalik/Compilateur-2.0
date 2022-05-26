@@ -5,10 +5,12 @@
 #include "iTable.c"
 
 int string[16]; //Taille max du nom de variable
-int count=0;
+int countIF=0;
+int countELSE=0;
 void yyerror(char *s);
 symbol * st; //symbol table
 instruction * it; //instruction table
+int error=0;
 %}
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
@@ -58,39 +60,41 @@ Instruction: FunCall
            | VarAssign 
            | ifCondition
 tAO { //DEPTH HANDELING
-  printf("Entering condition. Increasing depth\n");
+  printf("Entering if ondition. Increasing depth\n");
   incrementDepth();
-  count=iTableSize;
+  countIF=iTableSize;
 }
 Body
 tAF {
-  int numAsmLines=iTableSize-count;
-  updateJumpInstruction(it, numAsmLines); //PATCH
-  printf("Exiting condition. Deleting symbols\n");
+  int numAsmLines=iTableSize-countIF;
+  updateJMFInstruction(it, numAsmLines); //PATCH
+  printf("Exiting if condition. Deleting symbols\n");
+  deleteSymbols(st);
+  print_sTable(st);
+  printf("Decrementing depth\n");
+  decrementDepth();
+}
+elseCondition
+
+           | whileCondition tAO { //DEPTH HANDELING
+  printf("Entering while condition. Increasing depth\n");
+  incrementDepth();
+}
+Body
+tAF {
+  printf("Exiting while condition. Deleting symbols\n");
   deleteSymbols(st);
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
 };
-           | whileCondition tAO { //DEPTH HANDELING
-  printf("Entering condition. Increasing depth\n");
-  incrementDepth();
-}
-Body
-tAF {
-  printf("Exiting condition. Deleting symbols\n");
-  deleteSymbols(st);
-  print_sTable(st);
-  printf("Decrementing depth\n");
-  decrementDepth();
-}
-elseCondition;
+
 
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
 VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-  printf("DECLARATION FOUND\n");
+  printf("VAR DECLARATION FOUND\n");
   symbol s = addSymbol(st,$2,$1,-1);
   printf("Added symbol: \n");
   printSymbol(s);
@@ -108,8 +112,8 @@ Operand:  FunCall
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_id",1,-1);
-  printf("Added tmp in symbol table: \n");
+  symbol tmp = addSymbol(st,"tmp_id",1,-1); //INT FOR NOW
+  printf("Added tmp_id in symbol table: \n");
   printSymbol(tmp);
   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
   printf("Added instruction: \n");
@@ -123,8 +127,8 @@ Operand:  FunCall
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("OPERAND tNB FOUND \n");
   printf("tNB to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_nb",1,$1);
-  printf("Added tmp in symbol table: \n");
+  symbol tmp = addSymbol(st,"tmp_nb",1,$1); //INT FOR NOW
+  printf("Added tmp_nb in symbol table: \n");
   printSymbol(tmp);
   instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
   printf("Added instruction: \n");
@@ -137,13 +141,13 @@ Operand:  FunCall
 Operations: Operand tADD Operand{
   printf("+++++++++++++++++++++++++++++++++++++++\n");
   printf("ADD OPERATION FOUND: \n");
-  int addrArg2 = unstack(st);
+  int addrArg2 = unstack(st); 
   printf("Variable arg2 unstacked had address: \n");
   printf("%d\n",addrArg2);
   int addrArg1 = unstack(st);
   printf("Variable arg1 unstacked had address: \n");
   printf("%d\n",addrArg1);
-  symbol result = addSymbol(st,"tmp_add",1,-1);
+  symbol result = addSymbol(st,"tmp_add",1,-1); //INT FOR NOW
   instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
   printf("Added instruction: \n");
   printInstruction(i);
@@ -200,6 +204,12 @@ VarAssign : tID tEQUAL Operand tPV {
   printf("VAR ASSIGN FOUND \n");
   printf("Content of symbol table before unstacking: \n");
   print_sTable(st);
+  if (getAddrName(st,$1)==-1){
+    printf("#######################################\n");
+    printf("ERROR: Variable %s not declared! \n",$1);
+    printf("#######################################\n");
+  }
+  else{
   instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
   unstack(st);
   printf("Added instruction: \n");
@@ -207,14 +217,41 @@ VarAssign : tID tEQUAL Operand tPV {
   printf("Content of symbol table after unstacking: \n");
   print_sTable(st);
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  }
 };
 
 ifCondition: tIF ArgCondition {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE
 
-};
+} elseCondition;
 
-elseCondition: tELSE tAO Body tAF |;
+elseCondition: tELSE
+tAO{
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  printf("Entering else. Increasing depth\n");
+  incrementDepth();
+  countELSE=iTableSize;
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+}
+Body
+ tAF{
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  printf("Content of symbol table: \n");
+  print_sTable(st);
+  //instruction i = addInstruction(it,"JMP",getAddrName(st,"tp_eqeq"),-1,-1); 
+  //printf("Added instruction: \n");
+  //printInstruction(i);
+  //(st); //TO GET RID OF TMP_EQEQ
+  //int numAsmLines=iTableSize-countELSE;
+  //updateJMPInstruction(it, numAsmLines); //PATCH
+  
+  printf("Exiting else. Deleting symbols\n");
+  deleteSymbols(st);
+  print_sTable(st);
+  printf("Decrementing depth\n");
+  decrementDepth();
+  printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+}|;
 
 whileCondition: tWHILE ArgCondition {
 
@@ -228,6 +265,8 @@ Comparator: tINF | tSUP | tEQEQ;
 Comparaison: Operand tEQEQ Operand {
   printf("=====================================\n");
   printf("EQEQ COMPARAISON FOUND: \n");
+  printf("Content of symbol table before unstacking: \n");
+  print_sTable(st);
   int eqeqArg2 = unstack(st);
   printf("Variable arg2 unstacked had address: \n");
   printf("%d\n",eqeqArg2);
@@ -237,11 +276,11 @@ Comparaison: Operand tEQEQ Operand {
   symbol result = addSymbol(st,"tmp_eqeq",1,-1);
   printf("Added symbol: \n");
   printSymbol(result);
-  printf("Content of symbol table: \n");
+  printf("Content of symbol table after unstacking: \n");
   print_sTable(st);
   //INSTRUCTION EQU IS GOING TO CONTROL WHERE THE JUMP WILL BE
   //DEPENDING ON WETHER THE CONDITION IS TRUE OR FALSE
-  instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2);
+  instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2); //THE result VARIABLE OVERWRITES eqeqArg1 BY HAVING THE SAME ADDRESS
   printf("Added instruction: \n");
   printInstruction(i_equ);
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); //ARG2 INIT -1 THEN PATCHED

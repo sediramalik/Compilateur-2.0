@@ -42,12 +42,25 @@ instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, in
 }
 
 //UPDATES THE MOST RECENT JMF INSTRUCTION WITH THE NUMBER OF INSTRUCTION LINES GENERATED IN THE BODY OF THE IF CONDITION
-void updateJumpInstruction(instruction * t, int numAsmLines){
+void updateJMFInstruction(instruction * t, int numAsmLines){
     for (int i=iTableSize; i>0; i-=1){
         printInstruction(t[i]);
         if (strcmp("JMF",t[i].iName)==0){
             printf("FOUND JMF INSTRUCTION AT INDEX %d\n",t[i].num);
-            t[i].arg2=numAsmLines+t[i].num;
+            printf("JUMPING %d INSTRUCTIONS\n",numAsmLines);
+            t[i].arg2=numAsmLines+t[i].num+1;
+            break;
+        }
+    }
+}
+
+void updateJMPInstruction(instruction * t, int numAsmLines){
+    for (int i=iTableSize; i>0; i-=1){
+        printInstruction(t[i]);
+        if (strcmp("JMP",t[i].iName)==0){
+            printf("FOUND JMF INSTRUCTION AT INDEX %d\n",t[i].num);
+            printf("JUMPING %d INSTRUCTIONS\n",numAsmLines);
+            t[i].arg2=numAsmLines+t[i].num+1;
             break;
         }
     }

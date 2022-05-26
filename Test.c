@@ -1,15 +1,14 @@
 int main() {
     int a;
+    a = 10;
     int b;
-    int c;
-    int d;
-    b = a;
-    if (c == d)
-    {
-        c = 10;
+    b = 20;
+    if (a == b){
+        int d;
+        d = 2;
     }
-    a = b;
-    b = 40;
-
-
+    else{
+        int c;
+        c = 3;
+    }
 }

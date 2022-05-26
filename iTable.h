@@ -12,4 +12,5 @@ instruction * init_iTable();
 void print_iTable(instruction * t);
 void printInstruction(instruction i);
 instruction addInstruction(instruction * t, char * iName, int arg1, int arg2, int arg3);
-void updateJumpInstruction(instruction * t, int numAsmLines);
+void updateJMFInstruction(instruction * t, int numAsmLines);
+void updateJMPInstruction(instruction * t, int numAsmLines);
