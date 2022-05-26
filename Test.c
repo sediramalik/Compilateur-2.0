@@ -11,4 +11,5 @@ int main() {
         int c;
         c = 3;
     }
+    a = a + b;
 }

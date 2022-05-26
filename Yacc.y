@@ -66,13 +66,19 @@ tAO { //DEPTH HANDELING
 }
 Body
 tAF {
-  int numAsmLines=iTableSize-countIF;
-  updateJMFInstruction(it, numAsmLines); //PATCH
+  int ifAsmLines=iTableSize-countIF;
+  updateJMFInstruction(it, ifAsmLines); //PATCH
   printf("Exiting if condition. Deleting symbols\n");
   deleteSymbols(st);
   print_sTable(st);
   printf("Decrementing depth\n");
   decrementDepth();
+
+  //AT THE END OF THE IF STATEMENT WE ADD A JMP INSTRUCTIONTO JUMP THE ELSE IN CASE THE CONDITION OF THE IF IS TRUE
+  //JMP IS AN UNCONDITIONAL INSTRUCTION, WE ONLY NEED ARG1 WICH WILL BE PATCHED LATER ON
+  instruction i = addInstruction(it,"JMP",-1,-1,-1);
+  printf("Added instruction: \n");
+  printInstruction(i);
 }
 elseCondition
 
@@ -227,6 +233,7 @@ ifCondition: tIF ArgCondition {
 
 elseCondition: tELSE
 tAO{
+  countELSE=iTableSize;
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Entering else. Increasing depth\n");
   incrementDepth();
@@ -238,13 +245,10 @@ Body
   printf("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
   printf("Content of symbol table: \n");
   print_sTable(st);
-  //instruction i = addInstruction(it,"JMP",getAddrName(st,"tp_eqeq"),-1,-1); 
-  //printf("Added instruction: \n");
-  //printInstruction(i);
-  //(st); //TO GET RID OF TMP_EQEQ
-  //int numAsmLines=iTableSize-countELSE;
-  //updateJMPInstruction(it, numAsmLines); //PATCH
-  
+
+  //PATCHING JMP STATEMENT
+  int elseAsmLines=iTableSize-countELSE;
+  updateJMPInstruction(it, elseAsmLines); //PATCH
   printf("Exiting else. Deleting symbols\n");
   deleteSymbols(st);
   print_sTable(st);
