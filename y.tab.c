@@ -576,10 +576,10 @@ static const yytype_int16 yyrline[] =
        0,    42,    42,    44,    44,    45,    46,    48,    48,    49,
       49,    51,    51,    52,    52,    54,    54,    55,    55,    57,
       57,    59,    60,    60,    61,    62,    63,    64,    66,    71,
-      65,    84,    83,   110,   118,   129,   135,   136,   137,   144,
-     151,   158,   165,   172,   180,   191,   191,   197,   196,   214,
-     216,   221,   222,   225,   226,   232,   246,   258,   272,   273,
-     278,   281,   285,   297,   300
+      65,    84,    83,   111,   119,   130,   136,   137,   138,   145,
+     152,   159,   166,   173,   181,   192,   192,   198,   197,   215,
+     217,   222,   223,   226,   227,   233,   247,   259,   273,   274,
+     279,   282,   286,   298,   301
 };
 #endif
 
@@ -1519,7 +1519,7 @@ yyreduce:
     break;
 
   case 33:
-#line 110 "Yacc.y"
+#line 111 "Yacc.y"
                                                   {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,(yyvsp[-3].string),(yyvsp[-4].nb));
@@ -1532,7 +1532,7 @@ yyreduce:
     break;
 
   case 34:
-#line 118 "Yacc.y"
+#line 119 "Yacc.y"
                                                  {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,(yyvsp[-3].string),(yyvsp[-4].nb));
@@ -1545,7 +1545,7 @@ yyreduce:
     break;
 
   case 35:
-#line 129 "Yacc.y"
+#line 130 "Yacc.y"
                               { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   printf("VAR DECLARATION FOUND\n");
   symbol s = addSymbol(st,(yyvsp[-1].string),(yyvsp[-2].nb));
@@ -1555,7 +1555,7 @@ yyreduce:
     break;
 
   case 38:
-#line 137 "Yacc.y"
+#line 138 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
@@ -1567,7 +1567,7 @@ yyreduce:
     break;
 
   case 39:
-#line 144 "Yacc.y"
+#line 145 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
   printf("OPERAND tNB FOUND \n");
   printf("tNB to add in symbol table as tmp: \n");
@@ -1578,7 +1578,7 @@ yyreduce:
     break;
 
   case 40:
-#line 151 "Yacc.y"
+#line 152 "Yacc.y"
                                 {
   printf("ADD OPERATION FOUND: \n");
   int addrArg2 = unstack(st); 
@@ -1590,7 +1590,7 @@ yyreduce:
     break;
 
   case 41:
-#line 158 "Yacc.y"
+#line 159 "Yacc.y"
                                  {
   printf("SUB OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
@@ -1602,7 +1602,7 @@ yyreduce:
     break;
 
   case 42:
-#line 165 "Yacc.y"
+#line 166 "Yacc.y"
                                  {
   printf("MUL OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
@@ -1614,7 +1614,7 @@ yyreduce:
     break;
 
   case 43:
-#line 172 "Yacc.y"
+#line 173 "Yacc.y"
                                  {
   printf("DIV OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
@@ -1626,7 +1626,7 @@ yyreduce:
     break;
 
   case 44:
-#line 180 "Yacc.y"
+#line 181 "Yacc.y"
                                    {
   printf("VAR ASSIGN FOUND \n");
   if (getAddrName(st,(yyvsp[-3].string))==-1){
@@ -1641,7 +1641,7 @@ yyreduce:
     break;
 
   case 45:
-#line 191 "Yacc.y"
+#line 192 "Yacc.y"
                                           {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE
 
@@ -1650,7 +1650,7 @@ yyreduce:
     break;
 
   case 47:
-#line 197 "Yacc.y"
+#line 198 "Yacc.y"
    {
   updateJMFInstructionOne(it);
   //AT THE END OF THE IF STATEMENT WE ADD A JMP INSTRUCTIONTO JUMP THE ELSE IN CASE THE CONDITION OF THE IF IS TRUE
@@ -1664,7 +1664,7 @@ yyreduce:
     break;
 
   case 48:
-#line 207 "Yacc.y"
+#line 208 "Yacc.y"
     {
   //PATCHING JMP STATEMENT
   int elseAsmLines=iTableSize-countELSE;
@@ -1677,7 +1677,7 @@ yyreduce:
     break;
 
   case 50:
-#line 216 "Yacc.y"
+#line 217 "Yacc.y"
                                                    {
 
 }
@@ -1685,7 +1685,7 @@ yyreduce:
     break;
 
   case 52:
-#line 222 "Yacc.y"
+#line 223 "Yacc.y"
                     {
 instruction i = addInstruction(it,"JMF",getAddrName(st,(yyvsp[0].string)),-1,-1); //PATCHED LATER             
               }
@@ -1693,7 +1693,7 @@ instruction i = addInstruction(it,"JMF",getAddrName(st,(yyvsp[0].string)),-1,-1)
     break;
 
   case 54:
-#line 226 "Yacc.y"
+#line 227 "Yacc.y"
                       {
 instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
               }
@@ -1701,7 +1701,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 55:
-#line 232 "Yacc.y"
+#line 233 "Yacc.y"
                                      {
 
   printf("EQEQ COMPARAISON FOUND: \n");
@@ -1720,7 +1720,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 56:
-#line 246 "Yacc.y"
+#line 247 "Yacc.y"
                                      {
 
   printf("INF COMPARAISON FOUND: \n");
@@ -1737,7 +1737,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 57:
-#line 258 "Yacc.y"
+#line 259 "Yacc.y"
                                      {
 
   printf("INF COMPARAISON FOUND: \n");
@@ -1754,7 +1754,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 59:
-#line 273 "Yacc.y"
+#line 274 "Yacc.y"
                     {
 instruction i = addInstruction(it,"JMF",getAddrName(st,(yyvsp[0].string)),-1,-1); //PATCHED LATER 
 limitedLoop=1; 
@@ -1764,7 +1764,7 @@ limitedLoop=1;
     break;
 
   case 60:
-#line 278 "Yacc.y"
+#line 279 "Yacc.y"
                       {
 infiniteLoop=1;              
               }
@@ -1772,7 +1772,7 @@ infiniteLoop=1;
     break;
 
   case 61:
-#line 281 "Yacc.y"
+#line 282 "Yacc.y"
                       {
 instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
               }
@@ -1780,7 +1780,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 62:
-#line 285 "Yacc.y"
+#line 286 "Yacc.y"
                                         {
   printf("WHILE EQEQ COMPARAISON FOUND: \n");
   int eqeqArg2 = unstack(st);
@@ -1797,7 +1797,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 63:
-#line 297 "Yacc.y"
+#line 298 "Yacc.y"
                                      {
 
 }
@@ -1805,7 +1805,7 @@ instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
     break;
 
   case 64:
-#line 300 "Yacc.y"
+#line 301 "Yacc.y"
                                      {
 
 }
@@ -2045,7 +2045,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 306 "Yacc.y"
+#line 307 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 
