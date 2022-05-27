@@ -7,6 +7,9 @@
 int string[16]; //Taille max du nom de variable
 int countIF=0;
 int countELSE=0;
+int countWHILE=0;
+int infiniteLoop=0;
+int limitedLoop=0;
 void yyerror(char *s);
 symbol * st; //symbol table
 instruction * it; //instruction table
@@ -66,27 +69,44 @@ tAO { //DEPTH HANDELING
 Body
 tAF {
   int ifAsmLines=iTableSize-countIF;
-  updateJMFInstruction(it, ifAsmLines); //PATCH
+  updateJMFInstruction(it, ifAsmLines); //JMF IS ALWAYS PATCHED AT THE END OF AN IF
+  updateJMPInstruction(it, ifAsmLines); //JMP IS ALSO PATCHED IN CASE WE NEED A JMP FOR IF FALSE
   deleteSymbols(st);
   decrementDepth("IF");
-  //AT THE END OF THE IF STATEMENT WE ADD A JMP INSTRUCTIONTO JUMP THE ELSE IN CASE THE CONDITION OF THE IF IS TRUE
-  //JMP IS AN UNCONDITIONAL INSTRUCTION, WE ONLY NEED ARG1 WICH WILL BE PATCHED LATER ON
+
 
 
 }
 elseCondition
 
-           | whileCondition tAO { //DEPTH HANDELING
+           | whileCondition
+tAO { //DEPTH HANDELING
   incrementDepth("WHILE");
-
+  countWHILE=iTableSize;
 
 }
 Body
 tAF {
+  int whileAsmLines=iTableSize-countWHILE;
+  updateJMFInstruction(it, whileAsmLines); 
+  updateJMPInstruction(it, whileAsmLines);
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("WHILE");
+  if (infiniteLoop){
+    instruction i = addInstruction(it,"JMP",-1,-1,-1); 
+    updateJMPInstructionBackwards(it, whileAsmLines);
+    infiniteLoop=0;
+  }
+  if (limitedLoop){
+    instruction i = addInstruction(it,"JMP",-1,-1,-1); 
+    updateJMPInstructionBackwards(it, whileAsmLines);
+    updateJMFInstructionOne(it);
+    limitedLoop=0;
+  }
 };
+
+//VarDeclarationAndAssign: Type tID
 
 
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
@@ -152,7 +172,7 @@ VarAssign : tID tEQUAL Operand tPV {
   }
 };
 
-ifCondition: tIF ArgCondition {
+ifCondition: tIF tPO ifBoolExpression tPF {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE
 
 } elseCondition;
@@ -160,6 +180,8 @@ ifCondition: tIF ArgCondition {
 elseCondition: tELSE
 tAO{
   updateJMFInstructionOne(it);
+  //AT THE END OF THE IF STATEMENT WE ADD A JMP INSTRUCTIONTO JUMP THE ELSE IN CASE THE CONDITION OF THE IF IS TRUE
+  //JMP IS AN UNCONDITIONAL INSTRUCTION, WE ONLY NEED ARG1 WICH WILL BE PATCHED LATER ON
   instruction i = addInstruction(it,"JMP",-1,-1,-1);
   countELSE=iTableSize;
   incrementDepth("ELSE");
@@ -175,22 +197,23 @@ Body
   decrementDepth("ELSE");
 }|;
 
-whileCondition: tWHILE ArgCondition {
+whileCondition: tWHILE tPO whileBoolExpression tPF {
 
 };
 
-ArgCondition: tPO BoolExpression tPF;
 
-BoolExpression: Comparaison
-              | tID
-              | tTRUE 
+ifBoolExpression: ifComparaison
+              | tID {
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER             
+              }
+              | tTRUE //NOTHING TO DO
               | tFALSE{
-instruction i = addInstruction(it,"JMP",-1,-1,-1); //ARG2 INIT -1 THEN PATCHED
+instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
               };
 
 Comparator: tINF | tSUP | tEQEQ;
-//Comparaison: Operand Operator Operand
-Comparaison: Operand tEQEQ Operand {
+
+ifComparaison: Operand tEQEQ Operand {
 
   printf("EQEQ COMPARAISON FOUND: \n");
   int eqeqArg2 = unstack(st);
@@ -228,6 +251,41 @@ Comparaison: Operand tEQEQ Operand {
 
 
 };
+
+
+whileBoolExpression: whileComparaison
+              | tID {
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER 
+limitedLoop=1; 
+                
+              }
+              | tTRUE {
+infiniteLoop=1;              
+              }
+              | tFALSE{
+instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
+              };
+
+whileComparaison: Operand tEQEQ Operand {
+  printf("WHILE EQEQ COMPARAISON FOUND: \n");
+  int eqeqArg2 = unstack(st);
+  int eqeqArg1 = unstack(st);
+  symbol result = addSymbol(st,"tmp_eqeq",1);
+  instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2); 
+  instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); 
+  limitedLoop=1; 
+  unstack(st); //TO GET RID OF TMP_EQEQ
+
+
+}
+              | Operand tINF Operand {
+
+}
+              | Operand tSUP Operand {
+
+};
+
+
 
 %%
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }

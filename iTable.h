@@ -16,3 +16,4 @@ instruction addInstruction(instruction *t, char *iName, int arg1, int arg2, int 
 void updateJMFInstruction(instruction *t, int numAsmLines);
 void updateJMPInstruction(instruction *t, int numAsmLines);
 void updateJMFInstructionOne(instruction *t);
+void updateJMPInstructionBackwards(instruction *t, int numAsmLines);

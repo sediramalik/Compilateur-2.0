@@ -93,3 +93,18 @@ void updateJMPInstruction(instruction *t, int numAsmLines)
         }
     }
 }
+
+void updateJMPInstructionBackwards(instruction *t, int numAsmLines)
+{
+    for (int i = iTableSize; i > 0; i -= 1)
+    {
+        printInstruction(t[i]);
+        if (strcmp("JMP", t[i].iName) == 0)
+        {
+            printf("FOUND JMF INSTRUCTION AT INDEX %d\n", t[i].num);
+            printf("JUMPING %d INSTRUCTIONS\n", numAsmLines);
+            t[i].arg1 = t[i].num - numAsmLines - 1;
+            break;
+        }
+    }
+}

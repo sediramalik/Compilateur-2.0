@@ -4,10 +4,12 @@ int main()
     a = 10;
     int b;
     b = 20;
-    if (a < b)
-    {
-        int d;
-        d = 2;
+    int e;
+    e = 100;
+    while (a == b){
+        int c;
+        c = 30;
     }
-    a = a + b;
+    int d;
+    d = 40;
 }
