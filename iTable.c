@@ -108,3 +108,19 @@ void updateJMPInstructionBackwards(instruction *t, int numAsmLines)
         }
     }
 }
+
+condition construct_cond(int arg1, int arg2, int arg3){
+    condition cond;
+    cond.arg1=arg1;
+    cond.arg2=arg2;
+    cond.arg3=arg3;
+    return cond;
+}
+
+condition init_cond(){
+    condition cond;
+    cond.arg1=0;
+    cond.arg2=0;
+    cond.arg3=0;
+    return cond;
+}

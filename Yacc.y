@@ -10,6 +10,9 @@ int countELSE=0;
 int countWHILE=0;
 int infiniteLoop=0;
 int limitedLoop=0;
+condition ifCond;
+condition whileCond;
+condition elseCond;
 void yyerror(char *s);
 symbol * st; //symbol table
 instruction * it; //instruction table
@@ -70,9 +73,20 @@ tAO { //DEPTH HANDELING
 Body
 tAF {
   int ifAsmLines=iTableSize-countIF;
-  updateJMFInstruction(it, ifAsmLines); //JMF IS ALWAYS PATCHED AT THE END OF AN IF
-  updateJMPInstruction(it, ifAsmLines); //JMP IS ALSO PATCHED IN CASE WE NEED A JMP FOR IF FALSE
+
+  if (ifCond.arg2) {
+    updateJMPInstruction(it, ifAsmLines);
+  } 
+  else if (ifCond.arg3){
+    updateJMFInstruction(it, ifAsmLines);
+  }
+  elseCond = ifCond;
+  ifCond = init_cond();
+
+  //updateJMFInstruction(it, ifAsmLines); //JMF IS ALWAYS PATCHED AT THE END OF AN IF
+  //updateJMPInstruction(it, ifAsmLines); //JMP IS ALSO PATCHED IN CASE WE NEED A JMP FOR IF FALSE
   deleteSymbols(st);
+  print_sTable(st);
   decrementDepth("IF");
 
 
@@ -85,26 +99,45 @@ tAO { //DEPTH HANDELING
   incrementDepth("WHILE");
   countWHILE=iTableSize;
 
+  if (whileCond.arg1) {
+    instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER    
+  } 
+
 }
 Body
 tAF {
   int whileAsmLines=iTableSize-countWHILE;
-  updateJMFInstruction(it, whileAsmLines); 
-  updateJMPInstruction(it, whileAsmLines);
+
+  if (whileCond.arg1) {
+    updateJMPInstruction(it, whileAsmLines-1);
+  } 
+  else if (whileCond.arg2){
+    //updateJMFInstruction(it, ifAsmLines);
+    updateJMPInstruction(it, whileAsmLines);
+  }
+  else if (whileCond.arg3){
+    updateJMFInstruction(it, whileAsmLines+1);
+    instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER 
+    updateJMPInstructionBackwards(it, whileAsmLines);
+  }
+  whileCond = init_cond();
+
+  //updateJMFInstruction(it, whileAsmLines); 
+  //updateJMPInstruction(it, whileAsmLines);
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("WHILE");
-  if (infiniteLoop){
-    instruction i = addInstruction(it,"JMP",-1,-1,-1); 
-    updateJMPInstructionBackwards(it, whileAsmLines);
-    infiniteLoop=0;
-  }
-  if (limitedLoop){
-    instruction i = addInstruction(it,"JMP",-1,-1,-1); 
-    updateJMPInstructionBackwards(it, whileAsmLines);
-    updateJMFInstructionOne(it);
-    limitedLoop=0;
-  }
+  // if (infiniteLoop){
+  //   instruction i = addInstruction(it,"JMP",-1,-1,-1); 
+  //   updateJMPInstructionBackwards(it, whileAsmLines);
+  //   infiniteLoop=0;
+  // }
+  // if (limitedLoop){
+  //   instruction i = addInstruction(it,"JMP",-1,-1,-1); 
+  //   updateJMPInstructionBackwards(it, whileAsmLines);
+  //   updateJMFInstructionOne(it);
+  //   limitedLoop=0;
+  // }
 };
 
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
@@ -194,21 +227,27 @@ ifCondition: tIF tPO ifBoolExpression tPF {
 
 } elseCondition;
 
-elseCondition: tELSE
+elseCondition: tELSE 
 tAO{
-  updateJMFInstructionOne(it);
-  //AT THE END OF THE IF STATEMENT WE ADD A JMP INSTRUCTIONTO JUMP THE ELSE IN CASE THE CONDITION OF THE IF IS TRUE
-  //JMP IS AN UNCONDITIONAL INSTRUCTION, WE ONLY NEED ARG1 WICH WILL BE PATCHED LATER ON
-  instruction i = addInstruction(it,"JMP",-1,-1,-1);
-  countELSE=iTableSize;
   incrementDepth("ELSE");
   countELSE=iTableSize;
+  if (elseCond.arg3){ //NO JMP FOR IF FALSE AND IF TRUE
+    updateJMFInstructionOne(it);
+    //AT THE END OF THE IF STATEMENT WE ADD A JMP INSTRUCTIONTO JUMP THE ELSE IN CASE THE CONDITION OF THE IF IS TRUE
+    //JMP IS AN UNCONDITIONAL INSTRUCTION, WE ONLY NEED ARG1 WICH WILL BE PATCHED LATER ON
+    instruction i = addInstruction(it,"JMP",-1,-1,-1);
+
+  }
+
 }
 Body
  tAF{
   //PATCHING JMP STATEMENT
-  int elseAsmLines=iTableSize-countELSE;
-  updateJMPInstruction(it, elseAsmLines); //PATCH
+  if (elseCond.arg3){ //NO JMP FOR IF FALSE AND IF TRUE
+    int elseAsmLines=iTableSize-countELSE;
+    updateJMPInstruction(it, elseAsmLines-1); //PATCH
+  }
+  elseCond = init_cond();
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("ELSE");
@@ -221,11 +260,13 @@ whileCondition: tWHILE tPO whileBoolExpression tPF {
 
 ifBoolExpression: ifComparaison
               | tID {
-instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER             
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER    
+ifCond = construct_cond(0,0,1);         
               }
               | tTRUE //NOTHING TO DO
               | tFALSE{
 instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
+ifCond = construct_cond(0,1,0);
               };
 
 Comparator: tINF | tSUP | tEQEQ;
@@ -240,6 +281,7 @@ ifComparaison: Operand tEQEQ Operand {
   //DEPENDING ON WETHER THE CONDITION IS TRUE OR FALSE
   instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2); //THE result VARIABLE OVERWRITES eqeqArg1 BY HAVING THE SAME ADDRESS
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); //ARG2 INIT -1 THEN PATCHED
+  ifCond = construct_cond(0,0,1); 
   unstack(st); //TO GET RID OF TMP_EQEQ
 
 
@@ -252,6 +294,7 @@ ifComparaison: Operand tEQEQ Operand {
   symbol result = addSymbol(st,"tmp_inf",1);
   instruction i_equ = addInstruction(it,"INF",getAddr(st,result),eqeqArg1,eqeqArg2); //THE result VARIABLE OVERWRITES eqeqArg1 BY HAVING THE SAME ADDRESS
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); //ARG2 INIT -1 THEN PATCHED
+  ifCond = construct_cond(0,0,1); 
   unstack(st); //TO GET RID OF TMP_INF
 
 
@@ -264,6 +307,7 @@ ifComparaison: Operand tEQEQ Operand {
   symbol result = addSymbol(st,"tmp_sup",1);
   instruction i_equ = addInstruction(it,"SUP",getAddr(st,result),eqeqArg1,eqeqArg2); //THE result VARIABLE OVERWRITES eqeqArg1 BY HAVING THE SAME ADDRESS
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); //ARG2 INIT -1 THEN PATCHED
+  ifCond = construct_cond(0,0,1); 
   unstack(st); //TO GET RID OF TMP_SUP
 
 
@@ -273,14 +317,17 @@ ifComparaison: Operand tEQEQ Operand {
 whileBoolExpression: whileComparaison
               | tID {
 instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER 
-limitedLoop=1; 
+// limitedLoop=1; 
+whileCond = construct_cond(0,0,1);
                 
               }
               | tTRUE {
-infiniteLoop=1;              
+//infiniteLoop=1;    
+whileCond = construct_cond(1,0,0);          
               }
               | tFALSE{
-instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
+instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER                
+whileCond = construct_cond(0,1,0);
               };
 
 whileComparaison: Operand tEQEQ Operand {
@@ -288,9 +335,11 @@ whileComparaison: Operand tEQEQ Operand {
   int eqeqArg2 = unstack(st);
   int eqeqArg1 = unstack(st);
   symbol result = addSymbol(st,"tmp_eqeq",1);
-  instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2); 
+  instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2);
+
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); 
-  limitedLoop=1; 
+  //limitedLoop=1; 
+  whileCond = construct_cond(0,0,1);
   unstack(st); //TO GET RID OF TMP_EQEQ
 
 
