@@ -59,6 +59,7 @@ FunName: tMAIN | tID;
 Body: Instructions;
 Instructions: Instruction Instructions |;
 Instruction: FunCall 
+           | VarDeclarationAndAssign
            | VarDeclaration 
            | VarAssign 
            | ifCondition
@@ -106,7 +107,23 @@ tAF {
   }
 };
 
-//VarDeclarationAndAssign: Type tID
+//VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
+VarDeclarationAndAssign : Type tID tEQUAL tNB tPV {
+   printf("VAR DECLARATION & ASSIGN FOUND\n"); 
+   symbol s = addSymbol(st,$2,$1);
+   symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
+   instruction i = addInstruction(it,"AFC",tmp.addr,$4,-1);
+   instruction j = addInstruction(it,"COP",getAddrName(st,$2),sTableSize-1,-1);
+   unstack(st);
+}
+                        |Type tID tEQUAL tID tPV {
+   printf("VAR DECLARATION & ASSIGN FOUND\n"); 
+   symbol s = addSymbol(st,$2,$1);
+   symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
+   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$4),-1);
+   instruction j = addInstruction(it,"COP",getAddrName(st,$2),sTableSize-1,-1);
+   unstack(st);
+};
 
 
 //NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
@@ -295,7 +312,7 @@ int main(void) {
   ASM=fopen("ASM","w");
   st = init_sTable();
   it = init_iTable();
-  //yydebug=1;
+  yydebug=1;
   yyparse();
   printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");
