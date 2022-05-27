@@ -13,8 +13,11 @@ int main()
         b = b + 1;
     }
     while (b == c){
-        a = b - c;
+        a = b - c + d;
     }
+
+    //PROBLEM: WHILE AFTER ELSE ALTERS THE JMP INSTRUCTION 
+    //OF ELSE
 
 
 }
