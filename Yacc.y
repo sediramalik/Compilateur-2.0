@@ -28,6 +28,7 @@ tINT tSTRING
 tSUB tADD tMUL tDIV
 tINF tSUP tEQEQ
 tTRUE tFALSE
+tCONST
 
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
@@ -51,14 +52,15 @@ NextDecArg: tV DecArgs |;
 CallArgs: Operand CallArgNext |;
 CallArgNext: tV CallArgs |;
 
-Type: tINT { $$ = 1; } | tSTRING{ $$ = 2; }; //IF INT THEN 1 IF STRING THEN 2
-FunType: tVOID | Type;
+Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
+FunType: tVOID | tINT;
 
 FunName: tMAIN | tID; 
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
 Instruction: FunCall 
+           | ConstDeclarationAndAssign
            | VarDeclarationAndAssign
            | VarDeclaration 
            | VarAssign 
@@ -122,29 +124,41 @@ tAF {
   decrementDepth("WHILE");
 };
 
+//RE-ASSIGNING A CONSTANT IS NOT POSSIBLE
+//CONSTANT MUST BE ASSIGNED IMMEDIATELY AFTER DECLARATION
+ConstDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
+  printf("CONST DECLARATION & ASSIGN FOUND\n"); 
+  symbol s = addSymbol(st,$3,$1);
+  symbol tmp = addSymbol(st,"tmp_nb_const",1); 
+  instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
+  instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
+  unstack(st);
+};
+
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
-VarDeclarationAndAssign : Type tID tEQUAL tNB tPV {
+VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
-   symbol s = addSymbol(st,$2,$1);
-   symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
-   instruction i = addInstruction(it,"AFC",tmp.addr,$4,-1);
-   instruction j = addInstruction(it,"COP",getAddrName(st,$2),sTableSize-1,-1);
+   symbol s = addSymbol(st,$3,$1);
+   symbol tmp = addSymbol(st,"tmp_nb",1); 
+   instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
+   instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
    unstack(st);
 }
-                        |Type tID tEQUAL tID tPV {
+                        | Type tINT tID tEQUAL tID tPV {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
-   symbol s = addSymbol(st,$2,$1);
-   symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
-   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$4),-1);
-   instruction j = addInstruction(it,"COP",getAddrName(st,$2),sTableSize-1,-1);
+   symbol s = addSymbol(st,$3,$1);
+   symbol tmp = addSymbol(st,"tmp_nb",1); 
+   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$5),-1);
+   instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
    unstack(st);
 };
 
 
-VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
+VarDeclaration : Type tINT tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
+if ($1 == 1){ //ONLY FOR VARS
   printf("VAR DECLARATION FOUND\n");
-  symbol s = addSymbol(st,$2,$1);
-
+  symbol s = addSymbol(st,$3,$1);
+}
 };
 
 Operand:  FunCall
@@ -193,13 +207,18 @@ Operations: Operand tADD Operand{
             };
 
 VarAssign : tID tEQUAL Operand tPV {
-  printf("VAR ASSIGN FOUND \n");
-  if (getAddrName(st,$1)==-1){
-    printf("ERROR: Variable %s not declared! \n",$1);
+  if (getSymbolByName(st,$1).type == 1){
+    printf("VAR ASSIGN FOUND \n");
+    if (getAddrName(st,$1)==-1){
+      printf("ERROR: Variable %s not declared! \n",$1);
+    }
+    else{
+    instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
+    unstack(st);
+  }
   }
   else{
-  instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
-  unstack(st);
+    printf("ERROR: CONST cannot be re-assigned!\n");
   }
 };
 
@@ -359,7 +378,7 @@ int main(void) {
   ASM=fopen("ASM","w");
   st = init_sTable();
   it = init_iTable();
-  yydebug=1;
+  //yydebug=1;
   yyparse();
   printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");

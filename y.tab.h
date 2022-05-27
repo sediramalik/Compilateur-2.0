@@ -73,8 +73,9 @@ extern int yydebug;
     tEQEQ = 279,
     tTRUE = 280,
     tFALSE = 281,
-    tNB = 282,
-    tID = 283
+    tCONST = 282,
+    tNB = 283,
+    tID = 284
   };
 #endif
 /* Tokens.  */
@@ -102,8 +103,9 @@ extern int yydebug;
 #define tEQEQ 279
 #define tTRUE 280
 #define tFALSE 281
-#define tNB 282
-#define tID 283
+#define tCONST 282
+#define tNB 283
+#define tID 284
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -112,7 +114,7 @@ union YYSTYPE
 #line 19 "Yacc.y"
 int nb; char string[16];
 
-#line 116 "y.tab.h"
+#line 118 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

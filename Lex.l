@@ -22,6 +22,7 @@
 "print" {return tPRINT;}
 "true" {return tTRUE;}
 "false" {return tFALSE;}
+"const" {return tCONST;}
 
 "{"     {return tAO;}
 "}"     {return tAF;}
