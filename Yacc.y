@@ -8,15 +8,12 @@ int string[16]; //Taille max du nom de variable
 int countIF=0;
 int countELSE=0;
 int countWHILE=0;
-int infiniteLoop=0;
-int limitedLoop=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
 void yyerror(char *s);
 symbol * st; //symbol table
 instruction * it; //instruction table
-int error=0;
 %}
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
@@ -83,8 +80,6 @@ tAF {
   elseCond = ifCond;
   ifCond = init_cond();
 
-  //updateJMFInstruction(it, ifAsmLines); //JMF IS ALWAYS PATCHED AT THE END OF AN IF
-  //updateJMPInstruction(it, ifAsmLines); //JMP IS ALSO PATCHED IN CASE WE NEED A JMP FOR IF FALSE
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("IF");
@@ -122,22 +117,9 @@ tAF {
   }
   whileCond = init_cond();
 
-  //updateJMFInstruction(it, whileAsmLines); 
-  //updateJMPInstruction(it, whileAsmLines);
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("WHILE");
-  // if (infiniteLoop){
-  //   instruction i = addInstruction(it,"JMP",-1,-1,-1); 
-  //   updateJMPInstructionBackwards(it, whileAsmLines);
-  //   infiniteLoop=0;
-  // }
-  // if (limitedLoop){
-  //   instruction i = addInstruction(it,"JMP",-1,-1,-1); 
-  //   updateJMPInstructionBackwards(it, whileAsmLines);
-  //   updateJMFInstructionOne(it);
-  //   limitedLoop=0;
-  // }
 };
 
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
@@ -159,7 +141,6 @@ VarDeclarationAndAssign : Type tID tEQUAL tNB tPV {
 };
 
 
-//NOTE: LANGUAGE ONLY RECOGNIZES VAR DECLARATIONS WITHOUT VAR ASSIGN
 VarDeclaration : Type tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
   printf("VAR DECLARATION FOUND\n");
   symbol s = addSymbol(st,$2,$1);
@@ -289,10 +270,10 @@ ifComparaison: Operand tEQEQ Operand {
               | Operand tINF Operand {
 
   printf("INF COMPARAISON FOUND: \n");
-  int eqeqArg2 = unstack(st);
-  int eqeqArg1 = unstack(st);
+  int infArg2 = unstack(st);
+  int infArg1 = unstack(st);
   symbol result = addSymbol(st,"tmp_inf",1);
-  instruction i_equ = addInstruction(it,"INF",getAddr(st,result),eqeqArg1,eqeqArg2); //THE result VARIABLE OVERWRITES eqeqArg1 BY HAVING THE SAME ADDRESS
+  instruction i_inf = addInstruction(it,"INF",getAddr(st,result),infArg1,infArg2); //THE result VARIABLE OVERWRITES infArg1 BY HAVING THE SAME ADDRESS
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); //ARG2 INIT -1 THEN PATCHED
   ifCond = construct_cond(0,0,1); 
   unstack(st); //TO GET RID OF TMP_INF
@@ -302,10 +283,10 @@ ifComparaison: Operand tEQEQ Operand {
               | Operand tSUP Operand {
 
   printf("INF COMPARAISON FOUND: \n");
-  int eqeqArg2 = unstack(st);
-  int eqeqArg1 = unstack(st);
+  int supArg2 = unstack(st);
+  int supArg1 = unstack(st);
   symbol result = addSymbol(st,"tmp_sup",1);
-  instruction i_equ = addInstruction(it,"SUP",getAddr(st,result),eqeqArg1,eqeqArg2); //THE result VARIABLE OVERWRITES eqeqArg1 BY HAVING THE SAME ADDRESS
+  instruction i_equ = addInstruction(it,"SUP",getAddr(st,result),supArg1,supArg2); //THE result VARIABLE OVERWRITES supArg1 BY HAVING THE SAME ADDRESS
   instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); //ARG2 INIT -1 THEN PATCHED
   ifCond = construct_cond(0,0,1); 
   unstack(st); //TO GET RID OF TMP_SUP
@@ -337,17 +318,34 @@ whileComparaison: Operand tEQEQ Operand {
   symbol result = addSymbol(st,"tmp_eqeq",1);
   instruction i_equ = addInstruction(it,"EQU",getAddr(st,result),eqeqArg1,eqeqArg2);
 
-  instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); 
-  //limitedLoop=1; 
+  instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1);  
   whileCond = construct_cond(0,0,1);
   unstack(st); //TO GET RID OF TMP_EQEQ
 
 
 }
               | Operand tINF Operand {
+  printf("WHILE INF COMPARAISON FOUND: \n");
+  int infArg2 = unstack(st);
+  int infArg1 = unstack(st);
+  symbol result = addSymbol(st,"tmp_inf",1);
+  instruction i_inf = addInstruction(it,"INF",getAddr(st,result),infArg1,infArg2);
+
+  instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); 
+  whileCond = construct_cond(0,0,1);
+  unstack(st); //TO GET RID OF TMP_INF
 
 }
               | Operand tSUP Operand {
+  printf("WHILE SUP COMPARAISON FOUND: \n");
+  int supArg2 = unstack(st);
+  int supArg1 = unstack(st);
+  symbol result = addSymbol(st,"tmp_sup",1);
+  instruction i_sup = addInstruction(it,"SUP",getAddr(st,result),supArg1,supArg2);
+
+  instruction i_jmf = addInstruction(it,"JMF",getAddr(st,result),-1,-1); 
+  whileCond = construct_cond(0,0,1);
+  unstack(st); //TO GET RID OF TMP_SUP
 
 };
 
