@@ -8,6 +8,7 @@ int string[16]; //Taille max du nom de variable
 int countIF=0;
 int countELSE=0;
 int countWHILE=0;
+int varBool=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
@@ -153,13 +154,22 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
    unstack(st);
 };
 
-
-VarDeclaration : Type tINT tID tPV { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
+//MULTIPLE VARIABLES DECLARATION INCLUDED
+//NOTE: DOES NOT WORK WITH CONSTS (there's a condition)
+VarDeclaration : Type tINT tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
 if ($1 == 1){ //ONLY FOR VARS
   printf("VAR DECLARATION FOUND\n");
   symbol s = addSymbol(st,$3,$1);
+  varBool=$1;
 }
-};
+} NextVar;
+NextVar : Type tV tID {
+  if (varBool==1){
+    printf("NEXT VAR DECLARATION FOUND\n");
+    symbol s = addSymbol(st,$3,$1);
+  }
+}
+  NextVar | tPV {varBool=0;};
 
 Operand:  FunCall
         | Operations

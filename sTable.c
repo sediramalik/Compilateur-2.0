@@ -115,3 +115,9 @@ int unstack(symbol *t)
     print_sTable(t);
     return sTableSize;
 }
+
+void deleteSymbolsCount(int count)
+{
+    printf("Deleting %d symbols\n", count);
+    sTableSize -= count;
+}
