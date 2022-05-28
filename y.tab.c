@@ -1649,7 +1649,7 @@ if (varMain){
     else if (varBool == 2){
       printf("NEXT CONST DECLARATION FOUND\n");
     }
-    symbol s = addSymbol(st,(yyvsp[0].string),(yyvsp[-2].nb));
+    symbol s = addSymbol(st,(yyvsp[0].string),varBool);
   } else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
 }
 #line 1656 "y.tab.c"

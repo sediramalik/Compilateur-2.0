@@ -199,7 +199,7 @@ NextVar : Type tV tID {
     else if (varBool == 2){
       printf("NEXT CONST DECLARATION FOUND\n");
     }
-    symbol s = addSymbol(st,$3,$1);
+    symbol s = addSymbol(st,$3,varBool);
   } else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
 }
   NextVar | tPV {varBool=0;};
