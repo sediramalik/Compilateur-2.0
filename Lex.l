@@ -22,6 +22,7 @@
 "true" {return tTRUE;}
 "false" {return tFALSE;}
 "const" {return tCONST;}
+"return" {return tRETURN;}
 
 "{"     {return tAO;}
 "}"     {return tAF;}

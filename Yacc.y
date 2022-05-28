@@ -20,7 +20,7 @@ instruction * it; //instruction table
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
 %token 
-tMAIN
+tMAIN tRETURN
 tIF tWHILE
 tPRINT tELSE
 tAO tAF tPO tPF tV tPV
@@ -45,17 +45,24 @@ tCONST
 Program: Functions;
 
 Functions: Function | Function Functions;
-Function: FunType FunName tPO DecArgs tPF tAO Body tAF;
+
+
+Function: tINT FunName tPO DecArgs tPF tAO Body Return tAF
+        | tVOID FunName tPO DecArgs tPF tAO Body tAF;
+
+//FunType: tVOID | tINT;
+Return: tRETURN tID tPV | ;
+
 FunCall: FunName tPO CallArgs tPF tPV;
 
-DecArgs: Type tID NextDecArg |;
+DecArgs: tINT tID NextDecArg |;
 NextDecArg: tV DecArgs |;
 
 CallArgs: Operand CallArgNext |;
 CallArgNext: tV CallArgs |;
 
 Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
-FunType: tVOID | tINT;
+
 
 FunName: tMAIN {varMain=1;} | tID {varMain=0;}; //TO AVOID DECLARATIONS OUTSIDE THE MAIN FUNCTION
 
@@ -88,9 +95,6 @@ tAF {
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("IF");
-
-
-
 }
 elseCondition
 
@@ -279,9 +283,6 @@ VarAssign : tID tEQUAL Operand tPV {
 };
 
 
-
-
-
 ifCondition: tIF tPO ifBoolExpression tPF {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE
 
@@ -311,7 +312,7 @@ Body
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("ELSE");
-}|;
+} |;
 
 whileCondition: tWHILE tPO whileBoolExpression tPF {
 
@@ -438,7 +439,7 @@ int main(void) {
   ASM=fopen("ASM","w");
   st = init_sTable();
   it = init_iTable();
-  //yydebug=1;
+  yydebug=1;
   yyparse();
   printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");
