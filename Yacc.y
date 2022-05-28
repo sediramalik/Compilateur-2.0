@@ -9,6 +9,7 @@ int countIF=0;
 int countELSE=0;
 int countWHILE=0;
 int varBool=0;
+int varMain=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
@@ -56,7 +57,7 @@ CallArgNext: tV CallArgs |;
 Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
 FunType: tVOID | tINT;
 
-FunName: tMAIN | tID; 
+FunName: tMAIN {varMain=1;} | tID {varMain=0;}; //TO AVOID DECLARATIONS OUTSIDE THE MAIN FUNCTION
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
@@ -130,22 +131,27 @@ tAF {
 //RE-ASSIGNING A CONSTANT IS NOT POSSIBLE
 //CONSTANT MUST BE ASSIGNED IMMEDIATELY AFTER DECLARATION
 ConstDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
-  printf("CONST DECLARATION & ASSIGN FOUND\n"); 
-  symbol s = addSymbol(st,$3,$1);
-  symbol tmp = addSymbol(st,"tmp_nb_const",1); 
-  instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
-  instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
-  unstack(st);
+  if (varMain){
+    printf("CONST DECLARATION & ASSIGN FOUND\n"); 
+    symbol s = addSymbol(st,$3,$1);
+    symbol tmp = addSymbol(st,"tmp_nb_const",1); 
+    instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
+    instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
+    unstack(st);
+  } else (printf("ERROR: You cannot declare variables/constants outside the main function!\n"));
 };
 
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
 VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
-   printf("VAR DECLARATION & ASSIGN FOUND\n"); 
-   symbol s = addSymbol(st,$3,$1);
-   symbol tmp = addSymbol(st,"tmp_nb",1); 
-   instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
-   instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
-   unstack(st);
+  if (varMain){
+    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
+    symbol s = addSymbol(st,$3,$1);
+    symbol tmp = addSymbol(st,"tmp_nb",1); 
+    instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
+    instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
+    unstack(st);
+  }
+  else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
 }
                         | Type tINT tID tEQUAL tID tPV {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
@@ -158,23 +164,27 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
 
 //MULTIPLE VARIABLES AND CONSTANTS DECLARATION INCLUDED
 VarDeclaration : Type tINT tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
-if ($1 == 1){ //ONLY FOR VARS
-  printf("VAR DECLARATION FOUND\n");
-}
-else if ($1 == 2){
-  printf("CONST DECLARATION FOUND\n");
-}
-symbol s = addSymbol(st,$3,$1);
-varBool=$1; 
-} NextVar;
-NextVar : Type tV tID {
-  if (varBool == 1){
-    printf("NEXT VAR DECLARATION FOUND\n");
+if (varMain){
+  if ($1 == 1){ //ONLY FOR VARS
+    printf("VAR DECLARATION FOUND\n");
   }
-  else if (varBool == 2){
-    printf("NEXT CONST DECLARATION FOUND\n");
+  else if ($1 == 2){
+    printf("CONST DECLARATION FOUND\n");
   }
   symbol s = addSymbol(st,$3,$1);
+  varBool=$1; 
+} else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
+} NextVar;
+NextVar : Type tV tID {
+  if (varMain){
+    if (varBool == 1){
+      printf("NEXT VAR DECLARATION FOUND\n");
+    }
+    else if (varBool == 2){
+      printf("NEXT CONST DECLARATION FOUND\n");
+    }
+    symbol s = addSymbol(st,$3,$1);
+  } else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
 }
   NextVar | tPV {varBool=0;};
 
@@ -244,7 +254,6 @@ VarAssign : tID tEQUAL Operand tPV {
       else{
       instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
       printf("Changing assign status from 0 to 1\n");
-      //const_assigned(&(getSymbolByName(st,$1)));
       const_assigned(&st[getAddrName(st,$1)]);
       print_sTable(st);
       unstack(st);
