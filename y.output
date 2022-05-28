@@ -5,23 +5,22 @@ Nonterminals useless in grammar
 
 Terminals unused in grammar
 
-    tPRINT
     tSTRING
 
 
 Rules useless in grammar
 
-   70 Comparator: tINF
-   71           | tSUP
-   72           | tEQEQ
+   74 Comparator: tINF
+   75           | tSUP
+   76           | tEQEQ
 
 
 Rules useless in parser due to conflicts
 
-   34 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV
+   38 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV
 
 
-State 110 conflicts: 7 reduce/reduce
+State 118 conflicts: 8 reduce/reduce
 
 
 Grammar
@@ -64,75 +63,81 @@ Grammar
    22             | %empty
 
    23 Instruction: FunCall
-   24            | ConstDeclarationAndAssign
-   25            | VarDeclarationAndAssign
-   26            | VarDeclaration
-   27            | VarAssign
+   24            | Print
+   25            | ConstDeclarationAndAssign
+   26            | VarDeclarationAndAssign
+   27            | VarDeclaration
+   28            | VarAssign
 
-   28 $@1: %empty
+   29 $@1: %empty
 
-   29 $@2: %empty
+   30 $@2: %empty
 
-   30 Instruction: ifCondition tAO $@1 Body tAF $@2 elseCondition
+   31 Instruction: ifCondition tAO $@1 Body tAF $@2 elseCondition
 
-   31 $@3: %empty
+   32 $@3: %empty
 
-   32 Instruction: whileCondition tAO $@3 Body tAF
+   33 Instruction: whileCondition tAO $@3 Body tAF
 
-   33 ConstDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV
+   34 Print: tPRINT tPO PrintArg tPF tPV
 
-   34 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV
-   35                        | Type tINT tID tEQUAL tID tPV
+   35 PrintArg: tID
+   36         | tNB
 
-   36 $@4: %empty
+   37 ConstDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV
 
-   37 VarDeclaration: Type tINT tID $@4 NextVar
+   38 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV
+   39                        | Type tINT tID tEQUAL tID tPV
 
-   38 $@5: %empty
+   40 $@4: %empty
 
-   39 NextVar: Type tV tID $@5 NextVar
-   40        | tPV
+   41 VarDeclaration: Type tINT tID $@4 NextVar
 
-   41 Operand: FunCall
-   42        | Operations
-   43        | tID
-   44        | tNB
+   42 $@5: %empty
 
-   45 Operations: Operand tADD Operand
-   46           | Operand tSUB Operand
-   47           | Operand tMUL Operand
-   48           | Operand tDIV Operand
+   43 NextVar: Type tV tID $@5 NextVar
+   44        | tPV
 
-   49 VarAssign: tID tEQUAL Operand tPV
+   45 Operand: FunCall
+   46        | Operations
+   47        | tID
+   48        | tNB
 
-   50 $@6: %empty
+   49 Operations: Operand tADD Operand
+   50           | Operand tSUB Operand
+   51           | Operand tMUL Operand
+   52           | Operand tDIV Operand
 
-   51 ifCondition: tIF tPO ifBoolExpression tPF $@6 elseCondition
+   53 VarAssign: tID tEQUAL Operand tPV
 
-   52 $@7: %empty
+   54 $@6: %empty
 
-   53 elseCondition: tELSE tAO $@7 Body tAF
-   54              | %empty
+   55 ifCondition: tIF tPO ifBoolExpression tPF $@6 elseCondition
 
-   55 whileCondition: tWHILE tPO whileBoolExpression tPF
+   56 $@7: %empty
 
-   56 ifBoolExpression: ifComparaison
-   57                 | tID
-   58                 | tTRUE
-   59                 | tFALSE
+   57 elseCondition: tELSE tAO $@7 Body tAF
+   58              | %empty
 
-   60 ifComparaison: Operand tEQEQ Operand
-   61              | Operand tINF Operand
-   62              | Operand tSUP Operand
+   59 whileCondition: tWHILE tPO whileBoolExpression tPF
 
-   63 whileBoolExpression: whileComparaison
-   64                    | tID
-   65                    | tTRUE
-   66                    | tFALSE
+   60 ifBoolExpression: ifComparaison
+   61                 | tID
+   62                 | tTRUE
+   63                 | tFALSE
 
-   67 whileComparaison: Operand tEQEQ Operand
-   68                 | Operand tINF Operand
-   69                 | Operand tSUP Operand
+   64 ifComparaison: Operand tEQEQ Operand
+   65              | Operand tINF Operand
+   66              | Operand tSUP Operand
+
+   67 whileBoolExpression: whileComparaison
+   68                    | tID
+   69                    | tTRUE
+   70                    | tFALSE
+
+   71 whileComparaison: Operand tEQEQ Operand
+   72                 | Operand tINF Operand
+   73                 | Operand tSUP Operand
 
 
 Terminals, with rules where they appear
@@ -140,32 +145,32 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     tMAIN (258) 18
-    tIF (259) 51
-    tWHILE (260) 55
-    tPRINT (261)
-    tELSE (262) 53
-    tAO (263) 4 30 32 53
-    tAF (264) 4 30 32 53
-    tPO (265) 4 5 51 55
-    tPF (266) 4 5 51 55
-    tV (267) 8 12 39
-    tPV (268) 5 33 34 35 40 49
-    tEQUAL (269) 33 34 35 49
+    tIF (259) 55
+    tWHILE (260) 59
+    tPRINT (261) 34
+    tELSE (262) 57
+    tAO (263) 4 31 33 57
+    tAF (264) 4 31 33 57
+    tPO (265) 4 5 34 55 59
+    tPF (266) 4 5 34 55 59
+    tV (267) 8 12 43
+    tPV (268) 5 34 37 38 39 44 53
+    tEQUAL (269) 37 38 39 53
     tVOID (270) 16
-    tINT (271) 17 33 34 35 37
+    tINT (271) 17 37 38 39 41
     tSTRING (272)
-    tSUB (273) 46
-    tADD (274) 45
-    tMUL (275) 47
-    tDIV (276) 48
-    tINF (277) 61 68
-    tSUP (278) 62 69
-    tEQEQ (279) 60 67
-    tTRUE (280) 58 65
-    tFALSE (281) 59 66
+    tSUB (273) 50
+    tADD (274) 49
+    tMUL (275) 51
+    tDIV (276) 52
+    tINF (277) 65 72
+    tSUP (278) 66 73
+    tEQEQ (279) 64 71
+    tTRUE (280) 62 69
+    tFALSE (281) 63 70
     tCONST (282) 14
-    tNB <nb> (283) 33 34 44
-    tID <string> (284) 6 19 33 34 35 37 39 43 49 57 64
+    tNB <nb> (283) 36 37 38 48
+    tID <string> (284) 6 19 35 37 38 39 41 43 47 53 61 68
 
 
 Nonterminals, with rules where they appear
@@ -183,7 +188,7 @@ Nonterminals, with rules where they appear
         on right: 2 3
     FunCall (34)
         on left: 5
-        on right: 23 41
+        on right: 23 45
     DecArgs (35)
         on left: 6 7
         on right: 4 8
@@ -198,7 +203,7 @@ Nonterminals, with rules where they appear
         on right: 10
     Type <nb> (39)
         on left: 14 15
-        on right: 6 33 34 35 37 39
+        on right: 6 37 38 39 41 43
     FunType (40)
         on left: 16 17
         on right: 4
@@ -207,76 +212,82 @@ Nonterminals, with rules where they appear
         on right: 4 5
     Body (42)
         on left: 20
-        on right: 4 30 32 53
+        on right: 4 31 33 57
     Instructions (43)
         on left: 21 22
         on right: 20 21
     Instruction (44)
-        on left: 23 24 25 26 27 30 32
+        on left: 23 24 25 26 27 28 31 33
         on right: 21
     $@1 (45)
-        on left: 28
-        on right: 30
-    $@2 (46)
         on left: 29
-        on right: 30
+        on right: 31
+    $@2 (46)
+        on left: 30
+        on right: 31
     $@3 (47)
-        on left: 31
-        on right: 32
-    ConstDeclarationAndAssign (48)
-        on left: 33
+        on left: 32
+        on right: 33
+    Print (48)
+        on left: 34
         on right: 24
-    VarDeclarationAndAssign (49)
-        on left: 34 35
-        on right: 25
-    VarDeclaration (50)
+    PrintArg (49)
+        on left: 35 36
+        on right: 34
+    ConstDeclarationAndAssign (50)
         on left: 37
+        on right: 25
+    VarDeclarationAndAssign (51)
+        on left: 38 39
         on right: 26
-    $@4 (51)
-        on left: 36
-        on right: 37
-    NextVar (52)
-        on left: 39 40
-        on right: 37 39
-    $@5 (53)
-        on left: 38
-        on right: 39
-    Operand (54)
-        on left: 41 42 43 44
-        on right: 10 45 46 47 48 49 60 61 62 67 68 69
-    Operations (55)
-        on left: 45 46 47 48
-        on right: 42
-    VarAssign (56)
-        on left: 49
+    VarDeclaration (52)
+        on left: 41
         on right: 27
-    ifCondition (57)
-        on left: 51
-        on right: 30
-    $@6 (58)
-        on left: 50
-        on right: 51
-    elseCondition (59)
-        on left: 53 54
-        on right: 30 51
-    $@7 (60)
-        on left: 52
-        on right: 53
-    whileCondition (61)
+    $@4 (53)
+        on left: 40
+        on right: 41
+    NextVar (54)
+        on left: 43 44
+        on right: 41 43
+    $@5 (55)
+        on left: 42
+        on right: 43
+    Operand (56)
+        on left: 45 46 47 48
+        on right: 10 49 50 51 52 53 64 65 66 71 72 73
+    Operations (57)
+        on left: 49 50 51 52
+        on right: 46
+    VarAssign (58)
+        on left: 53
+        on right: 28
+    ifCondition (59)
         on left: 55
-        on right: 32
-    ifBoolExpression (62)
-        on left: 56 57 58 59
-        on right: 51
-    ifComparaison (63)
-        on left: 60 61 62
-        on right: 56
-    whileBoolExpression (64)
-        on left: 63 64 65 66
+        on right: 31
+    $@6 (60)
+        on left: 54
         on right: 55
-    whileComparaison (65)
-        on left: 67 68 69
-        on right: 63
+    elseCondition (61)
+        on left: 57 58
+        on right: 31 55
+    $@7 (62)
+        on left: 56
+        on right: 57
+    whileCondition (63)
+        on left: 59
+        on right: 33
+    ifBoolExpression (64)
+        on left: 60 61 62 63
+        on right: 55
+    ifComparaison (65)
+        on left: 64 65 66
+        on right: 60
+    whileBoolExpression (66)
+        on left: 67 68 69 70
+        on right: 59
+    whileComparaison (67)
+        on left: 71 72 73
+        on right: 67
 
 
 State 0
@@ -439,24 +450,26 @@ State 18
     tMAIN   shift, and go to state 9
     tIF     shift, and go to state 21
     tWHILE  shift, and go to state 22
+    tPRINT  shift, and go to state 23
     tCONST  shift, and go to state 13
-    tID     shift, and go to state 23
+    tID     shift, and go to state 24
 
     tAF       reduce using rule 22 (Instructions)
     $default  reduce using rule 15 (Type)
 
-    FunCall                    go to state 24
-    Type                       go to state 25
-    FunName                    go to state 26
-    Body                       go to state 27
-    Instructions               go to state 28
-    Instruction                go to state 29
-    ConstDeclarationAndAssign  go to state 30
-    VarDeclarationAndAssign    go to state 31
-    VarDeclaration             go to state 32
-    VarAssign                  go to state 33
-    ifCondition                go to state 34
-    whileCondition             go to state 35
+    FunCall                    go to state 25
+    Type                       go to state 26
+    FunName                    go to state 27
+    Body                       go to state 28
+    Instructions               go to state 29
+    Instruction                go to state 30
+    Print                      go to state 31
+    ConstDeclarationAndAssign  go to state 32
+    VarDeclarationAndAssign    go to state 33
+    VarDeclaration             go to state 34
+    VarAssign                  go to state 35
+    ifCondition                go to state 36
+    whileCondition             go to state 37
 
 
 State 19
@@ -468,7 +481,7 @@ State 19
     tID       reduce using rule 15 (Type)
     $default  reduce using rule 7 (DecArgs)
 
-    DecArgs  go to state 36
+    DecArgs  go to state 38
     Type     go to state 15
 
 
@@ -481,1101 +494,1170 @@ State 20
 
 State 21
 
-   51 ifCondition: tIF . tPO ifBoolExpression tPF $@6 elseCondition
+   55 ifCondition: tIF . tPO ifBoolExpression tPF $@6 elseCondition
 
-    tPO  shift, and go to state 37
+    tPO  shift, and go to state 39
 
 
 State 22
 
-   55 whileCondition: tWHILE . tPO whileBoolExpression tPF
+   59 whileCondition: tWHILE . tPO whileBoolExpression tPF
 
-    tPO  shift, and go to state 38
+    tPO  shift, and go to state 40
 
 
 State 23
 
-   19 FunName: tID .
-   49 VarAssign: tID . tEQUAL Operand tPV
+   34 Print: tPRINT . tPO PrintArg tPF tPV
 
-    tEQUAL  shift, and go to state 39
+    tPO  shift, and go to state 41
+
+
+State 24
+
+   19 FunName: tID .
+   53 VarAssign: tID . tEQUAL Operand tPV
+
+    tEQUAL  shift, and go to state 42
 
     $default  reduce using rule 19 (FunName)
 
 
-State 24
+State 25
 
    23 Instruction: FunCall .
 
     $default  reduce using rule 23 (Instruction)
 
 
-State 25
-
-   33 ConstDeclarationAndAssign: Type . tINT tID tEQUAL tNB tPV
-   34 VarDeclarationAndAssign: Type . tINT tID tEQUAL tNB tPV
-   35                        | Type . tINT tID tEQUAL tID tPV
-   37 VarDeclaration: Type . tINT tID $@4 NextVar
-
-    tINT  shift, and go to state 40
-
-
 State 26
 
-    5 FunCall: FunName . tPO CallArgs tPF tPV
+   37 ConstDeclarationAndAssign: Type . tINT tID tEQUAL tNB tPV
+   38 VarDeclarationAndAssign: Type . tINT tID tEQUAL tNB tPV
+   39                        | Type . tINT tID tEQUAL tID tPV
+   41 VarDeclaration: Type . tINT tID $@4 NextVar
 
-    tPO  shift, and go to state 41
+    tINT  shift, and go to state 43
 
 
 State 27
 
-    4 Function: FunType FunName tPO DecArgs tPF tAO Body . tAF
+    5 FunCall: FunName . tPO CallArgs tPF tPV
 
-    tAF  shift, and go to state 42
+    tPO  shift, and go to state 44
 
 
 State 28
+
+    4 Function: FunType FunName tPO DecArgs tPF tAO Body . tAF
+
+    tAF  shift, and go to state 45
+
+
+State 29
 
    20 Body: Instructions .
 
     $default  reduce using rule 20 (Body)
 
 
-State 29
+State 30
 
    21 Instructions: Instruction . Instructions
 
     tMAIN   shift, and go to state 9
     tIF     shift, and go to state 21
     tWHILE  shift, and go to state 22
+    tPRINT  shift, and go to state 23
     tCONST  shift, and go to state 13
-    tID     shift, and go to state 23
+    tID     shift, and go to state 24
 
     tAF       reduce using rule 22 (Instructions)
     $default  reduce using rule 15 (Type)
 
-    FunCall                    go to state 24
-    Type                       go to state 25
-    FunName                    go to state 26
-    Instructions               go to state 43
-    Instruction                go to state 29
-    ConstDeclarationAndAssign  go to state 30
-    VarDeclarationAndAssign    go to state 31
-    VarDeclaration             go to state 32
-    VarAssign                  go to state 33
-    ifCondition                go to state 34
-    whileCondition             go to state 35
-
-
-State 30
-
-   24 Instruction: ConstDeclarationAndAssign .
-
-    $default  reduce using rule 24 (Instruction)
+    FunCall                    go to state 25
+    Type                       go to state 26
+    FunName                    go to state 27
+    Instructions               go to state 46
+    Instruction                go to state 30
+    Print                      go to state 31
+    ConstDeclarationAndAssign  go to state 32
+    VarDeclarationAndAssign    go to state 33
+    VarDeclaration             go to state 34
+    VarAssign                  go to state 35
+    ifCondition                go to state 36
+    whileCondition             go to state 37
 
 
 State 31
 
-   25 Instruction: VarDeclarationAndAssign .
+   24 Instruction: Print .
 
-    $default  reduce using rule 25 (Instruction)
+    $default  reduce using rule 24 (Instruction)
 
 
 State 32
 
-   26 Instruction: VarDeclaration .
+   25 Instruction: ConstDeclarationAndAssign .
 
-    $default  reduce using rule 26 (Instruction)
+    $default  reduce using rule 25 (Instruction)
 
 
 State 33
 
-   27 Instruction: VarAssign .
+   26 Instruction: VarDeclarationAndAssign .
 
-    $default  reduce using rule 27 (Instruction)
+    $default  reduce using rule 26 (Instruction)
 
 
 State 34
 
-   30 Instruction: ifCondition . tAO $@1 Body tAF $@2 elseCondition
+   27 Instruction: VarDeclaration .
 
-    tAO  shift, and go to state 44
+    $default  reduce using rule 27 (Instruction)
 
 
 State 35
 
-   32 Instruction: whileCondition . tAO $@3 Body tAF
+   28 Instruction: VarAssign .
 
-    tAO  shift, and go to state 45
+    $default  reduce using rule 28 (Instruction)
 
 
 State 36
+
+   31 Instruction: ifCondition . tAO $@1 Body tAF $@2 elseCondition
+
+    tAO  shift, and go to state 47
+
+
+State 37
+
+   33 Instruction: whileCondition . tAO $@3 Body tAF
+
+    tAO  shift, and go to state 48
+
+
+State 38
 
     8 NextDecArg: tV DecArgs .
 
     $default  reduce using rule 8 (NextDecArg)
 
 
-State 37
-
-   51 ifCondition: tIF tPO . ifBoolExpression tPF $@6 elseCondition
-
-    tMAIN   shift, and go to state 9
-    tTRUE   shift, and go to state 46
-    tFALSE  shift, and go to state 47
-    tNB     shift, and go to state 48
-    tID     shift, and go to state 49
-
-    FunCall           go to state 50
-    FunName           go to state 26
-    Operand           go to state 51
-    Operations        go to state 52
-    ifBoolExpression  go to state 53
-    ifComparaison     go to state 54
-
-
-State 38
-
-   55 whileCondition: tWHILE tPO . whileBoolExpression tPF
-
-    tMAIN   shift, and go to state 9
-    tTRUE   shift, and go to state 55
-    tFALSE  shift, and go to state 56
-    tNB     shift, and go to state 48
-    tID     shift, and go to state 57
-
-    FunCall              go to state 50
-    FunName              go to state 26
-    Operand              go to state 58
-    Operations           go to state 52
-    whileBoolExpression  go to state 59
-    whileComparaison     go to state 60
-
-
 State 39
 
-   49 VarAssign: tID tEQUAL . Operand tPV
+   55 ifCondition: tIF tPO . ifBoolExpression tPF $@6 elseCondition
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tMAIN   shift, and go to state 9
+    tTRUE   shift, and go to state 49
+    tFALSE  shift, and go to state 50
+    tNB     shift, and go to state 51
+    tID     shift, and go to state 52
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 62
-    Operations  go to state 52
+    FunCall           go to state 53
+    FunName           go to state 27
+    Operand           go to state 54
+    Operations        go to state 55
+    ifBoolExpression  go to state 56
+    ifComparaison     go to state 57
 
 
 State 40
 
-   33 ConstDeclarationAndAssign: Type tINT . tID tEQUAL tNB tPV
-   34 VarDeclarationAndAssign: Type tINT . tID tEQUAL tNB tPV
-   35                        | Type tINT . tID tEQUAL tID tPV
-   37 VarDeclaration: Type tINT . tID $@4 NextVar
+   59 whileCondition: tWHILE tPO . whileBoolExpression tPF
 
-    tID  shift, and go to state 63
+    tMAIN   shift, and go to state 9
+    tTRUE   shift, and go to state 58
+    tFALSE  shift, and go to state 59
+    tNB     shift, and go to state 51
+    tID     shift, and go to state 60
+
+    FunCall              go to state 53
+    FunName              go to state 27
+    Operand              go to state 61
+    Operations           go to state 55
+    whileBoolExpression  go to state 62
+    whileComparaison     go to state 63
 
 
 State 41
 
-    5 FunCall: FunName tPO . CallArgs tPF tPV
+   34 Print: tPRINT tPO . PrintArg tPF tPV
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tNB  shift, and go to state 64
+    tID  shift, and go to state 65
 
-    $default  reduce using rule 11 (CallArgs)
-
-    FunCall     go to state 50
-    CallArgs    go to state 64
-    FunName     go to state 26
-    Operand     go to state 65
-    Operations  go to state 52
+    PrintArg  go to state 66
 
 
 State 42
+
+   53 VarAssign: tID tEQUAL . Operand tPV
+
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
+
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 68
+    Operations  go to state 55
+
+
+State 43
+
+   37 ConstDeclarationAndAssign: Type tINT . tID tEQUAL tNB tPV
+   38 VarDeclarationAndAssign: Type tINT . tID tEQUAL tNB tPV
+   39                        | Type tINT . tID tEQUAL tID tPV
+   41 VarDeclaration: Type tINT . tID $@4 NextVar
+
+    tID  shift, and go to state 69
+
+
+State 44
+
+    5 FunCall: FunName tPO . CallArgs tPF tPV
+
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
+
+    $default  reduce using rule 11 (CallArgs)
+
+    FunCall     go to state 53
+    CallArgs    go to state 70
+    FunName     go to state 27
+    Operand     go to state 71
+    Operations  go to state 55
+
+
+State 45
 
     4 Function: FunType FunName tPO DecArgs tPF tAO Body tAF .
 
     $default  reduce using rule 4 (Function)
 
 
-State 43
+State 46
 
    21 Instructions: Instruction Instructions .
 
     $default  reduce using rule 21 (Instructions)
 
 
-State 44
-
-   30 Instruction: ifCondition tAO . $@1 Body tAF $@2 elseCondition
-
-    $default  reduce using rule 28 ($@1)
-
-    $@1  go to state 66
-
-
-State 45
-
-   32 Instruction: whileCondition tAO . $@3 Body tAF
-
-    $default  reduce using rule 31 ($@3)
-
-    $@3  go to state 67
-
-
-State 46
-
-   58 ifBoolExpression: tTRUE .
-
-    $default  reduce using rule 58 (ifBoolExpression)
-
-
 State 47
 
-   59 ifBoolExpression: tFALSE .
+   31 Instruction: ifCondition tAO . $@1 Body tAF $@2 elseCondition
 
-    $default  reduce using rule 59 (ifBoolExpression)
+    $default  reduce using rule 29 ($@1)
+
+    $@1  go to state 72
 
 
 State 48
 
-   44 Operand: tNB .
+   33 Instruction: whileCondition tAO . $@3 Body tAF
 
-    $default  reduce using rule 44 (Operand)
+    $default  reduce using rule 32 ($@3)
+
+    $@3  go to state 73
 
 
 State 49
 
-   19 FunName: tID .
-   43 Operand: tID .
-   57 ifBoolExpression: tID .
+   62 ifBoolExpression: tTRUE .
 
-    tPO       reduce using rule 19 (FunName)
-    tPF       reduce using rule 57 (ifBoolExpression)
-    $default  reduce using rule 43 (Operand)
+    $default  reduce using rule 62 (ifBoolExpression)
 
 
 State 50
 
-   41 Operand: FunCall .
+   63 ifBoolExpression: tFALSE .
 
-    $default  reduce using rule 41 (Operand)
+    $default  reduce using rule 63 (ifBoolExpression)
 
 
 State 51
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   60 ifComparaison: Operand . tEQEQ Operand
-   61              | Operand . tINF Operand
-   62              | Operand . tSUP Operand
+   48 Operand: tNB .
 
-    tSUB   shift, and go to state 68
-    tADD   shift, and go to state 69
-    tMUL   shift, and go to state 70
-    tDIV   shift, and go to state 71
-    tINF   shift, and go to state 72
-    tSUP   shift, and go to state 73
-    tEQEQ  shift, and go to state 74
+    $default  reduce using rule 48 (Operand)
 
 
 State 52
 
-   42 Operand: Operations .
+   19 FunName: tID .
+   47 Operand: tID .
+   61 ifBoolExpression: tID .
 
-    $default  reduce using rule 42 (Operand)
+    tPO       reduce using rule 19 (FunName)
+    tPF       reduce using rule 61 (ifBoolExpression)
+    $default  reduce using rule 47 (Operand)
 
 
 State 53
 
-   51 ifCondition: tIF tPO ifBoolExpression . tPF $@6 elseCondition
+   45 Operand: FunCall .
 
-    tPF  shift, and go to state 75
+    $default  reduce using rule 45 (Operand)
 
 
 State 54
 
-   56 ifBoolExpression: ifComparaison .
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   64 ifComparaison: Operand . tEQEQ Operand
+   65              | Operand . tINF Operand
+   66              | Operand . tSUP Operand
 
-    $default  reduce using rule 56 (ifBoolExpression)
+    tSUB   shift, and go to state 74
+    tADD   shift, and go to state 75
+    tMUL   shift, and go to state 76
+    tDIV   shift, and go to state 77
+    tINF   shift, and go to state 78
+    tSUP   shift, and go to state 79
+    tEQEQ  shift, and go to state 80
 
 
 State 55
 
-   65 whileBoolExpression: tTRUE .
+   46 Operand: Operations .
 
-    $default  reduce using rule 65 (whileBoolExpression)
+    $default  reduce using rule 46 (Operand)
 
 
 State 56
 
-   66 whileBoolExpression: tFALSE .
+   55 ifCondition: tIF tPO ifBoolExpression . tPF $@6 elseCondition
 
-    $default  reduce using rule 66 (whileBoolExpression)
+    tPF  shift, and go to state 81
 
 
 State 57
 
-   19 FunName: tID .
-   43 Operand: tID .
-   64 whileBoolExpression: tID .
+   60 ifBoolExpression: ifComparaison .
 
-    tPO       reduce using rule 19 (FunName)
-    tPF       reduce using rule 64 (whileBoolExpression)
-    $default  reduce using rule 43 (Operand)
+    $default  reduce using rule 60 (ifBoolExpression)
 
 
 State 58
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   67 whileComparaison: Operand . tEQEQ Operand
-   68                 | Operand . tINF Operand
-   69                 | Operand . tSUP Operand
+   69 whileBoolExpression: tTRUE .
 
-    tSUB   shift, and go to state 68
-    tADD   shift, and go to state 69
-    tMUL   shift, and go to state 70
-    tDIV   shift, and go to state 71
-    tINF   shift, and go to state 76
-    tSUP   shift, and go to state 77
-    tEQEQ  shift, and go to state 78
+    $default  reduce using rule 69 (whileBoolExpression)
 
 
 State 59
 
-   55 whileCondition: tWHILE tPO whileBoolExpression . tPF
+   70 whileBoolExpression: tFALSE .
 
-    tPF  shift, and go to state 79
+    $default  reduce using rule 70 (whileBoolExpression)
 
 
 State 60
 
-   63 whileBoolExpression: whileComparaison .
+   19 FunName: tID .
+   47 Operand: tID .
+   68 whileBoolExpression: tID .
 
-    $default  reduce using rule 63 (whileBoolExpression)
+    tPO       reduce using rule 19 (FunName)
+    tPF       reduce using rule 68 (whileBoolExpression)
+    $default  reduce using rule 47 (Operand)
 
 
 State 61
 
-   19 FunName: tID .
-   43 Operand: tID .
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   71 whileComparaison: Operand . tEQEQ Operand
+   72                 | Operand . tINF Operand
+   73                 | Operand . tSUP Operand
 
-    tPO       reduce using rule 19 (FunName)
-    $default  reduce using rule 43 (Operand)
+    tSUB   shift, and go to state 74
+    tADD   shift, and go to state 75
+    tMUL   shift, and go to state 76
+    tDIV   shift, and go to state 77
+    tINF   shift, and go to state 82
+    tSUP   shift, and go to state 83
+    tEQEQ  shift, and go to state 84
 
 
 State 62
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   49 VarAssign: tID tEQUAL Operand . tPV
+   59 whileCondition: tWHILE tPO whileBoolExpression . tPF
 
-    tPV   shift, and go to state 80
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
+    tPF  shift, and go to state 85
 
 
 State 63
 
-   33 ConstDeclarationAndAssign: Type tINT tID . tEQUAL tNB tPV
-   34 VarDeclarationAndAssign: Type tINT tID . tEQUAL tNB tPV
-   35                        | Type tINT tID . tEQUAL tID tPV
-   37 VarDeclaration: Type tINT tID . $@4 NextVar
+   67 whileBoolExpression: whileComparaison .
 
-    tEQUAL  shift, and go to state 81
-
-    $default  reduce using rule 36 ($@4)
-
-    $@4  go to state 82
+    $default  reduce using rule 67 (whileBoolExpression)
 
 
 State 64
 
-    5 FunCall: FunName tPO CallArgs . tPF tPV
+   36 PrintArg: tNB .
 
-    tPF  shift, and go to state 83
+    $default  reduce using rule 36 (PrintArg)
 
 
 State 65
 
-   10 CallArgs: Operand . CallArgNext
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
+   35 PrintArg: tID .
 
-    tV    shift, and go to state 84
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 13 (CallArgNext)
-
-    CallArgNext  go to state 85
+    $default  reduce using rule 35 (PrintArg)
 
 
 State 66
 
-   30 Instruction: ifCondition tAO $@1 . Body tAF $@2 elseCondition
+   34 Print: tPRINT tPO PrintArg . tPF tPV
 
-    tMAIN   shift, and go to state 9
-    tIF     shift, and go to state 21
-    tWHILE  shift, and go to state 22
-    tCONST  shift, and go to state 13
-    tID     shift, and go to state 23
-
-    tAF       reduce using rule 22 (Instructions)
-    $default  reduce using rule 15 (Type)
-
-    FunCall                    go to state 24
-    Type                       go to state 25
-    FunName                    go to state 26
-    Body                       go to state 86
-    Instructions               go to state 28
-    Instruction                go to state 29
-    ConstDeclarationAndAssign  go to state 30
-    VarDeclarationAndAssign    go to state 31
-    VarDeclaration             go to state 32
-    VarAssign                  go to state 33
-    ifCondition                go to state 34
-    whileCondition             go to state 35
+    tPF  shift, and go to state 86
 
 
 State 67
 
-   32 Instruction: whileCondition tAO $@3 . Body tAF
+   19 FunName: tID .
+   47 Operand: tID .
 
-    tMAIN   shift, and go to state 9
-    tIF     shift, and go to state 21
-    tWHILE  shift, and go to state 22
-    tCONST  shift, and go to state 13
-    tID     shift, and go to state 23
-
-    tAF       reduce using rule 22 (Instructions)
-    $default  reduce using rule 15 (Type)
-
-    FunCall                    go to state 24
-    Type                       go to state 25
-    FunName                    go to state 26
-    Body                       go to state 87
-    Instructions               go to state 28
-    Instruction                go to state 29
-    ConstDeclarationAndAssign  go to state 30
-    VarDeclarationAndAssign    go to state 31
-    VarDeclaration             go to state 32
-    VarAssign                  go to state 33
-    ifCondition                go to state 34
-    whileCondition             go to state 35
+    tPO       reduce using rule 19 (FunName)
+    $default  reduce using rule 47 (Operand)
 
 
 State 68
 
-   46 Operations: Operand tSUB . Operand
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   53 VarAssign: tID tEQUAL Operand . tPV
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
-
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 88
-    Operations  go to state 52
+    tPV   shift, and go to state 87
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
 
 
 State 69
 
-   45 Operations: Operand tADD . Operand
+   37 ConstDeclarationAndAssign: Type tINT tID . tEQUAL tNB tPV
+   38 VarDeclarationAndAssign: Type tINT tID . tEQUAL tNB tPV
+   39                        | Type tINT tID . tEQUAL tID tPV
+   41 VarDeclaration: Type tINT tID . $@4 NextVar
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tEQUAL  shift, and go to state 88
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 89
-    Operations  go to state 52
+    $default  reduce using rule 40 ($@4)
+
+    $@4  go to state 89
 
 
 State 70
 
-   47 Operations: Operand tMUL . Operand
+    5 FunCall: FunName tPO CallArgs . tPF tPV
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
-
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 90
-    Operations  go to state 52
+    tPF  shift, and go to state 90
 
 
 State 71
 
-   48 Operations: Operand tDIV . Operand
+   10 CallArgs: Operand . CallArgNext
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tV    shift, and go to state 91
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 91
-    Operations  go to state 52
+    $default  reduce using rule 13 (CallArgNext)
+
+    CallArgNext  go to state 92
 
 
 State 72
 
-   61 ifComparaison: Operand tINF . Operand
+   31 Instruction: ifCondition tAO $@1 . Body tAF $@2 elseCondition
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tMAIN   shift, and go to state 9
+    tIF     shift, and go to state 21
+    tWHILE  shift, and go to state 22
+    tPRINT  shift, and go to state 23
+    tCONST  shift, and go to state 13
+    tID     shift, and go to state 24
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 92
-    Operations  go to state 52
+    tAF       reduce using rule 22 (Instructions)
+    $default  reduce using rule 15 (Type)
+
+    FunCall                    go to state 25
+    Type                       go to state 26
+    FunName                    go to state 27
+    Body                       go to state 93
+    Instructions               go to state 29
+    Instruction                go to state 30
+    Print                      go to state 31
+    ConstDeclarationAndAssign  go to state 32
+    VarDeclarationAndAssign    go to state 33
+    VarDeclaration             go to state 34
+    VarAssign                  go to state 35
+    ifCondition                go to state 36
+    whileCondition             go to state 37
 
 
 State 73
 
-   62 ifComparaison: Operand tSUP . Operand
+   33 Instruction: whileCondition tAO $@3 . Body tAF
 
-    tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tMAIN   shift, and go to state 9
+    tIF     shift, and go to state 21
+    tWHILE  shift, and go to state 22
+    tPRINT  shift, and go to state 23
+    tCONST  shift, and go to state 13
+    tID     shift, and go to state 24
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 93
-    Operations  go to state 52
+    tAF       reduce using rule 22 (Instructions)
+    $default  reduce using rule 15 (Type)
+
+    FunCall                    go to state 25
+    Type                       go to state 26
+    FunName                    go to state 27
+    Body                       go to state 94
+    Instructions               go to state 29
+    Instruction                go to state 30
+    Print                      go to state 31
+    ConstDeclarationAndAssign  go to state 32
+    VarDeclarationAndAssign    go to state 33
+    VarDeclaration             go to state 34
+    VarAssign                  go to state 35
+    ifCondition                go to state 36
+    whileCondition             go to state 37
 
 
 State 74
 
-   60 ifComparaison: Operand tEQEQ . Operand
+   50 Operations: Operand tSUB . Operand
 
     tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 94
-    Operations  go to state 52
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 95
+    Operations  go to state 55
 
 
 State 75
 
-   51 ifCondition: tIF tPO ifBoolExpression tPF . $@6 elseCondition
+   49 Operations: Operand tADD . Operand
 
-    $default  reduce using rule 50 ($@6)
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    $@6  go to state 95
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 96
+    Operations  go to state 55
 
 
 State 76
 
-   68 whileComparaison: Operand tINF . Operand
+   51 Operations: Operand tMUL . Operand
 
     tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 96
-    Operations  go to state 52
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 97
+    Operations  go to state 55
 
 
 State 77
 
-   69 whileComparaison: Operand tSUP . Operand
+   52 Operations: Operand tDIV . Operand
 
     tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 97
-    Operations  go to state 52
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 98
+    Operations  go to state 55
 
 
 State 78
 
-   67 whileComparaison: Operand tEQEQ . Operand
+   65 ifComparaison: Operand tINF . Operand
 
     tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    FunCall     go to state 50
-    FunName     go to state 26
-    Operand     go to state 98
-    Operations  go to state 52
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 99
+    Operations  go to state 55
 
 
 State 79
 
-   55 whileCondition: tWHILE tPO whileBoolExpression tPF .
+   66 ifComparaison: Operand tSUP . Operand
 
-    $default  reduce using rule 55 (whileCondition)
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
+
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 100
+    Operations  go to state 55
 
 
 State 80
 
-   49 VarAssign: tID tEQUAL Operand tPV .
+   64 ifComparaison: Operand tEQEQ . Operand
 
-    $default  reduce using rule 49 (VarAssign)
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
+
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 101
+    Operations  go to state 55
 
 
 State 81
 
-   33 ConstDeclarationAndAssign: Type tINT tID tEQUAL . tNB tPV
-   34 VarDeclarationAndAssign: Type tINT tID tEQUAL . tNB tPV
-   35                        | Type tINT tID tEQUAL . tID tPV
+   55 ifCondition: tIF tPO ifBoolExpression tPF . $@6 elseCondition
 
-    tNB  shift, and go to state 99
-    tID  shift, and go to state 100
+    $default  reduce using rule 54 ($@6)
+
+    $@6  go to state 102
 
 
 State 82
 
-   37 VarDeclaration: Type tINT tID $@4 . NextVar
+   72 whileComparaison: Operand tINF . Operand
 
-    tPV     shift, and go to state 101
-    tCONST  shift, and go to state 13
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    $default  reduce using rule 15 (Type)
-
-    Type     go to state 102
-    NextVar  go to state 103
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 103
+    Operations  go to state 55
 
 
 State 83
 
-    5 FunCall: FunName tPO CallArgs tPF . tPV
+   73 whileComparaison: Operand tSUP . Operand
 
-    tPV  shift, and go to state 104
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
+
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 104
+    Operations  go to state 55
 
 
 State 84
 
-   12 CallArgNext: tV . CallArgs
+   71 whileComparaison: Operand tEQEQ . Operand
 
     tMAIN  shift, and go to state 9
-    tNB    shift, and go to state 48
-    tID    shift, and go to state 61
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
 
-    $default  reduce using rule 11 (CallArgs)
-
-    FunCall     go to state 50
-    CallArgs    go to state 105
-    FunName     go to state 26
-    Operand     go to state 65
-    Operations  go to state 52
+    FunCall     go to state 53
+    FunName     go to state 27
+    Operand     go to state 105
+    Operations  go to state 55
 
 
 State 85
+
+   59 whileCondition: tWHILE tPO whileBoolExpression tPF .
+
+    $default  reduce using rule 59 (whileCondition)
+
+
+State 86
+
+   34 Print: tPRINT tPO PrintArg tPF . tPV
+
+    tPV  shift, and go to state 106
+
+
+State 87
+
+   53 VarAssign: tID tEQUAL Operand tPV .
+
+    $default  reduce using rule 53 (VarAssign)
+
+
+State 88
+
+   37 ConstDeclarationAndAssign: Type tINT tID tEQUAL . tNB tPV
+   38 VarDeclarationAndAssign: Type tINT tID tEQUAL . tNB tPV
+   39                        | Type tINT tID tEQUAL . tID tPV
+
+    tNB  shift, and go to state 107
+    tID  shift, and go to state 108
+
+
+State 89
+
+   41 VarDeclaration: Type tINT tID $@4 . NextVar
+
+    tPV     shift, and go to state 109
+    tCONST  shift, and go to state 13
+
+    $default  reduce using rule 15 (Type)
+
+    Type     go to state 110
+    NextVar  go to state 111
+
+
+State 90
+
+    5 FunCall: FunName tPO CallArgs tPF . tPV
+
+    tPV  shift, and go to state 112
+
+
+State 91
+
+   12 CallArgNext: tV . CallArgs
+
+    tMAIN  shift, and go to state 9
+    tNB    shift, and go to state 51
+    tID    shift, and go to state 67
+
+    $default  reduce using rule 11 (CallArgs)
+
+    FunCall     go to state 53
+    CallArgs    go to state 113
+    FunName     go to state 27
+    Operand     go to state 71
+    Operations  go to state 55
+
+
+State 92
 
    10 CallArgs: Operand CallArgNext .
 
     $default  reduce using rule 10 (CallArgs)
 
 
-State 86
-
-   30 Instruction: ifCondition tAO $@1 Body . tAF $@2 elseCondition
-
-    tAF  shift, and go to state 106
-
-
-State 87
-
-   32 Instruction: whileCondition tAO $@3 Body . tAF
-
-    tAF  shift, and go to state 107
-
-
-State 88
-
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   46           | Operand tSUB Operand .
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 46 (Operations)
-
-
-State 89
-
-   45 Operations: Operand . tADD Operand
-   45           | Operand tADD Operand .
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 45 (Operations)
-
-
-State 90
-
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   47           | Operand tMUL Operand .
-   48           | Operand . tDIV Operand
-
-    $default  reduce using rule 47 (Operations)
-
-
-State 91
-
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   48           | Operand tDIV Operand .
-
-    $default  reduce using rule 48 (Operations)
-
-
-State 92
-
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   61 ifComparaison: Operand tINF Operand .
-
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 61 (ifComparaison)
-
-
 State 93
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   62 ifComparaison: Operand tSUP Operand .
+   31 Instruction: ifCondition tAO $@1 Body . tAF $@2 elseCondition
 
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 62 (ifComparaison)
+    tAF  shift, and go to state 114
 
 
 State 94
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   60 ifComparaison: Operand tEQEQ Operand .
+   33 Instruction: whileCondition tAO $@3 Body . tAF
 
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 60 (ifComparaison)
+    tAF  shift, and go to state 115
 
 
 State 95
 
-   51 ifCondition: tIF tPO ifBoolExpression tPF $@6 . elseCondition
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   50           | Operand tSUB Operand .
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
 
-    tELSE  shift, and go to state 108
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
 
-    $default  reduce using rule 54 (elseCondition)
-
-    elseCondition  go to state 109
+    $default  reduce using rule 50 (Operations)
 
 
 State 96
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   68 whileComparaison: Operand tINF Operand .
+   49 Operations: Operand . tADD Operand
+   49           | Operand tADD Operand .
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
 
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
 
-    $default  reduce using rule 68 (whileComparaison)
+    $default  reduce using rule 49 (Operations)
 
 
 State 97
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   69 whileComparaison: Operand tSUP Operand .
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   51           | Operand tMUL Operand .
+   52           | Operand . tDIV Operand
 
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 69 (whileComparaison)
+    $default  reduce using rule 51 (Operations)
 
 
 State 98
 
-   45 Operations: Operand . tADD Operand
-   46           | Operand . tSUB Operand
-   47           | Operand . tMUL Operand
-   48           | Operand . tDIV Operand
-   67 whileComparaison: Operand tEQEQ Operand .
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   52           | Operand tDIV Operand .
 
-    tSUB  shift, and go to state 68
-    tADD  shift, and go to state 69
-    tMUL  shift, and go to state 70
-    tDIV  shift, and go to state 71
-
-    $default  reduce using rule 67 (whileComparaison)
+    $default  reduce using rule 52 (Operations)
 
 
 State 99
 
-   33 ConstDeclarationAndAssign: Type tINT tID tEQUAL tNB . tPV
-   34 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB . tPV
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   65 ifComparaison: Operand tINF Operand .
 
-    tPV  shift, and go to state 110
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
+
+    $default  reduce using rule 65 (ifComparaison)
 
 
 State 100
 
-   35 VarDeclarationAndAssign: Type tINT tID tEQUAL tID . tPV
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   66 ifComparaison: Operand tSUP Operand .
 
-    tPV  shift, and go to state 111
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
+
+    $default  reduce using rule 66 (ifComparaison)
 
 
 State 101
 
-   40 NextVar: tPV .
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   64 ifComparaison: Operand tEQEQ Operand .
 
-    $default  reduce using rule 40 (NextVar)
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
+
+    $default  reduce using rule 64 (ifComparaison)
 
 
 State 102
 
-   39 NextVar: Type . tV tID $@5 NextVar
+   55 ifCondition: tIF tPO ifBoolExpression tPF $@6 . elseCondition
 
-    tV  shift, and go to state 112
+    tELSE  shift, and go to state 116
+
+    $default  reduce using rule 58 (elseCondition)
+
+    elseCondition  go to state 117
 
 
 State 103
 
-   37 VarDeclaration: Type tINT tID $@4 NextVar .
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   72 whileComparaison: Operand tINF Operand .
 
-    $default  reduce using rule 37 (VarDeclaration)
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
+
+    $default  reduce using rule 72 (whileComparaison)
 
 
 State 104
+
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   73 whileComparaison: Operand tSUP Operand .
+
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
+
+    $default  reduce using rule 73 (whileComparaison)
+
+
+State 105
+
+   49 Operations: Operand . tADD Operand
+   50           | Operand . tSUB Operand
+   51           | Operand . tMUL Operand
+   52           | Operand . tDIV Operand
+   71 whileComparaison: Operand tEQEQ Operand .
+
+    tSUB  shift, and go to state 74
+    tADD  shift, and go to state 75
+    tMUL  shift, and go to state 76
+    tDIV  shift, and go to state 77
+
+    $default  reduce using rule 71 (whileComparaison)
+
+
+State 106
+
+   34 Print: tPRINT tPO PrintArg tPF tPV .
+
+    $default  reduce using rule 34 (Print)
+
+
+State 107
+
+   37 ConstDeclarationAndAssign: Type tINT tID tEQUAL tNB . tPV
+   38 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB . tPV
+
+    tPV  shift, and go to state 118
+
+
+State 108
+
+   39 VarDeclarationAndAssign: Type tINT tID tEQUAL tID . tPV
+
+    tPV  shift, and go to state 119
+
+
+State 109
+
+   44 NextVar: tPV .
+
+    $default  reduce using rule 44 (NextVar)
+
+
+State 110
+
+   43 NextVar: Type . tV tID $@5 NextVar
+
+    tV  shift, and go to state 120
+
+
+State 111
+
+   41 VarDeclaration: Type tINT tID $@4 NextVar .
+
+    $default  reduce using rule 41 (VarDeclaration)
+
+
+State 112
 
     5 FunCall: FunName tPO CallArgs tPF tPV .
 
     $default  reduce using rule 5 (FunCall)
 
 
-State 105
+State 113
 
    12 CallArgNext: tV CallArgs .
 
     $default  reduce using rule 12 (CallArgNext)
 
 
-State 106
-
-   30 Instruction: ifCondition tAO $@1 Body tAF . $@2 elseCondition
-
-    $default  reduce using rule 29 ($@2)
-
-    $@2  go to state 113
-
-
-State 107
-
-   32 Instruction: whileCondition tAO $@3 Body tAF .
-
-    $default  reduce using rule 32 (Instruction)
-
-
-State 108
-
-   53 elseCondition: tELSE . tAO $@7 Body tAF
-
-    tAO  shift, and go to state 114
-
-
-State 109
-
-   51 ifCondition: tIF tPO ifBoolExpression tPF $@6 elseCondition .
-
-    $default  reduce using rule 51 (ifCondition)
-
-
-State 110
-
-   33 ConstDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV .
-   34 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV .
-
-    tMAIN     reduce using rule 33 (ConstDeclarationAndAssign)
-    tMAIN     [reduce using rule 34 (VarDeclarationAndAssign)]
-    tIF       reduce using rule 33 (ConstDeclarationAndAssign)
-    tIF       [reduce using rule 34 (VarDeclarationAndAssign)]
-    tWHILE    reduce using rule 33 (ConstDeclarationAndAssign)
-    tWHILE    [reduce using rule 34 (VarDeclarationAndAssign)]
-    tAF       reduce using rule 33 (ConstDeclarationAndAssign)
-    tAF       [reduce using rule 34 (VarDeclarationAndAssign)]
-    tINT      reduce using rule 33 (ConstDeclarationAndAssign)
-    tINT      [reduce using rule 34 (VarDeclarationAndAssign)]
-    tCONST    reduce using rule 33 (ConstDeclarationAndAssign)
-    tCONST    [reduce using rule 34 (VarDeclarationAndAssign)]
-    tID       reduce using rule 33 (ConstDeclarationAndAssign)
-    tID       [reduce using rule 34 (VarDeclarationAndAssign)]
-    $default  reduce using rule 33 (ConstDeclarationAndAssign)
-
-
-State 111
-
-   35 VarDeclarationAndAssign: Type tINT tID tEQUAL tID tPV .
-
-    $default  reduce using rule 35 (VarDeclarationAndAssign)
-
-
-State 112
-
-   39 NextVar: Type tV . tID $@5 NextVar
-
-    tID  shift, and go to state 115
-
-
-State 113
-
-   30 Instruction: ifCondition tAO $@1 Body tAF $@2 . elseCondition
-
-    tELSE  shift, and go to state 108
-
-    $default  reduce using rule 54 (elseCondition)
-
-    elseCondition  go to state 116
-
-
 State 114
 
-   53 elseCondition: tELSE tAO . $@7 Body tAF
+   31 Instruction: ifCondition tAO $@1 Body tAF . $@2 elseCondition
 
-    $default  reduce using rule 52 ($@7)
+    $default  reduce using rule 30 ($@2)
 
-    $@7  go to state 117
+    $@2  go to state 121
 
 
 State 115
 
-   39 NextVar: Type tV tID . $@5 NextVar
+   33 Instruction: whileCondition tAO $@3 Body tAF .
 
-    $default  reduce using rule 38 ($@5)
-
-    $@5  go to state 118
+    $default  reduce using rule 33 (Instruction)
 
 
 State 116
 
-   30 Instruction: ifCondition tAO $@1 Body tAF $@2 elseCondition .
+   57 elseCondition: tELSE . tAO $@7 Body tAF
 
-    $default  reduce using rule 30 (Instruction)
+    tAO  shift, and go to state 122
 
 
 State 117
 
-   53 elseCondition: tELSE tAO $@7 . Body tAF
+   55 ifCondition: tIF tPO ifBoolExpression tPF $@6 elseCondition .
 
-    tMAIN   shift, and go to state 9
-    tIF     shift, and go to state 21
-    tWHILE  shift, and go to state 22
-    tCONST  shift, and go to state 13
-    tID     shift, and go to state 23
-
-    tAF       reduce using rule 22 (Instructions)
-    $default  reduce using rule 15 (Type)
-
-    FunCall                    go to state 24
-    Type                       go to state 25
-    FunName                    go to state 26
-    Body                       go to state 119
-    Instructions               go to state 28
-    Instruction                go to state 29
-    ConstDeclarationAndAssign  go to state 30
-    VarDeclarationAndAssign    go to state 31
-    VarDeclaration             go to state 32
-    VarAssign                  go to state 33
-    ifCondition                go to state 34
-    whileCondition             go to state 35
+    $default  reduce using rule 55 (ifCondition)
 
 
 State 118
 
-   39 NextVar: Type tV tID $@5 . NextVar
+   37 ConstDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV .
+   38 VarDeclarationAndAssign: Type tINT tID tEQUAL tNB tPV .
 
-    tPV     shift, and go to state 101
-    tCONST  shift, and go to state 13
-
-    $default  reduce using rule 15 (Type)
-
-    Type     go to state 102
-    NextVar  go to state 120
+    tMAIN     reduce using rule 37 (ConstDeclarationAndAssign)
+    tMAIN     [reduce using rule 38 (VarDeclarationAndAssign)]
+    tIF       reduce using rule 37 (ConstDeclarationAndAssign)
+    tIF       [reduce using rule 38 (VarDeclarationAndAssign)]
+    tWHILE    reduce using rule 37 (ConstDeclarationAndAssign)
+    tWHILE    [reduce using rule 38 (VarDeclarationAndAssign)]
+    tPRINT    reduce using rule 37 (ConstDeclarationAndAssign)
+    tPRINT    [reduce using rule 38 (VarDeclarationAndAssign)]
+    tAF       reduce using rule 37 (ConstDeclarationAndAssign)
+    tAF       [reduce using rule 38 (VarDeclarationAndAssign)]
+    tINT      reduce using rule 37 (ConstDeclarationAndAssign)
+    tINT      [reduce using rule 38 (VarDeclarationAndAssign)]
+    tCONST    reduce using rule 37 (ConstDeclarationAndAssign)
+    tCONST    [reduce using rule 38 (VarDeclarationAndAssign)]
+    tID       reduce using rule 37 (ConstDeclarationAndAssign)
+    tID       [reduce using rule 38 (VarDeclarationAndAssign)]
+    $default  reduce using rule 37 (ConstDeclarationAndAssign)
 
 
 State 119
 
-   53 elseCondition: tELSE tAO $@7 Body . tAF
+   39 VarDeclarationAndAssign: Type tINT tID tEQUAL tID tPV .
 
-    tAF  shift, and go to state 121
+    $default  reduce using rule 39 (VarDeclarationAndAssign)
 
 
 State 120
 
-   39 NextVar: Type tV tID $@5 NextVar .
+   43 NextVar: Type tV . tID $@5 NextVar
 
-    $default  reduce using rule 39 (NextVar)
+    tID  shift, and go to state 123
 
 
 State 121
 
-   53 elseCondition: tELSE tAO $@7 Body tAF .
+   31 Instruction: ifCondition tAO $@1 Body tAF $@2 . elseCondition
 
-    $default  reduce using rule 53 (elseCondition)
+    tELSE  shift, and go to state 116
+
+    $default  reduce using rule 58 (elseCondition)
+
+    elseCondition  go to state 124
+
+
+State 122
+
+   57 elseCondition: tELSE tAO . $@7 Body tAF
+
+    $default  reduce using rule 56 ($@7)
+
+    $@7  go to state 125
+
+
+State 123
+
+   43 NextVar: Type tV tID . $@5 NextVar
+
+    $default  reduce using rule 42 ($@5)
+
+    $@5  go to state 126
+
+
+State 124
+
+   31 Instruction: ifCondition tAO $@1 Body tAF $@2 elseCondition .
+
+    $default  reduce using rule 31 (Instruction)
+
+
+State 125
+
+   57 elseCondition: tELSE tAO $@7 . Body tAF
+
+    tMAIN   shift, and go to state 9
+    tIF     shift, and go to state 21
+    tWHILE  shift, and go to state 22
+    tPRINT  shift, and go to state 23
+    tCONST  shift, and go to state 13
+    tID     shift, and go to state 24
+
+    tAF       reduce using rule 22 (Instructions)
+    $default  reduce using rule 15 (Type)
+
+    FunCall                    go to state 25
+    Type                       go to state 26
+    FunName                    go to state 27
+    Body                       go to state 127
+    Instructions               go to state 29
+    Instruction                go to state 30
+    Print                      go to state 31
+    ConstDeclarationAndAssign  go to state 32
+    VarDeclarationAndAssign    go to state 33
+    VarDeclaration             go to state 34
+    VarAssign                  go to state 35
+    ifCondition                go to state 36
+    whileCondition             go to state 37
+
+
+State 126
+
+   43 NextVar: Type tV tID $@5 . NextVar
+
+    tPV     shift, and go to state 109
+    tCONST  shift, and go to state 13
+
+    $default  reduce using rule 15 (Type)
+
+    Type     go to state 110
+    NextVar  go to state 128
+
+
+State 127
+
+   57 elseCondition: tELSE tAO $@7 Body . tAF
+
+    tAF  shift, and go to state 129
+
+
+State 128
+
+   43 NextVar: Type tV tID $@5 NextVar .
+
+    $default  reduce using rule 43 (NextVar)
+
+
+State 129
+
+   57 elseCondition: tELSE tAO $@7 Body tAF .
+
+    $default  reduce using rule 57 (elseCondition)

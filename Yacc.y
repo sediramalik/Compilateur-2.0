@@ -62,6 +62,7 @@ FunName: tMAIN {varMain=1;} | tID {varMain=0;}; //TO AVOID DECLARATIONS OUTSIDE 
 Body: Instructions;
 Instructions: Instruction Instructions |;
 Instruction: FunCall 
+           | Print
            | ConstDeclarationAndAssign
            | VarDeclarationAndAssign
            | VarDeclaration 
@@ -125,6 +126,21 @@ tAF {
   print_sTable(st);
   decrementDepth("WHILE");
 };
+
+
+
+Print: tPRINT tPO PrintArg tPF tPV;
+PrintArg :
+  tID {
+    instruction i = addInstruction(it,"PRI",getAddrName(st,$1),-1,-1); 
+  }
+  | tNB {
+    symbol tmp = addSymbol(st,"tmp_nb_print",1);
+    instruction i = addInstruction(it,"AFC",tmp.addr,$1,-1);
+    instruction j = addInstruction(it,"PRI",tmp.addr,-1,-1); 
+    unstack(st);
+  };
+
 
 //NOTE: Multiple Variables declarations AND Var Assigns cannot occur in the same line!!
 
