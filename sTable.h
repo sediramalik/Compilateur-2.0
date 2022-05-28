@@ -9,6 +9,7 @@ typedef struct
     int type; // 1 IS GOR VAR AND 2 FOR CONST
     int depth;
     int addr;
+    int assigned; //FOR CONSTANTS TO AVOID RE-ASSIGNING THEM TO A VALUE
 } symbol;
 
 symbol *init_sTable();
@@ -22,4 +23,5 @@ int getAddr(symbol *t, symbol s);
 int getAddrName(symbol *t, char *targetname);
 int unstack(symbol *t);
 symbol getSymbolByName(symbol *t, char *targetname);
+void const_assigned(symbol* s);
 

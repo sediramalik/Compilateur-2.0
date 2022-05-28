@@ -579,11 +579,11 @@ static const yytype_int16 yyrline[] =
        0,    44,    44,    46,    46,    47,    48,    50,    50,    51,
       51,    53,    53,    54,    54,    56,    56,    57,    57,    59,
       59,    61,    62,    62,    63,    64,    65,    66,    67,    69,
-      74,    68,    96,    95,   130,   140,   148,   159,   159,   166,
-     166,   172,   174,   175,   176,   183,   190,   197,   204,   211,
-     219,   235,   235,   241,   240,   264,   266,   271,   272,   276,
-     277,   284,   299,   312,   327,   328,   334,   338,   343,   356,
-     368
+      74,    68,    96,    95,   132,   142,   150,   160,   160,   170,
+     170,   179,   181,   182,   183,   190,   197,   204,   211,   218,
+     227,   260,   260,   266,   265,   289,   291,   296,   297,   301,
+     302,   309,   324,   337,   352,   353,   359,   363,   368,   381,
+     393
 };
 #endif
 
@@ -1544,7 +1544,7 @@ yyreduce:
     break;
 
   case 34:
-#line 130 "Yacc.y"
+#line 132 "Yacc.y"
                                                          {
   printf("CONST DECLARATION & ASSIGN FOUND\n"); 
   symbol s = addSymbol(st,(yyvsp[-3].string),(yyvsp[-5].nb));
@@ -1557,7 +1557,7 @@ yyreduce:
     break;
 
   case 35:
-#line 140 "Yacc.y"
+#line 142 "Yacc.y"
                                                        {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,(yyvsp[-3].string),(yyvsp[-5].nb));
@@ -1570,7 +1570,7 @@ yyreduce:
     break;
 
   case 36:
-#line 148 "Yacc.y"
+#line 150 "Yacc.y"
                                                        {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,(yyvsp[-3].string),(yyvsp[-5].nb));
@@ -1583,36 +1583,42 @@ yyreduce:
     break;
 
   case 37:
-#line 159 "Yacc.y"
+#line 160 "Yacc.y"
                                { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
 if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   printf("VAR DECLARATION FOUND\n");
-  symbol s = addSymbol(st,(yyvsp[0].string),(yyvsp[-2].nb));
-  varBool=(yyvsp[-2].nb);
 }
+else if ((yyvsp[-2].nb) == 2){
+  printf("CONST DECLARATION FOUND\n");
 }
-#line 1595 "y.tab.c"
+symbol s = addSymbol(st,(yyvsp[0].string),(yyvsp[-2].nb));
+varBool=(yyvsp[-2].nb); 
+}
+#line 1598 "y.tab.c"
     break;
 
   case 39:
-#line 166 "Yacc.y"
+#line 170 "Yacc.y"
                       {
-  if (varBool==1){
+  if (varBool == 1){
     printf("NEXT VAR DECLARATION FOUND\n");
-    symbol s = addSymbol(st,(yyvsp[0].string),(yyvsp[-2].nb));
   }
+  else if (varBool == 2){
+    printf("NEXT CONST DECLARATION FOUND\n");
+  }
+  symbol s = addSymbol(st,(yyvsp[0].string),(yyvsp[-2].nb));
 }
-#line 1606 "y.tab.c"
-    break;
-
-  case 41:
-#line 172 "Yacc.y"
-                {varBool=0;}
 #line 1612 "y.tab.c"
     break;
 
+  case 41:
+#line 179 "Yacc.y"
+                {varBool=0;}
+#line 1618 "y.tab.c"
+    break;
+
   case 44:
-#line 176 "Yacc.y"
+#line 183 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
@@ -1620,22 +1626,22 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,(yyvsp[0].string)),-1);
 
 }
-#line 1624 "y.tab.c"
+#line 1630 "y.tab.c"
     break;
 
   case 45:
-#line 183 "Yacc.y"
+#line 190 "Yacc.y"
              { //MUST BE STORED IN A TMP VARIABLE
   printf("OPERAND tNB FOUND \n");
   printf("tNB to add in symbol table as tmp: \n");
   symbol tmp = addSymbol(st,"tmp_nb",1); //INT FOR NOW
   instruction i = addInstruction(it,"AFC",tmp.addr,(yyvsp[0].nb),-1);
         }
-#line 1635 "y.tab.c"
+#line 1641 "y.tab.c"
     break;
 
   case 46:
-#line 190 "Yacc.y"
+#line 197 "Yacc.y"
                                 {
   printf("ADD OPERATION FOUND: \n");
   int addrArg2 = unstack(st); 
@@ -1643,11 +1649,11 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   symbol result = addSymbol(st,"tmp_add",1); //INT FOR NOW
   instruction i = addInstruction(it,"ADD",getAddr(st,result),addrArg1,addrArg2);
 }
-#line 1647 "y.tab.c"
+#line 1653 "y.tab.c"
     break;
 
   case 47:
-#line 197 "Yacc.y"
+#line 204 "Yacc.y"
                                  {
   printf("SUB OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
@@ -1655,11 +1661,11 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   symbol result = addSymbol(st,"tmp_sub",1);
   instruction i = addInstruction(it,"SUB",getAddr(st,result),addrArg1,addrArg2);
 }
-#line 1659 "y.tab.c"
+#line 1665 "y.tab.c"
     break;
 
   case 48:
-#line 204 "Yacc.y"
+#line 211 "Yacc.y"
                                  {
   printf("MUL OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
@@ -1667,11 +1673,11 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   symbol result = addSymbol(st,"tmp_mul",1);
   instruction i = addInstruction(it,"MUL",getAddr(st,result),addrArg1,addrArg2);
             }
-#line 1671 "y.tab.c"
+#line 1677 "y.tab.c"
     break;
 
   case 49:
-#line 211 "Yacc.y"
+#line 218 "Yacc.y"
                                  {
   printf("DIV OPERATION FOUND: \n");
   int addrArg2 = unstack(st);
@@ -1679,11 +1685,11 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   symbol result = addSymbol(st,"tmp_div",1);
   instruction i = addInstruction(it,"DIV",getAddr(st,result),addrArg1,addrArg2);    
             }
-#line 1683 "y.tab.c"
+#line 1689 "y.tab.c"
     break;
 
   case 50:
-#line 219 "Yacc.y"
+#line 227 "Yacc.y"
                                    {
   if (getSymbolByName(st,(yyvsp[-3].string)).type == 1){
     printf("VAR ASSIGN FOUND \n");
@@ -1695,24 +1701,37 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
     unstack(st);
   }
   }
-  else{
-    printf("ERROR: CONST cannot be re-assigned!\n");
+  else if (getSymbolByName(st,(yyvsp[-3].string)).type == 2){
+    if (!getSymbolByName(st,(yyvsp[-3].string)).assigned){
+      printf("CONST ASSIGN FOUND \n");
+      if (getAddrName(st,(yyvsp[-3].string))==-1){
+       printf("ERROR: Constant %s not declared! \n",(yyvsp[-3].string));
+      }
+      else{
+      instruction i = addInstruction(it,"COP",getAddrName(st,(yyvsp[-3].string)),sTableSize-1,-1);
+      printf("Changing assign status from 0 to 1\n");
+      //const_assigned(&(getSymbolByName(st,$1)));
+      const_assigned(&st[getAddrName(st,(yyvsp[-3].string))]);
+      print_sTable(st);
+      unstack(st);
+      }
+    } else {printf("ERROR: RE-ASSIGNING A CONSTANT IS NOT POSSIBLE\n");}
   }
 }
-#line 1703 "y.tab.c"
+#line 1722 "y.tab.c"
     break;
 
   case 51:
-#line 235 "Yacc.y"
+#line 260 "Yacc.y"
                                           {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE
 
 }
-#line 1712 "y.tab.c"
+#line 1731 "y.tab.c"
     break;
 
   case 53:
-#line 241 "Yacc.y"
+#line 266 "Yacc.y"
    {
   incrementDepth("ELSE");
   countELSE=iTableSize;
@@ -1725,11 +1744,11 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   }
 
 }
-#line 1729 "y.tab.c"
+#line 1748 "y.tab.c"
     break;
 
   case 54:
-#line 254 "Yacc.y"
+#line 279 "Yacc.y"
     {
   //PATCHING JMP STATEMENT
   if (elseCond.arg3){ //NO JMP FOR IF FALSE AND IF TRUE
@@ -1741,37 +1760,37 @@ if ((yyvsp[-2].nb) == 1){ //ONLY FOR VARS
   print_sTable(st);
   decrementDepth("ELSE");
 }
-#line 1745 "y.tab.c"
+#line 1764 "y.tab.c"
     break;
 
   case 56:
-#line 266 "Yacc.y"
+#line 291 "Yacc.y"
                                                    {
 
 }
-#line 1753 "y.tab.c"
+#line 1772 "y.tab.c"
     break;
 
   case 58:
-#line 272 "Yacc.y"
+#line 297 "Yacc.y"
                     {
 instruction i = addInstruction(it,"JMF",getAddrName(st,(yyvsp[0].string)),-1,-1); //PATCHED LATER    
 ifCond = construct_cond(0,0,1);         
               }
-#line 1762 "y.tab.c"
+#line 1781 "y.tab.c"
     break;
 
   case 60:
-#line 277 "Yacc.y"
+#line 302 "Yacc.y"
                       {
 instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER
 ifCond = construct_cond(0,1,0);
               }
-#line 1771 "y.tab.c"
+#line 1790 "y.tab.c"
     break;
 
   case 61:
-#line 284 "Yacc.y"
+#line 309 "Yacc.y"
                                      {
 
   printf("EQEQ COMPARAISON FOUND: \n");
@@ -1787,11 +1806,11 @@ ifCond = construct_cond(0,1,0);
 
 
 }
-#line 1791 "y.tab.c"
+#line 1810 "y.tab.c"
     break;
 
   case 62:
-#line 299 "Yacc.y"
+#line 324 "Yacc.y"
                                      {
 
   printf("INF COMPARAISON FOUND: \n");
@@ -1805,11 +1824,11 @@ ifCond = construct_cond(0,1,0);
 
 
 }
-#line 1809 "y.tab.c"
+#line 1828 "y.tab.c"
     break;
 
   case 63:
-#line 312 "Yacc.y"
+#line 337 "Yacc.y"
                                      {
 
   printf("INF COMPARAISON FOUND: \n");
@@ -1823,40 +1842,40 @@ ifCond = construct_cond(0,1,0);
 
 
 }
-#line 1827 "y.tab.c"
+#line 1846 "y.tab.c"
     break;
 
   case 65:
-#line 328 "Yacc.y"
+#line 353 "Yacc.y"
                     {
 instruction i = addInstruction(it,"JMF",getAddrName(st,(yyvsp[0].string)),-1,-1); //PATCHED LATER 
 // limitedLoop=1; 
 whileCond = construct_cond(0,0,1);
                 
               }
-#line 1838 "y.tab.c"
+#line 1857 "y.tab.c"
     break;
 
   case 66:
-#line 334 "Yacc.y"
+#line 359 "Yacc.y"
                       {
 //infiniteLoop=1;    
 whileCond = construct_cond(1,0,0);          
               }
-#line 1847 "y.tab.c"
+#line 1866 "y.tab.c"
     break;
 
   case 67:
-#line 338 "Yacc.y"
+#line 363 "Yacc.y"
                       {
 instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER                
 whileCond = construct_cond(0,1,0);
               }
-#line 1856 "y.tab.c"
+#line 1875 "y.tab.c"
     break;
 
   case 68:
-#line 343 "Yacc.y"
+#line 368 "Yacc.y"
                                         {
   printf("WHILE EQEQ COMPARAISON FOUND: \n");
   int eqeqArg2 = unstack(st);
@@ -1870,11 +1889,11 @@ whileCond = construct_cond(0,1,0);
 
 
 }
-#line 1874 "y.tab.c"
+#line 1893 "y.tab.c"
     break;
 
   case 69:
-#line 356 "Yacc.y"
+#line 381 "Yacc.y"
                                      {
   printf("WHILE INF COMPARAISON FOUND: \n");
   int infArg2 = unstack(st);
@@ -1887,11 +1906,11 @@ whileCond = construct_cond(0,1,0);
   unstack(st); //TO GET RID OF TMP_INF
 
 }
-#line 1891 "y.tab.c"
+#line 1910 "y.tab.c"
     break;
 
   case 70:
-#line 368 "Yacc.y"
+#line 393 "Yacc.y"
                                      {
   printf("WHILE SUP COMPARAISON FOUND: \n");
   int supArg2 = unstack(st);
@@ -1904,11 +1923,11 @@ whileCond = construct_cond(0,1,0);
   unstack(st); //TO GET RID OF TMP_SUP
 
 }
-#line 1908 "y.tab.c"
+#line 1927 "y.tab.c"
     break;
 
 
-#line 1912 "y.tab.c"
+#line 1931 "y.tab.c"
 
       default: break;
     }
@@ -2140,7 +2159,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 383 "Yacc.y"
+#line 408 "Yacc.y"
 
 void yyerror(char *s) { fprintf(stderr, "%s\n", s); }
 

@@ -125,6 +125,8 @@ tAF {
   decrementDepth("WHILE");
 };
 
+//NOTE: Multiple Variables declarations AND Var Assigns cannot occur in the same line!!
+
 //RE-ASSIGNING A CONSTANT IS NOT POSSIBLE
 //CONSTANT MUST BE ASSIGNED IMMEDIATELY AFTER DECLARATION
 ConstDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
@@ -154,20 +156,25 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
    unstack(st);
 };
 
-//MULTIPLE VARIABLES DECLARATION INCLUDED
-//NOTE: DOES NOT WORK WITH CONSTS (there's a condition)
+//MULTIPLE VARIABLES AND CONSTANTS DECLARATION INCLUDED
 VarDeclaration : Type tINT tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
 if ($1 == 1){ //ONLY FOR VARS
   printf("VAR DECLARATION FOUND\n");
-  symbol s = addSymbol(st,$3,$1);
-  varBool=$1;
 }
+else if ($1 == 2){
+  printf("CONST DECLARATION FOUND\n");
+}
+symbol s = addSymbol(st,$3,$1);
+varBool=$1; 
 } NextVar;
 NextVar : Type tV tID {
-  if (varBool==1){
+  if (varBool == 1){
     printf("NEXT VAR DECLARATION FOUND\n");
-    symbol s = addSymbol(st,$3,$1);
   }
+  else if (varBool == 2){
+    printf("NEXT CONST DECLARATION FOUND\n");
+  }
+  symbol s = addSymbol(st,$3,$1);
 }
   NextVar | tPV {varBool=0;};
 
@@ -216,6 +223,7 @@ Operations: Operand tADD Operand{
   instruction i = addInstruction(it,"DIV",getAddr(st,result),addrArg1,addrArg2);    
             };
 
+//CONST ASSIGN IS ONLY POSSIBLE IF THE CONSTANT HAS BEEN DECLARED WITHOUT ASSIGNING IT
 VarAssign : tID tEQUAL Operand tPV {
   if (getSymbolByName(st,$1).type == 1){
     printf("VAR ASSIGN FOUND \n");
@@ -227,10 +235,27 @@ VarAssign : tID tEQUAL Operand tPV {
     unstack(st);
   }
   }
-  else{
-    printf("ERROR: CONST cannot be re-assigned!\n");
+  else if (getSymbolByName(st,$1).type == 2){
+    if (!getSymbolByName(st,$1).assigned){
+      printf("CONST ASSIGN FOUND \n");
+      if (getAddrName(st,$1)==-1){
+       printf("ERROR: Constant %s not declared! \n",$1);
+      }
+      else{
+      instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
+      printf("Changing assign status from 0 to 1\n");
+      //const_assigned(&(getSymbolByName(st,$1)));
+      const_assigned(&st[getAddrName(st,$1)]);
+      print_sTable(st);
+      unstack(st);
+      }
+    } else {printf("ERROR: RE-ASSIGNING A CONSTANT IS NOT POSSIBLE\n");}
   }
 };
+
+
+
+
 
 ifCondition: tIF tPO ifBoolExpression tPF {
 //AT THIS POINT, WE HAVE A tmp_eqeq IN THE SYMBOL TABLE

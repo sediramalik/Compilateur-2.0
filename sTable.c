@@ -27,6 +27,7 @@ void printSymbol(symbol s)
     printf("sAddr : %d\t", s.addr);
     printf("sType : %d\t", s.type);
     printf("sDepth : %d\t", s.depth);
+    printf("sAssigned : %d\t", s.assigned);
     printf("\n");
 }
 
@@ -37,11 +38,13 @@ symbol addSymbol(symbol *t, char *sName, int type)
     s.addr = sTableSize;
     strcpy(s.sName, sName);
     s.type = type;
+    s.assigned = 0;
     t[sTableSize] = s;
     sTableSize++;
     printf("Added following symbol: \n");
     printSymbol(s);
     print_sTable(t);
+
     return s;
 }
 
@@ -100,10 +103,10 @@ int getAddrName(symbol *t, char *targetname)
 
 symbol getSymbolByName(symbol *t, char *targetname)
 {
-for (int i = 0; i < sTableSize; i++)
+    for (int i = 0; i < sTableSize; i++)
     {
-    if (strcmp(t[i].sName, targetname) == 0) // IF THEY'RE EQUAL
-        return t[i];
+        if (strcmp(t[i].sName, targetname) == 0) // IF THEY'RE EQUAL
+            return t[i];
     }
 }
 
@@ -116,8 +119,16 @@ int unstack(symbol *t)
     return sTableSize;
 }
 
-void deleteSymbolsCount(int count)
+void const_assigned(symbol *s)
 {
-    printf("Deleting %d symbols\n", count);
-    sTableSize -= count;
+    (*s).assigned = 1;
+}
+
+char *getNameBySymbol(symbol *t, symbol s)
+{
+    for (int i = 0; i < sTableSize; i++)
+    {
+        if (strcmp(t[i].sName, s.sName) == 0)
+            return t[i].sName;
+    }
 }
