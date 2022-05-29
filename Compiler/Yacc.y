@@ -12,6 +12,7 @@ int countWHILE=0;
 int varBool=0;
 int countFUNCTION=0;
 int countArgs=0;
+int argsDeclared=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
@@ -64,7 +65,12 @@ Function: tINT tID tPO{
   DecArgs {strcpy(funName," ");} tPF tAO{
   countFUNCTION=iTableSize;
 } 
-  Body Return tAF{
+  Body
+  tRETURN tID tPV {
+    //ret returnSymbol = addReturn(rt,,); //LAST SYMBOL FOR FUNCTION
+    //instruction i = addInstruction(it,"COP",returnSymbol.addr,getAddrName(st,$2),-1); 
+  }
+  tAF{
   int returnLine = findLine(it,$2) + 1; 
   //FUNCTION THAT FINDS THE JMP INSTRUCTION GENERATED AT THE MOMENT OF CALLING THE FUNCTION AND
   //RETURNS THE CORRESPONDING ASM/INSTRUCTION LINE
@@ -72,7 +78,8 @@ Function: tINT tID tPO{
  
   int functionAsmLines=iTableSize-countFUNCTION;
   int patch = i.num - functionAsmLines + 1;
-  updateJMPInstructionFunction(it,patch,$2);
+  updateJMPInstructionFunction(it,patch,$2,argsDeclared);
+  argsDeclared=0;
 
   deleteSymbols(st);
   print_sTable(st);
@@ -91,22 +98,22 @@ Function: tINT tID tPO{
 
   int functionAsmLines=iTableSize-countFUNCTION;
   int patch = i.num - functionAsmLines + 1;
-  updateJMPInstructionFunction(it,patch,$2);
+  updateJMPInstructionFunction(it,patch,$2,argsDeclared); //THERE ARE AS MANY ADDITIONAL COP INSTRUCTIONS AS THERE ARE ARGS DECLARED. JMP INSTRUCTIONS MUST BE PATCHED ACCORDINGLY.
+  argsDeclared=0;
 
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("FUNCTION"); 
         };
 
-Return: tRETURN tID tPV | ;
 
-FunCall: tID tPO{strcpy(funName,$1);} CallArgs {strcpy(funName," ");} tPF tPV{
+FunCall: tID tPO{strcpy(funName,$1);} CallArgs tPF {
      instruction i = addJMPFunctionInstruction(it,"JMP",-1,-1,-1,$1); //PATCHED LATER 
-     
 };
 
 DecArgs: tINT tID{
   
+  argsDeclared++;
   //ADDING DECLARATED VARIABLES IN ()
   symbol local = addSymbol(st,$2,1);
   //instruction i = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
@@ -122,7 +129,7 @@ CallArgs: tID{
  | tNB CallArgNext
  |;
 
-CallArgNext: tV CallArgs |;
+CallArgNext: tV CallArgs | ;
 
 Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
 
@@ -131,7 +138,7 @@ Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
-Instruction: FunCall 
+Instruction: FunCall tPV;
            | Print
            | VarDeclarationAndAssign
            | VarDeclaration 
@@ -259,12 +266,18 @@ NextVar : Type tV tID {
 }
   NextVar | tPV {varBool=0;};
 
-Operand:  FunCall
+Operand:  FunCall{
+  printf("OPERAND FunCall FOUND \n");
+  printf("Return of FunCall to add in symbol table as tmp: \n");
+  symbol tmp = addSymbol(st,"tmp_funcall",1); 
+  instruction i = addInstruction(it,"COP",tmp.addr,-1,-1); //PATCHED LATER
+
+}
         | Operations
         | tID{ //MUST BE STORED IN A TMP VARIABLE
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_id",1); //INT FOR NOW
+  symbol tmp = addSymbol(st,"tmp_id",1); 
   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
 
 }
@@ -491,7 +504,7 @@ int main(void) {
   st = init_sTable();
   it = init_iTable();
   pt = init_pTable();
-  //yydebug=1;
+  yydebug=1;
   yyparse();
   printf("END OF PARSER \n");
 

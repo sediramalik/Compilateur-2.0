@@ -1,23 +1,9 @@
-
-void main()
-{
-    const int a = 10;
-    int z = 9;
-    const int d;
-    d = 3;
-    fun1(a,d);
-    int b = a;
-    fun2(z);
-    int c = 30;
+void main(){
+    int a = 10;
+    int b;
+    b = fun(a,b);
 }
 
- void fun1(int a, int d){
-     int fun1;
-    print(100);
+void fun(int x, int y){
+    x = x + 1;
 }
-
-void fun2(int z){
-    int fun2;
-    print(200);
-}
-

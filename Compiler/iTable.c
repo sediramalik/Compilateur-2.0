@@ -70,7 +70,8 @@ instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int
     strcpy(i.function, function);
     t[iTableSize] = i;
     iTableSize++;
-    fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3, i.function);
+    //fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3, i.function);
+    fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3);
     fprintf(ASM, "\n");
     printf("Added instruction: \n");
     printJMPFunctionInstruction(i);
@@ -168,13 +169,13 @@ findLine(instruction *t, char *functionName)
     }
 }
 
-void updateJMPInstructionFunction(instruction *t, int patch, char *functionName)
+void updateJMPInstructionFunction(instruction *t, int patch, char *functionName, int argsDeclared)
 {
     for (int i = 0; i < iTableSize; i++)
     {
         if (strcmp(functionName, t[i].function) == 0)
         {
-            t[i].arg1 = patch;
+            t[i].arg1 = patch - argsDeclared;
         }
     }
 }
