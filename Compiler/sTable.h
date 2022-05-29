@@ -20,8 +20,8 @@ void deleteSymbols(symbol *t);
 void incrementDepth(char *condition);
 void decrementDepth(char *condition);
 int getAddr(symbol *t, symbol s);
-int getAddrName(symbol *t, char *targetname);
+int getAddrName(symbol *t, char *targetname, int sTableDepth);
 int unstack(symbol *t);
-symbol getSymbolByName(symbol *t, char *targetname);
+symbol getSymbolByName(symbol *t, char *targetname, int sTableDepth);
 void const_assigned(symbol* s);
 

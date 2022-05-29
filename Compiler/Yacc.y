@@ -40,6 +40,7 @@ tCONST
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
 %type <nb> Type
+%type <string> FunCall
 //%type <string> FunName
 %start Program
 
@@ -67,11 +68,15 @@ Function: tINT tID tPO{
 } 
   Body
   tRETURN tID tPV {
+
     //ret returnSymbol = addReturn(rt,,); //LAST SYMBOL FOR FUNCTION
     //instruction i = addInstruction(it,"COP",returnSymbol.addr,getAddrName(st,$2),-1); 
+    //instruction i = addInstruction(it,"COP",,getAddrName($2),-1)
+
+
   }
   tAF{
-  int returnLine = findLine(it,$2) + 1; 
+  int returnLine = findJMPLine(it,$2) + 1; 
   //FUNCTION THAT FINDS THE JMP INSTRUCTION GENERATED AT THE MOMENT OF CALLING THE FUNCTION AND
   //RETURNS THE CORRESPONDING ASM/INSTRUCTION LINE
   instruction i = addInstruction(it,"JMP",returnLine,-1,-1); 
@@ -93,7 +98,7 @@ Function: tINT tID tPO{
           } DecArgs {strcpy(funName," ");} tPF tAO{
   countFUNCTION=iTableSize;
         } Body tAF{
-  int returnLine = findLine(it,$2) + 1; 
+  int returnLine = findJMPLine(it,$2) + 1; 
   instruction i = addInstruction(it,"JMP",returnLine,-1,-1);
 
   int functionAsmLines=iTableSize-countFUNCTION;
@@ -107,8 +112,8 @@ Function: tINT tID tPO{
         };
 
 
-FunCall: tID tPO{strcpy(funName,$1);} CallArgs tPF {
-     instruction i = addJMPFunctionInstruction(it,"JMP",-1,-1,-1,$1); //PATCHED LATER 
+FunCall: tID { strcpy(funName , $1); }  tPO{strcpy(funName,$1);} CallArgs tPF {
+     instruction i = addInstructionWithFunctionName(it,"JMP",-1,-1,-1,$1); //PATCHED LATER 
 };
 
 DecArgs: tINT tID{
@@ -124,7 +129,7 @@ DecArgs: tINT tID{
 NextDecArg: tV DecArgs |;
 
 CallArgs: tID{
-  addParameter(pt,funName,getAddrName(st,$1));
+  addParameter(pt,funName,getAddrName(st,$1,sTableDepth));
 } CallArgNext
  | tNB CallArgNext
  |;
@@ -205,7 +210,7 @@ tAF {
 Print: tPRINT tPO PrintArg tPF tPV;
 PrintArg :
   tID {
-    instruction i = addInstruction(it,"PRI",getAddrName(st,$1),-1,-1); 
+    instruction i = addInstruction(it,"PRI",getAddrName(st,$1,sTableDepth),-1,-1); 
   }
   | tNB {
     symbol tmp = addSymbol(st,"tmp_nb_print",1);
@@ -223,7 +228,7 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
     symbol s = addSymbol(st,$3,$1);
     symbol tmp = addSymbol(st,"tmp_nb",1); 
     instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
-    instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
+    instruction j = addInstruction(it,"COP",getAddrName(st,$3,sTableDepth),sTableSize-1,-1);
     unstack(st);
 
 }
@@ -237,8 +242,8 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
    printf("DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,$3,$1);
    symbol tmp = addSymbol(st,"tmp_nb",1); 
-   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$5),-1);
-   instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
+   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$5,sTableDepth),-1);
+   instruction j = addInstruction(it,"COP",getAddrName(st,$3,sTableDepth),sTableSize-1,-1);
    unstack(st);
 };
 
@@ -270,7 +275,7 @@ Operand:  FunCall{
   printf("OPERAND FunCall FOUND \n");
   printf("Return of FunCall to add in symbol table as tmp: \n");
   symbol tmp = addSymbol(st,"tmp_funcall",1); 
-  instruction i = addInstruction(it,"COP",tmp.addr,-1,-1); //PATCHED LATER
+  instruction i = addInstructionWithFunctionName(it,"COP",tmp.addr,-1,-1,funName); //PATCHED LATER
 
 }
         | Operations
@@ -278,7 +283,7 @@ Operand:  FunCall{
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
   symbol tmp = addSymbol(st,"tmp_id",1); 
-  instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
+  instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1,sTableDepth),-1);
 
 }
         | tNB{ //MUST BE STORED IN A TMP VARIABLE
@@ -319,26 +324,26 @@ Operations: Operand tADD Operand{
 
 //CONST ASSIGN IS ONLY POSSIBLE IF THE CONSTANT HAS BEEN DECLARED WITHOUT ASSIGNING IT
 VarAssign : tID tEQUAL Operand tPV {
-  if (getSymbolByName(st,$1).type == 1){
+  if (getSymbolByName(st,$1,sTableDepth).type == 1){
     printf("VAR ASSIGN FOUND \n");
-    if (getAddrName(st,$1)==-1){
+    if (getAddrName(st,$1,sTableDepth)==-1){
       printf("ERROR: Variable %s not declared! \n",$1);
     }
     else{
-    instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
+    instruction i = addInstruction(it,"COP",getAddrName(st,$1,sTableDepth),sTableSize-1,-1);
     unstack(st);
   }
   }
-  else if (getSymbolByName(st,$1).type == 2){
-    if (!getSymbolByName(st,$1).assigned){
+  else if (getSymbolByName(st,$1,sTableDepth).type == 2){
+    if (!getSymbolByName(st,$1,sTableDepth).assigned){
       printf("CONST ASSIGN FOUND \n");
-      if (getAddrName(st,$1)==-1){
+      if (getAddrName(st,$1,sTableDepth)==-1){
        printf("ERROR: Constant %s not declared! \n",$1);
       }
       else{
-      instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
+      instruction i = addInstruction(it,"COP",getAddrName(st,$1,sTableDepth),sTableSize-1,-1);
       printf("Changing assign status from 0 to 1\n");
-      const_assigned(&st[getAddrName(st,$1)]);
+      const_assigned(&st[getAddrName(st,$1,sTableDepth)]);
       print_sTable(st);
       unstack(st);
       }
@@ -385,7 +390,7 @@ whileCondition: tWHILE tPO whileBoolExpression tPF {
 
 ifBoolExpression: ifComparaison
               | tID {
-instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER    
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1,sTableDepth),-1,-1); //PATCHED LATER    
 ifCond = construct_cond(0,0,1);         
               }
               | tTRUE //NOTHING TO DO
@@ -441,7 +446,7 @@ ifComparaison: Operand tEQEQ Operand {
 
 whileBoolExpression: whileComparaison
               | tID {
-instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER 
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1,sTableDepth),-1,-1); //PATCHED LATER 
 // limitedLoop=1; 
 whileCond = construct_cond(0,0,1);
                 

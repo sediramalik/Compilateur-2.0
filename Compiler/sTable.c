@@ -91,21 +91,22 @@ int getAddr(symbol *t, symbol target)
     return -1; // NO SUCH SYMBOL FOUND IN TABLE
 }
 
-int getAddrName(symbol *t, char *targetname)
+//ONLY VARIABLES OF THE SAME DEPTH CAN BE ASSIGNED TO EACH OTHER
+int getAddrName(symbol *t, char *targetname, int sTableDepth)
 {
     for (int i = 0; i < sTableSize; i++)
     {
-        if (strcmp(t[i].sName, targetname) == 0) // IF THEY'RE EQUAL
+        if ((strcmp(t[i].sName, targetname) == 0) && (t[i].depth == sTableDepth))
             return i;
     }
     return -1; // NO SUCH SYMBOL FOUND IN TABLE
 }
 
-symbol getSymbolByName(symbol *t, char *targetname)
+symbol getSymbolByName(symbol *t, char *targetname, int sTableDepth)
 {
     for (int i = 0; i < sTableSize; i++)
     {
-        if (strcmp(t[i].sName, targetname) == 0) // IF THEY'RE EQUAL
+        if ((strcmp(t[i].sName, targetname) == 0) && (t[i].depth == sTableDepth))
             return t[i];
     }
 }

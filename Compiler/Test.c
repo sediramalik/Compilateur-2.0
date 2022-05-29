@@ -1,9 +1,10 @@
 void main(){
     int a = 10;
     int b;
-    b = fun(a,b);
+    b = fun(a);
 }
 
-void fun(int x, int y){
-    x = x + 1;
+int fun(int a){
+    a = 3;
+    return a;
 }

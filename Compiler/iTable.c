@@ -59,7 +59,7 @@ instruction addInstruction(instruction *t, char *iName, int arg1, int arg2, int 
     return i;
 }
 
-instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int arg2, int arg3, char *function)
+instruction addInstructionWithFunctionName(instruction *t, char *iName, int arg1, int arg2, int arg3, char *function)
 {
     instruction i;
     i.num = iTableSize;
@@ -158,11 +158,22 @@ condition init_cond()
     return cond;
 }
 
-findLine(instruction *t, char *functionName)
+findJMPLine(instruction *t, char *functionName)
 {
     for (int i = 0; i < iTableSize; i++)
     {
         if (strcmp(functionName, t[i].function) == 0)
+        {
+            return i;
+        }
+    }
+}
+
+findCOPLine(instruction *t, char *functionName)
+{
+    for (int i = 0; i < iTableSize; i++)
+    {
+        if (strcmp(functionName, t[i].ret) == 0)
         {
             return i;
         }
