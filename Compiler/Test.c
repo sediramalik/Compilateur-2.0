@@ -2,6 +2,8 @@
 void main()
 {
     const int a = 10;
+    const int d;
+    d = 3;
     fun1();
     int b = a;
     fun2();
