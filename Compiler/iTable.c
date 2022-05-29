@@ -79,6 +79,26 @@ instruction addInstructionWithFunctionName(instruction *t, char *iName, int arg1
     return i;
 }
 
+instruction addInstructionWithReturn(instruction *t, char *iName, int arg1, int arg2, int arg3, char *function)
+{
+    instruction i;
+    i.num = iTableSize;
+    strcpy(i.iName, iName);
+    i.arg1 = arg1;
+    i.arg2 = arg2;
+    i.arg3 = arg3;
+    strcpy(i.ret, function);
+    t[iTableSize] = i;
+    iTableSize++;
+    //fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3, i.function);
+    fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3);
+    fprintf(ASM, "\n");
+    printf("Added instruction: \n");
+    printJMPFunctionInstruction(i);
+    print_iTable(t);
+    return i;
+}
+
 // UPDATES THE MOST RECENT JMF INSTRUCTION WITH THE NUMBER OF INSTRUCTION LINES GENERATED IN THE BODY OF THE IF CONDITION
 // ARG2 IS UPDATED
 void updateJMFInstruction(instruction *t, int numAsmLines)
@@ -169,13 +189,16 @@ findJMPLine(instruction *t, char *functionName)
     }
 }
 
-findCOPLine(instruction *t, char *functionName)
+void updateCOPInstruction(instruction *t, int address, char *functionName)
 {
     for (int i = 0; i < iTableSize; i++)
     {
         if (strcmp(functionName, t[i].ret) == 0)
         {
-            return i;
+            printf("////////////////////////////////////////");
+            printf("Address: %s\n",address);
+            printf("////////////////////////////////////////");
+            t[i].arg2 = address;
         }
     }
 }

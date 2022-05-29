@@ -1,7 +1,9 @@
 void main(){
-    int a = 10;
     int b;
-    b = fun(a);
+    int c;
+    int d;
+    int e;
+    b = fun(b);
 }
 
 int fun(int a){

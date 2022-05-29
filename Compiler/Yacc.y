@@ -63,17 +63,12 @@ Function: tINT tID tPO{
   strcpy(funName,$2);
   countArgs=0;
   }
-  DecArgs {strcpy(funName," ");} tPF tAO{
+  DecArgs tPF tAO{
   countFUNCTION=iTableSize;
 } 
   Body
   tRETURN tID tPV {
-
-    //ret returnSymbol = addReturn(rt,,); //LAST SYMBOL FOR FUNCTION
-    //instruction i = addInstruction(it,"COP",returnSymbol.addr,getAddrName(st,$2),-1); 
-    //instruction i = addInstruction(it,"COP",,getAddrName($2),-1)
-
-
+    updateCOPInstruction(it,getAddrName(st,$11,sTableDepth),$2);
   }
   tAF{
   int returnLine = findJMPLine(it,$2) + 1; 
@@ -95,7 +90,7 @@ Function: tINT tID tPO{
   incrementDepth("FUNCTION");
   strcpy(funName,$2);
   countArgs=0;
-          } DecArgs {strcpy(funName," ");} tPF tAO{
+          } DecArgs tPF tAO{
   countFUNCTION=iTableSize;
         } Body tAF{
   int returnLine = findJMPLine(it,$2) + 1; 
@@ -273,9 +268,6 @@ NextVar : Type tV tID {
 
 Operand:  FunCall{
   printf("OPERAND FunCall FOUND \n");
-  printf("Return of FunCall to add in symbol table as tmp: \n");
-  symbol tmp = addSymbol(st,"tmp_funcall",1); 
-  instruction i = addInstructionWithFunctionName(it,"COP",tmp.addr,-1,-1,funName); //PATCHED LATER
 
 }
         | Operations

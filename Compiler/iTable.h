@@ -32,3 +32,4 @@ instruction addInstructionWithFunctionName(instruction *t, char *iName, int arg1
 void printJMPFunctionInstruction(instruction i);
 findLine(instruction *t, char *functionName, char * Instruction);
 void updateJMPInstructionFunction(instruction *t, int patch, char *functionName, int argsDeclared);
+void updateCOPInstruction(instruction *t, int address, char *functionName);
