@@ -43,7 +43,10 @@ tCONST
 
 %%
 
-Program: Functions;
+//A MAIN IS OBLIGATORY AND ALL OTHER FUNCTIONS MUST BE DECLARED AFTER THE MAIN FUNCTION (TO AVOID MESSING WITH THE JMP INSTRUCTIONS OF THE FUNCTIONS)
+Program: Main Functions;
+
+Main: tVOID tMAIN tPO tPF tAO Body tAF{};
 
 Functions: Function | Function Functions;
 
@@ -82,9 +85,6 @@ countFUNCTION=iTableSize;
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("FUNCTION"); 
-        }
-        | tVOID tMAIN tPO tPF tAO Body tAF{
-
         };
 
 Return: tRETURN tID tPV | ;

@@ -1,16 +1,14 @@
 
-  
 void main()
 {
     int a = 10;
     fun1();
     int b = 20;
     fun2();
+    int c = 30;
 }
 
-
-
-void fun1(){
+ void fun1(){
     print(100);
 }
 
