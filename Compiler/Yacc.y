@@ -108,7 +108,6 @@ Body: Instructions;
 Instructions: Instruction Instructions |;
 Instruction: FunCall 
            | Print
-           | ConstDeclarationAndAssign
            | VarDeclarationAndAssign
            | VarDeclaration 
            | VarAssign 
@@ -184,23 +183,11 @@ PrintArg :
   };
 
 
-//NOTE: Multiple Variables declarations AND Var Assigns cannot occur in the same line!!
-
-//RE-ASSIGNING A CONSTANT IS NOT POSSIBLE
-//CONSTANT MUST BE ASSIGNED IMMEDIATELY AFTER DECLARATION
-ConstDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
-    printf("CONST DECLARATION & ASSIGN FOUND\n"); 
-    symbol s = addSymbol(st,$3,$1);
-    symbol tmp = addSymbol(st,"tmp_nb_const",1); 
-    instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
-    instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
-    unstack(st);
-
-};
+//NOTE: Multiple Variables declarations AND Var Assigns cannot occur in the same line!! Example: int a,b=3;
 
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
 VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
-    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
+    printf("DECLARATION & ASSIGN FOUND\n"); 
     symbol s = addSymbol(st,$3,$1);
     symbol tmp = addSymbol(st,"tmp_nb",1); 
     instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
@@ -208,8 +195,14 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
     unstack(st);
 
 }
+
+//RE-ASSIGNING A CONSTANT IS NOT POSSIBLE
+//CONSTANT MUST BE ASSIGNED IMMEDIATELY AFTER DECLARATION
+
+
+
                         | Type tINT tID tEQUAL tID tPV {
-   printf("VAR DECLARATION & ASSIGN FOUND\n"); 
+   printf("DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,$3,$1);
    symbol tmp = addSymbol(st,"tmp_nb",1); 
    instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$5),-1);
@@ -472,7 +465,7 @@ int main(void) {
   ASM=fopen("ASM","w");
   st = init_sTable();
   it = init_iTable();
-  yydebug=1;
+  //yydebug=1;
   yyparse();
   printf("END OF PARSER \n");
   printf("Printing table of symbols: \n");

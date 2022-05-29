@@ -1,18 +1,20 @@
 
 void main()
 {
-    int a = 10;
+    const int a = 10;
     fun1();
-    int b = 20;
+    int b = a;
     fun2();
     int c = 30;
 }
 
  void fun1(){
+     int fun1;
     print(100);
 }
 
 void fun2(){
+    int fun2;
     print(200);
 }
 
