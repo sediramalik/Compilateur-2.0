@@ -4,12 +4,11 @@
 #include "sTable.c"
 #include "iTable.c"
 
-int string[16]; //Taille max du nom de variable
+char string[16]; //Taille max du nom de variable
 int countIF=0;
 int countELSE=0;
 int countWHILE=0;
 int varBool=0;
-int varMain=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
@@ -35,6 +34,7 @@ tCONST
 %token <nb> tNB //Etiquette entier
 %token <string> tID //Etiquette nom variable/fonction
 %type <nb> Type
+//%type <string> FunName
 %start Program
 
 %left tADD tSUB //Priorité à gauche
@@ -46,14 +46,37 @@ Program: Functions;
 
 Functions: Function | Function Functions;
 
+//INT MAIN AND VOID MAIN ARE BOTH POSSIBLE AND MEAN THE SAME THING
+//DELETED FUNNAME AND ADDED 3 DIFFERENT CASES TO ADD JMP INSTRUCTIONS AT THE END OF FUNCTIONS OTHER THAN MAIN
+Function: tINT tID tPO DecArgs tPF tAO{
+  incrementDepth("FUNCTION");
+} Body Return tAF{
+  int returnLine = findLine(it,$2) + 1; 
+  //FUNCTION THAT FINDS THE JMP INSTRUCTION GENERATED AT THE MOMENT OF CALLING THE FUNCTION AND
+  //RETURNS THE CORRESPONDING ASM/INSTRUCTION LINE
+  instruction i = addInstruction(it,"JMP",returnLine,-1,-1); 
+  deleteSymbols(st);
+  print_sTable(st);
+  decrementDepth("FUNCTION");
+}
+        | tVOID tID tPO DecArgs tPF tAO{
+incrementDepth("FUNCTION");
+        } Body tAF{
+  int returnLine = findLine(it,$2) + 1; 
+  instruction i = addInstruction(it,"JMP",returnLine,-1,-1);
+  deleteSymbols(st);
+  print_sTable(st);
+  decrementDepth("FUNCTION"); 
+        }
+        | tVOID tMAIN tPO tPF tAO Body tAF{
 
-Function: tINT FunName tPO DecArgs tPF tAO Body Return tAF
-        | tVOID FunName tPO DecArgs tPF tAO Body tAF;
+        };
 
-//FunType: tVOID | tINT;
 Return: tRETURN tID tPV | ;
 
-FunCall: FunName tPO CallArgs tPF tPV;
+FunCall: tID tPO CallArgs tPF tPV{
+     instruction i = addJMPFunctionInstruction(it,"JMP",-1,-1,-1,$1); //PATCHED LATER 
+};
 
 DecArgs: tINT tID NextDecArg |;
 NextDecArg: tV DecArgs |;
@@ -64,7 +87,7 @@ CallArgNext: tV CallArgs |;
 Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
 
 
-FunName: tMAIN {varMain=1;} | tID {varMain=0;}; //TO AVOID DECLARATIONS OUTSIDE THE MAIN FUNCTION
+//FunName: tMAIN {varMain=1;} | tID {varMain=0;}; //TO AVOID DECLARATIONS OUTSIDE THE MAIN FUNCTION
 
 Body: Instructions;
 Instructions: Instruction Instructions |;
@@ -151,27 +174,24 @@ PrintArg :
 //RE-ASSIGNING A CONSTANT IS NOT POSSIBLE
 //CONSTANT MUST BE ASSIGNED IMMEDIATELY AFTER DECLARATION
 ConstDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
-  if (varMain){
     printf("CONST DECLARATION & ASSIGN FOUND\n"); 
     symbol s = addSymbol(st,$3,$1);
     symbol tmp = addSymbol(st,"tmp_nb_const",1); 
     instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
     instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
     unstack(st);
-  } else (printf("ERROR: You cannot declare variables/constants outside the main function!\n"));
+
 };
 
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
 VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
-  if (varMain){
     printf("VAR DECLARATION & ASSIGN FOUND\n"); 
     symbol s = addSymbol(st,$3,$1);
     symbol tmp = addSymbol(st,"tmp_nb",1); 
     instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
     instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
     unstack(st);
-  }
-  else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
+
 }
                         | Type tINT tID tEQUAL tID tPV {
    printf("VAR DECLARATION & ASSIGN FOUND\n"); 
@@ -184,7 +204,6 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
 
 //MULTIPLE VARIABLES AND CONSTANTS DECLARATION INCLUDED
 VarDeclaration : Type tINT tID { //SIMPLE DECLARATION WITHOUT VAR ASSIGN
-if (varMain){
   if ($1 == 1){ //ONLY FOR VARS
     printf("VAR DECLARATION FOUND\n");
   }
@@ -193,10 +212,9 @@ if (varMain){
   }
   symbol s = addSymbol(st,$3,$1);
   varBool=$1; 
-} else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
+
 } NextVar;
 NextVar : Type tV tID {
-  if (varMain){
     if (varBool == 1){
       printf("NEXT VAR DECLARATION FOUND\n");
     }
@@ -204,7 +222,7 @@ NextVar : Type tV tID {
       printf("NEXT CONST DECLARATION FOUND\n");
     }
     symbol s = addSymbol(st,$3,varBool);
-  } else printf("ERROR: You cannot declare variables/constants outside the main function!\n");
+
 }
   NextVar | tPV {varBool=0;};
 

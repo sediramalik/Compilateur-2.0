@@ -69,7 +69,7 @@ void deleteSymbols(symbol *t)
 
 void incrementDepth(char *condition)
 {
-    printf("Entering %s condition\n", condition);
+    printf("Entering %s \n", condition);
     sTableDepth++;
     printf("Imcrementing depth. Depth is now %d\n", sTableDepth);
 }
@@ -122,13 +122,4 @@ int unstack(symbol *t)
 void const_assigned(symbol *s)
 {
     (*s).assigned = 1;
-}
-
-char *getNameBySymbol(symbol *t, symbol s)
-{
-    for (int i = 0; i < sTableSize; i++)
-    {
-        if (strcmp(t[i].sName, s.sName) == 0)
-            return t[i].sName;
-    }
 }

@@ -30,6 +30,17 @@ void printInstruction(instruction i)
     printf("\n");
 }
 
+void printJMPFunctionInstruction(instruction i)
+{
+    printf(" %d\t", i.num);
+    printf(" %s\t", i.iName);
+    printf(" %d\t", i.arg1);
+    printf(" %d\t", i.arg2);
+    printf(" %d\t", i.arg3);
+    printf(" %s\t", i.function);
+    printf("\n");
+}
+
 instruction addInstruction(instruction *t, char *iName, int arg1, int arg2, int arg3)
 {
     instruction i;
@@ -44,6 +55,25 @@ instruction addInstruction(instruction *t, char *iName, int arg1, int arg2, int 
     fprintf(ASM, "\n");
     printf("Added instruction: \n");
     printInstruction(i);
+    print_iTable(t);
+    return i;
+}
+
+instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int arg2, int arg3, char * function)
+{
+    instruction i;
+    i.num = iTableSize;
+    strcpy(i.iName, iName);
+    i.arg1 = arg1;
+    i.arg2 = arg2;
+    i.arg3 = arg3;
+    strcpy(i.function,function);
+    t[iTableSize] = i;
+    iTableSize++;
+    fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3, i.function);
+    fprintf(ASM, "\n");
+    printf("Added instruction: \n");
+    printJMPFunctionInstruction(i);
     print_iTable(t);
     return i;
 }
@@ -123,4 +153,14 @@ condition init_cond(){
     cond.arg2=0;
     cond.arg3=0;
     return cond;
+}
+
+findLine(instruction *t, char * functionName){
+        for (int i = 0; i <iTableSize; i++)
+    {
+        if (strcmp(functionName, t[i].function) == 0)
+        {
+            return i;
+        }
+    }
 }
