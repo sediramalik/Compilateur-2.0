@@ -3,46 +3,59 @@
 #include "pTable.h"
 
 int pTableSize = 0;
-//THIS TABLE IS USED TO STORE THE DIFFERENT ADDRESSES OF THE PASSED PARAMETERS OF EACH FUNCTION
-//THIS WILL HELP WITH ASSIGNING THE VALEUS OF THE PASSED PARAMETERS TO THE VARIABLES IN () AT FUNCTION DECLARATIONS
-//FOR NOW ONLY 3 PARAMETERS CAN BE PASSED 
+// THIS TABLE IS USED TO STORE THE DIFFERENT ADDRESSES OF THE PASSED PARAMETERS OF EACH FUNCTION
+// THIS WILL HELP WITH ASSIGNING THE VALEUS OF THE PASSED PARAMETERS TO THE VARIABLES IN () AT FUNCTION DECLARATIONS
 
-parameters *init_pTable()
+parameter *init_pTable()
 {
     // Allocate memory for table
-    return malloc(SIZEMAX * sizeof(parameters));
+    return malloc(SIZEMAX * sizeof(parameter));
 }
 
-void print_pTable(parameters *t)
+void print_pTable(parameter *t)
 {
     printf("Content of passed parameters table: \n");
     for (int i = 0; i < pTableSize; i++)
     {
-        printParameters(t[i]);
+        printParameter(t[i]);
     }
 }
 
-void printParameters(parameters p)
+void printParameter(parameter p)
 {
-    printf("FunName : %s\t", p.functionName);
-    printf("@p1 : %d\t", p.par1);
-    printf("@p2 : %d\t", p.par2);
-    printf("@p3 : %d\t", p.par3);
+    printf(" %d\t", p.num);
+    printf(" %s\t", p.functionName);
+    printf(" %d\t", p.parameter);
     printf("\n");
 }
 
-parameters addParameters(parameters *t, char *FunName, int p1, int p2, int p3)
+parameter addParameter(parameter *t, char *FunName, int par)
 {
-    parameters p;
-    strcpy(p.functionName,FunName);
-    p.par1=p1;
-    p.par2=p2;
-    p.par3=p3;
+    parameter p;
+    p.num = pTableSize;
+    strcpy(p.functionName, FunName);
+    p.parameter = par;
     t[pTableSize] = p;
     pTableSize++;
-    printf("Added following parameters: \n");
-    printParameters(p);
+    printf("Added following parameter: \n");
+    printParameter(p);
     print_pTable(t);
 
     return p;
+}
+
+int findPassedParameter(parameter *t, char *funName, int countArgs)
+{
+    int count = 0;
+    for (int i = 0; i < pTableSize; i++)
+    {
+        if (strcmp(funName, t[i].functionName) == 0)
+        {
+            if (countArgs == count)
+            {
+                return t[i].parameter;
+            }
+            count++;
+        }
+    }
 }

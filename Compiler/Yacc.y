@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "sTable.c"
 #include "iTable.c"
+#include "pTable.c"
 
 char string[16]; //Taille max du nom de variable
 int countIF=0;
@@ -10,12 +11,15 @@ int countELSE=0;
 int countWHILE=0;
 int varBool=0;
 int countFUNCTION=0;
+int countArgs=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
+char funName[16];
 void yyerror(char *s);
 symbol * st; //symbol table
 instruction * it; //instruction table
+parameter * pt; //parameters table
 %}
 
 %union {int nb; char string[16];} //associer une étiquette à chaque entier
@@ -52,8 +56,12 @@ Functions: Function | Function Functions;
 
 //INT MAIN AND VOID MAIN ARE BOTH POSSIBLE AND MEAN THE SAME THING
 //DELETED FUNNAME AND ADDED 3 DIFFERENT CASES TO ADD JMP INSTRUCTIONS AT THE END OF FUNCTIONS OTHER THAN MAIN
-Function: tINT tID tPO DecArgs tPF tAO{
+Function: tINT tID tPO{
   incrementDepth("FUNCTION");
+  strcpy(funName,$2);
+  countArgs=0;
+  }
+  DecArgs {strcpy(funName," ");} tPF tAO{
   countFUNCTION=iTableSize;
 } 
   Body Return tAF{
@@ -62,7 +70,6 @@ Function: tINT tID tPO DecArgs tPF tAO{
   //RETURNS THE CORRESPONDING ASM/INSTRUCTION LINE
   instruction i = addInstruction(it,"JMP",returnLine,-1,-1); 
  
-
   int functionAsmLines=iTableSize-countFUNCTION;
   int patch = i.num - functionAsmLines + 1;
   updateJMPInstructionFunction(it,patch,$2);
@@ -71,9 +78,13 @@ Function: tINT tID tPO DecArgs tPF tAO{
   print_sTable(st);
   decrementDepth("FUNCTION");
 }
-        | tVOID tID tPO DecArgs tPF tAO{
-incrementDepth("FUNCTION");
-countFUNCTION=iTableSize;
+
+        | tVOID tID tPO{
+  incrementDepth("FUNCTION");
+  strcpy(funName,$2);
+  countArgs=0;
+          } DecArgs {strcpy(funName," ");} tPF tAO{
+  countFUNCTION=iTableSize;
         } Body tAF{
   int returnLine = findLine(it,$2) + 1; 
   instruction i = addInstruction(it,"JMP",returnLine,-1,-1);
@@ -89,14 +100,28 @@ countFUNCTION=iTableSize;
 
 Return: tRETURN tID tPV | ;
 
-FunCall: tID tPO CallArgs tPF tPV{
+FunCall: tID tPO{strcpy(funName,$1);} CallArgs {strcpy(funName," ");} tPF tPV{
      instruction i = addJMPFunctionInstruction(it,"JMP",-1,-1,-1,$1); //PATCHED LATER 
+     
 };
 
-DecArgs: tINT tID NextDecArg |;
+DecArgs: tINT tID{
+  
+  //ADDING DECLARATED VARIABLES IN ()
+  symbol local = addSymbol(st,$2,1);
+  //instruction i = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
+  instruction i = addInstruction(it,"COP",local.addr,findPassedParameter(pt,funName,countArgs),-1);
+  countArgs++;
+
+} NextDecArg |;
 NextDecArg: tV DecArgs |;
 
-CallArgs: Operand CallArgNext |;
+CallArgs: tID{
+  addParameter(pt,funName,getAddrName(st,$1));
+} CallArgNext
+ | tNB CallArgNext
+ |;
+
 CallArgNext: tV CallArgs |;
 
 Type: tCONST { $$ = 2; } | { $$ = 1; }; //IF VAR THEN 1 IF CONST THEN 2
@@ -465,14 +490,17 @@ int main(void) {
   ASM=fopen("ASM","w");
   st = init_sTable();
   it = init_iTable();
+  pt = init_pTable();
   //yydebug=1;
   yyparse();
   printf("END OF PARSER \n");
-  printf("Printing table of symbols: \n");
+
   print_sTable(st);
 
-  printf("Printing table of instructions: \n");
-  print_iTable(it);  
+  print_iTable(it); 
+
+  print_pTable(pt);  
+
   fclose (ASM);
   return 0;
 }

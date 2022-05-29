@@ -5,13 +5,13 @@
 
 typedef struct
 {
+    int num;
     char functionName[16];
-    int par1;
-    int par2;
-    int par3;
-} parameters;
+    int parameter;
+} parameter;
 
-parameters *init_pTable();
-void print_pTable(parameters *t);
-void printParameters(parameters p);
-parameters addParameters(parameters *t, char *FunName, int p1, int p2, int p3);
+parameter *init_pTable();
+void print_pTable(parameter *t);
+void printParameter(parameter p);
+parameter addParameter(parameter *t, char *FunName, int parameter);
+int findPassedParameter(parameter *t, char *funName, int countArgs);

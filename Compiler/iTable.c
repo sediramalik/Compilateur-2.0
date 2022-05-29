@@ -37,7 +37,7 @@ void printJMPFunctionInstruction(instruction i)
     printf(" %d\t", i.arg1);
     printf(" %d\t", i.arg2);
     printf(" %d\t", i.arg3);
-    printf(" %s\t", i.function);
+    //printf(" %s\t", i.function);
     printf("\n");
 }
 
