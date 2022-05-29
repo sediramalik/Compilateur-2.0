@@ -30,3 +30,4 @@ condition init_cond();
 instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int arg2, int arg3, char * function);
 void printJMPFunctionInstruction(instruction i);
 findLine(instruction *t, char * functionName);
+void updateJMPInstructionFunction(instruction *t, int patch, char *functionName);

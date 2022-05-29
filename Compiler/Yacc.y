@@ -9,6 +9,7 @@ int countIF=0;
 int countELSE=0;
 int countWHILE=0;
 int varBool=0;
+int countFUNCTION=0;
 condition ifCond;
 condition whileCond;
 condition elseCond;
@@ -50,20 +51,34 @@ Functions: Function | Function Functions;
 //DELETED FUNNAME AND ADDED 3 DIFFERENT CASES TO ADD JMP INSTRUCTIONS AT THE END OF FUNCTIONS OTHER THAN MAIN
 Function: tINT tID tPO DecArgs tPF tAO{
   incrementDepth("FUNCTION");
-} Body Return tAF{
+  countFUNCTION=iTableSize;
+} 
+  Body Return tAF{
   int returnLine = findLine(it,$2) + 1; 
   //FUNCTION THAT FINDS THE JMP INSTRUCTION GENERATED AT THE MOMENT OF CALLING THE FUNCTION AND
   //RETURNS THE CORRESPONDING ASM/INSTRUCTION LINE
   instruction i = addInstruction(it,"JMP",returnLine,-1,-1); 
+ 
+
+  int functionAsmLines=iTableSize-countFUNCTION;
+  int patch = i.num - functionAsmLines + 1;
+  updateJMPInstructionFunction(it,patch,$2);
+
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("FUNCTION");
 }
         | tVOID tID tPO DecArgs tPF tAO{
 incrementDepth("FUNCTION");
+countFUNCTION=iTableSize;
         } Body tAF{
   int returnLine = findLine(it,$2) + 1; 
   instruction i = addInstruction(it,"JMP",returnLine,-1,-1);
+
+  int functionAsmLines=iTableSize-countFUNCTION;
+  int patch = i.num - functionAsmLines + 1;
+  updateJMPInstructionFunction(it,patch,$2);
+
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("FUNCTION"); 

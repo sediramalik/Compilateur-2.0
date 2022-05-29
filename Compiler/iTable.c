@@ -59,7 +59,7 @@ instruction addInstruction(instruction *t, char *iName, int arg1, int arg2, int 
     return i;
 }
 
-instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int arg2, int arg3, char * function)
+instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int arg2, int arg3, char *function)
 {
     instruction i;
     i.num = iTableSize;
@@ -67,7 +67,7 @@ instruction addJMPFunctionInstruction(instruction *t, char *iName, int arg1, int
     i.arg1 = arg1;
     i.arg2 = arg2;
     i.arg3 = arg3;
-    strcpy(i.function,function);
+    strcpy(i.function, function);
     t[iTableSize] = i;
     iTableSize++;
     fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3, i.function);
@@ -89,13 +89,13 @@ void updateJMFInstruction(instruction *t, int numAsmLines)
         {
             printf("FOUND JMF INSTRUCTION AT INDEX %d\n", t[i].num);
             printf("JUMPING %d INSTRUCTIONS\n", numAsmLines);
-            t[i].arg2 = numAsmLines + t[i].num + 1 ; 
+            t[i].arg2 = numAsmLines + t[i].num + 1;
             break;
         }
     }
 }
 
-//IN CASE THERE IS AN ELSE, THE JMF NEEDS TO BE PATCHED TO SKIP THE JMP INSTRUCTION CREATED BY ELSE
+// IN CASE THERE IS AN ELSE, THE JMF NEEDS TO BE PATCHED TO SKIP THE JMP INSTRUCTION CREATED BY ELSE
 void updateJMFInstructionOne(instruction *t)
 {
     for (int i = iTableSize; i > 0; i -= 1)
@@ -139,28 +139,42 @@ void updateJMPInstructionBackwards(instruction *t, int numAsmLines)
     }
 }
 
-condition construct_cond(int arg1, int arg2, int arg3){
+condition construct_cond(int arg1, int arg2, int arg3)
+{
     condition cond;
-    cond.arg1=arg1;
-    cond.arg2=arg2;
-    cond.arg3=arg3;
+    cond.arg1 = arg1;
+    cond.arg2 = arg2;
+    cond.arg3 = arg3;
     return cond;
 }
 
-condition init_cond(){
+condition init_cond()
+{
     condition cond;
-    cond.arg1=0;
-    cond.arg2=0;
-    cond.arg3=0;
+    cond.arg1 = 0;
+    cond.arg2 = 0;
+    cond.arg3 = 0;
     return cond;
 }
 
-findLine(instruction *t, char * functionName){
-        for (int i = 0; i <iTableSize; i++)
+findLine(instruction *t, char *functionName)
+{
+    for (int i = 0; i < iTableSize; i++)
     {
         if (strcmp(functionName, t[i].function) == 0)
         {
             return i;
+        }
+    }
+}
+
+void updateJMPInstructionFunction(instruction *t, int patch, char *functionName)
+{
+    for (int i = 0; i < iTableSize; i++)
+    {
+        if (strcmp(functionName, t[i].function) == 0)
+        {
+            t[i].arg1 = patch;
         }
     }
 }
