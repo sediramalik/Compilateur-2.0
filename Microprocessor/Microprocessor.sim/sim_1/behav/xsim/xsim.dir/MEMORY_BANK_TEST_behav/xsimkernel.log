@@ -2,3 +2,6 @@ Running: xsim.dir/MEMORY_BANK_TEST_behav/xsimk -simmode gui -wdb MEMORY_BANK_TES
 Design successfully loaded
 Design Loading Memory Usage: 32668 KB (Peak: 32720 KB)
 Design Loading CPU Usage: 20 ms
+Simulation completed
+Simulation Memory Usage: 118504 KB (Peak: 179940 KB)
+Simulation CPU Usage: 40 ms
