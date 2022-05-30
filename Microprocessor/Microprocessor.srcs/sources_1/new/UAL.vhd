@@ -48,7 +48,7 @@ end UAL;
 architecture Behavioral of UAL is
 signal OP : STD_LOGIC_VECTOR (15 downto 0);
 begin 
-process(A,B,CTRL_ALU)
+process(A,B,CTRL_ALU) --THE PROCESS IS RE EXECUTED EACH TIME ONE OF THESE CHANGES
     begin
         if CTRL_ALU="001" then OP<=(x"00"&A) + (x"00"&B); --OP ADD
         elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SUB

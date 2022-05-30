@@ -61,6 +61,10 @@ signal CLK : STD_LOGIC := '0';
 signal QA : STD_LOGIC_VECTOR (7 downto 0) := (others=>'0');
 signal QB : STD_LOGIC_VECTOR (7 downto 0) := (others=>'0');
 
+type reg_array is array (0 to 15) of STD_LOGIC_VECTOR  (7 downto 0);
+
+
+
 begin
 UUT:  REGISTER_FILE PORT MAP(
 aA => aA,
@@ -81,17 +85,20 @@ CLK <= NOT(CLK);
 WAIT FOR 5ns;
 end process;
 
-process
-begin
 
-RST <= '0';
-aA <= "0000";
-aB <= "0001";
-aW <= "0000";
-W <= '1';
-DATA <= "11111111";
-wait for 20ns;
+--READ & WRITE MODE: WE WANT TO WRITE 7 IN THE 4th REGISTER
+--QA <= "00000010" after 20ns; --INIT QA = 2 TO SEE THE CHANGE FROM 2 TO 0
+--QB <= "00000010" after 20ns; --INIT QB = 2 TO SEE THE CHANGE FROM 2 TO 0
+RST <= '0', '1' after 20ns ;
+DATA <= "00000111" after 20ns ;
+aW <="0011" after 20ns, "0000" after 30ns ; --4th REGISTER
+--aW IS THEN CHANGED TO SATISFY THE CONDITION aB/=aW and aA/=aW
+W <= '1' after 20ns ;
 
-end process;
+
+aA <= "0011" after 40ns, "0000" after 60ns ; --40ns: QA WILL NOT CHANGE BECAUSE aA == aW 
+                                             --60ns: QA WILL  CHANGE BECAUSE aA /= aW AND WILL CONTAIN 7
+aB <= "0011" after 60ns ; --QB WILL  CHANGE BECAUSE aB /= aW AND WILL CONTAIN 7
+
 
 end Behavioral;
