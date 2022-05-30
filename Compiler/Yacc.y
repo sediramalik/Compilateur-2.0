@@ -6,6 +6,8 @@
 #include "pTable.c"
 
 char string[16]; //Taille max du nom de variable
+int count=0;
+int nbrInstr=0;
 int countIF=0;
 int countELSE=0;
 int countWHILE=0;
@@ -52,7 +54,7 @@ tCONST
 //A MAIN IS OBLIGATORY AND ALL OTHER FUNCTIONS MUST BE DECLARED AFTER THE MAIN FUNCTION (TO AVOID MESSING WITH THE JMP INSTRUCTIONS OF THE FUNCTIONS)
 Program: Main Functions;
 
-Main: tVOID tMAIN tPO tPF tAO Body tAF{};
+Main: tVOID tMAIN tPO tPF tAO Body tAF;
 
 Functions: Function | Function Functions;
 
@@ -104,7 +106,8 @@ Function: tINT tID tPO{
   deleteSymbols(st);
   print_sTable(st);
   decrementDepth("FUNCTION"); 
-        };
+        }
+        | ;
 
 
 FunCall: tID { strcpy(funName , $1); }  tPO{strcpy(funName,$1);} CallArgs tPF {
@@ -181,17 +184,18 @@ Body
 tAF {
   int whileAsmLines=iTableSize-countWHILE;
 
-  if (whileCond.arg1) {
+  if (whileCond.arg1) { //WHILE TRUE
     updateJMPInstruction(it, whileAsmLines-1);
   } 
-  else if (whileCond.arg2){
+  else if (whileCond.arg2){ //WHILE FALSE
     //updateJMFInstruction(it, ifAsmLines);
     updateJMPInstruction(it, whileAsmLines);
   }
-  else if (whileCond.arg3){
+  else if (whileCond.arg3){ //WHILE VARIABLE
     updateJMFInstruction(it, whileAsmLines+1);
     instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER 
-    updateJMPInstructionBackwards(it, whileAsmLines);
+    updateJMPInstructionBackwards(it, whileAsmLines+nbrInstr-1);
+    //+nbrInstr TO JUMP BACK TO THE RE EVALUATION OF THE WHILE CONDITION, nbrInstr REPRESENTS THE NUMBER OF GENERATED INSTRUCTIONS IN ()
   }
   whileCond = init_cond();
 
@@ -203,8 +207,10 @@ tAF {
 
 
 Print: tPRINT tPO PrintArg tPF tPV;
-PrintArg :
+PrintArg : //OPERAND NOT IMPLEMENTED YET!
   tID {
+    printf("/////////////////////////////////////////////////////");
+    printf("%d\n",getAddrName(st,$1,sTableDepth));
     instruction i = addInstruction(it,"PRI",getAddrName(st,$1,sTableDepth),-1,-1); 
   }
   | tNB {
@@ -268,7 +274,7 @@ NextVar : Type tV tID {
 
 Operand:  FunCall{
   printf("OPERAND FunCall FOUND \n");
-
+  //WHEN WE ASSIGN A VARIABLE TO A FUNCTION (a = fun(b)) WE DON'T NEED A TMP VARIABLE. WE SIMPLY PATCH THE COP INSTRUCTION AT THE END.)
 }
         | Operations
         | tID{ //MUST BE STORED IN A TMP VARIABLE
@@ -374,10 +380,8 @@ Body
   print_sTable(st);
   decrementDepth("ELSE");
 } |;
-
-whileCondition: tWHILE tPO whileBoolExpression tPF {
-
-};
+//COUNT IS USED TO COUNT THE GENERATED INSTRUCTIONS BETWEEN ()
+whileCondition: tWHILE tPO{count=iTableSize;} whileBoolExpression tPF {nbrInstr=iTableSize-count;};
 
 
 ifBoolExpression: ifComparaison
