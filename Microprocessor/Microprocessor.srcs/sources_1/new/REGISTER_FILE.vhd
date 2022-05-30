@@ -66,7 +66,8 @@ begin
 --READ ASYNC
 --WE READ THE CONTENT OF aA WHEN WRITE MODE IS NOT ACTIVATED OR WHEN aX /= aW (TO AVOID READING AND WRITING AT THE SAME TIME)
 --NOTE: 0 MEANS READ MODE AND 1 MEANS READ & WRITE
-    QA <= REG(to_integer(unsigned(aA))) when aA /= aW or W ='0';
-    QB <= REG(to_integer(unsigned(aB))) when aB /= aW or W ='0';
+    QA <= REG(to_integer(unsigned(aA))) when aA /= aW or W ='0' else DATA;
+    QB <= REG(to_integer(unsigned(aB))) when aB /= aW or W ='0' else DATA;
+    --ELSE DATA FOR THE BYPASS
 
 end Behavioral;
