@@ -58,14 +58,15 @@ begin
             --RESET REG IF RST=0
             if  ( RST = '0') then REG <= (others=>(others=>'0')); 
             --WRITE MODE ACTIVATED, COPY CONTENT OF DATA IN REGISTER THAT HAS THE ADDRESS aW
-            elsif ( W = '1') then REG(to_integer(unsigned(aW))) <= DATA;
+            elsif ( W = '1') then REG(to_integer(unsigned(aW))) <= DATA; --AFC: WE AFFECT THE CONTENT OF DATA TO @W. EX: AFC 0 (@W) 3 (Data)
             end if;
         end if;
     end process;   
      
 --READ ASYNC
---WE READ THE CONTENT OF aA WHEN WRITE MODE IS NOT ACTIVATED OR WHEN aX /= aW
-    QA <= REG(to_integer(unsigned(aA))) when aA /= aW or W='0' else DATA ;
-    QB <= REG(to_integer(unsigned(aB))) when aB /= aW or W='0' else DATA ;
+--WE READ THE CONTENT OF aA WHEN WRITE MODE IS NOT ACTIVATED OR WHEN aX /= aW (TO AVOID READING AND WRITING AT THE SAME TIME)
+--NOTE: 0 MEANS READ MODE AND 1 MEANS READ & WRITE
+    QA <= REG(to_integer(unsigned(aA))) when aA /= aW or W ='0';
+    QB <= REG(to_integer(unsigned(aB))) when aB /= aW or W ='0';
 
 end Behavioral;
