@@ -48,6 +48,23 @@ symbol addSymbol(symbol *t, char *sName, int type)
     return s;
 }
 
+symbol addSymbolAssigned(symbol *t, char *sName, int type) //FOR CONSTANTS
+{
+    symbol s;
+    s.assigned = 1;
+    s.depth = sTableDepth;
+    s.addr = sTableSize;
+    strcpy(s.sName, sName);
+    s.type = type;
+    t[sTableSize] = s;
+    sTableSize++;
+    printf("Added following symbol: \n");
+    printSymbol(s);
+    print_sTable(t);
+
+    return s;
+}
+
 // We decrease the size of the table by the number of symbols to delete
 // which are the symbols of depth equal to table depth (max depth)
 

@@ -24,4 +24,4 @@ int getAddrName(symbol *t, char *targetname, int sTableDepth);
 int unstack(symbol *t);
 symbol getSymbolByName(symbol *t, char *targetname, int sTableDepth);
 void const_assigned(symbol* s);
-
+symbol addSymbolAssigned(symbol *t, char *sName, int type);

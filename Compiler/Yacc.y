@@ -226,7 +226,8 @@ PrintArg : //OPERAND NOT IMPLEMENTED YET!
 //VarDeclarationAndAssign NOT AVAILABLE FOR FUNCALL AND OPERATIONS! (NOT YET)
 VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
     printf("DECLARATION & ASSIGN FOUND\n"); 
-    symbol s = addSymbol(st,$3,$1);
+    if ($1 == 2) {symbol s = addSymbolAssigned(st,$3,$1);} //IF IT IS A CONSTANT WE CHANGE ITS ASSIGNED FIELD TO 1
+    else {symbol s = addSymbol(st,$3,$1);}
     symbol tmp = addSymbol(st,"tmp_nb",1); 
     instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
     instruction j = addInstruction(it,"COP",getAddrName(st,$3,sTableDepth),sTableSize-1,-1);

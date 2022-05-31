@@ -1,5 +1,13 @@
 void main(){
-    int a = 3;
-    print(a);
+    int a;
+    int b;
+    int c;
+    const int d = 5;
+    const int e;
+    e = 6;
+    const int f,g;
+    f = 7;
+    g = 8;
+
 }
 
