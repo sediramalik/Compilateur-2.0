@@ -1,0 +1,11 @@
+Printing stacktrace...
+
+[0] xsim.dir/MICROPROCESSOR_TEST_behav/xsimk(+0x60e5) [0x56287b1c10e5]
+[1] /usr/local/insa/Xilinx.VIVADO/Vivado/2018.2/lib/lnx64.o/librdi_simulator_kernel.so(+0x2174a9) [0x7fb6697714a9]
+[2] /usr/local/insa/Xilinx.VIVADO/Vivado/2018.2/lib/lnx64.o/librdi_simulator_kernel.so(ISIMK::Kernel::callProcessExecuteFunctions()+0x59) [0x7fb66976cf09]
+[3] /usr/local/insa/Xilinx.VIVADO/Vivado/2018.2/lib/lnx64.o/librdi_simulator_kernel.so(ISIMK::HdlQ::processTimeSlots()+0xa7) [0x7fb669769087]
+[4] /usr/local/insa/Xilinx.VIVADO/Vivado/2018.2/lib/lnx64.o/librdi_simulator_kernel.so(ISIMK::GDBMIHost::runSimulationLoop()+0x139) [0x7fb669763f29]
+[5] /usr/local/insa/Xilinx.VIVADO/Vivado/2018.2/lib/lnx64.o/Ubuntu/libstdc++.so.6(+0xb8cbf) [0x7fb668959cbf]
+[6] /lib/x86_64-linux-gnu/libpthread.so.0(+0x8609) [0x7fb669084609]
+[7] /lib/x86_64-linux-gnu/libc.so.6(clone+0x43) [0x7fb6691be133]
+Done

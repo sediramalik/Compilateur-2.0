@@ -21,9 +21,8 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_SIGNED.ALL;
-
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -53,7 +52,7 @@ process(A,B,CTRL_ALU) --THE PROCESS IS RE EXECUTED EACH TIME ONE OF THESE CHANGE
         if CTRL_ALU="001" then OP<=(x"00"&A) + (x"00"&B); --OP ADD
         elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SOU
         elsif CTRL_ALU="010" then OP<= A * B; --OP MUL
-        elsif CTRL_ALU="100" then OP<= shr(A,"1"); --OP DIV (ONLY BY 2 : LEFT SHIFT)
+        elsif CTRL_ALU="100" then OP<= STD_LOGIC_VECTOR(to_unsigned(to_integer(unsigned(X"00" &A)) / to_integer(unsigned(X"00" &B)),16));
         end if;
 end process;
 

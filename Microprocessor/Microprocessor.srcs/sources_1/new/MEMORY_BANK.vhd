@@ -48,8 +48,7 @@ begin
 
 process
 begin
-    wait until(CLK'event);
-        if (CLK='1') then
+         wait until CLK'Event and CLK = '1';
             --RESET
             if  ( RST = '1') then MEM <= (others=>X"00");
             --READ MODE
@@ -57,7 +56,7 @@ begin
             --WRITE MODE
             else MEM(to_integer(unsigned(ADDR))) <= INPUT;
         end if;
-     end if; 
+ 
 end process;
 
 end Behavioral;

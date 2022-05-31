@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1650531412">
-  <File Type="PA-TCL" Name="UAL.tcl"/>
-  <File Type="RDS-DCP" Name="UAL.dcp"/>
-  <File Type="REPORTS-TCL" Name="UAL_reports.tcl"/>
-  <File Type="RDS-RDS" Name="UAL.vds"/>
-  <File Type="RDS-UTIL-PB" Name="UAL_utilization_synth.pb"/>
-  <File Type="RDS-UTIL" Name="UAL_utilization_synth.rpt"/>
+<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1654030338">
+  <File Type="VDS-TIMING-PB" Name="MICROPROCESSOR_timing_summary_synth.pb"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="MICROPROCESSOR_timing_summary_synth.rpt"/>
+  <File Type="RDS-DCP" Name="MICROPROCESSOR.dcp"/>
+  <File Type="RDS-UTIL-PB" Name="MICROPROCESSOR_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="MICROPROCESSOR_utilization_synth.rpt"/>
+  <File Type="RDS-PROPCONSTRS" Name="MICROPROCESSOR_drc_synth.rpt"/>
+  <File Type="RDS-RDS" Name="MICROPROCESSOR.vds"/>
+  <File Type="REPORTS-TCL" Name="MICROPROCESSOR_reports.tcl"/>
+  <File Type="PA-TCL" Name="MICROPROCESSOR.tcl"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
+    <File Path="$PSRCDIR/sources_1/new/INSTRUCTION_BANK.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/MEMORY_BANK.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/PIPELINE.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/REGISTER_FILE.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PSRCDIR/sources_1/new/UAL.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/MICROPROCESSOR.vhd">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -16,7 +49,7 @@
     </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
-      <Option Name="TopModule" Val="UAL"/>
+      <Option Name="TopModule" Val="MICROPROCESSOR"/>
       <Option Name="TopAutoSet" Val="TRUE"/>
     </Config>
   </FileSet>

@@ -45,15 +45,20 @@ signal MEM : MEM_TAB;
 begin
 
 --TESTS FOR FINAL PART
-MEM(0) <= x"0000003F";
-MEM(1) <= x"00000021";
-MEM(2) <= x"0000004C";
-MEM(3) <= x"0000006D";
+MEM(0) <= x"01010203"; --ADD @0x01 @0x02 @0x03 (@ ARE IN THE REGISTER FILE)
+MEM(1) <= x"02010203"; --MUL @0x01 @0x02 @0x03 (@ ARE IN THE REGISTER FILE)
+MEM(2) <= x"02010203"; --SOU @0x01 @0x02 @0x03 (@ ARE IN THE REGISTER FILE)
+MEM(3) <= x"04010203"; --DIV @0x01 @0x02 @0x03 (@ ARE IN THE REGISTER FILE)
+MEM(4) <= x"05010200"; --COP @0x01 @0x02 (@ ARE IN THE REGISTER FILE)
+MEM(5) <= x"06010200"; --AFC @0x01 @0x02 (@ ARE IN THE REGISTER FILE)
+MEM(6) <= x"07010200"; --LOAD @0x01 @0x02 (@ ARE IN THE REGISTER FILE)
+MEM(7) <= x"08010200"; --STORE @0x01 @0x02 (@ ARE IN THE REGISTER FILE)
+
 process
 begin
-    wait until(CLK'event);
-            if (CLK='1') then OUTPUT <= MEM(to_integer(unsigned(ADDR)));       
-            end if;                          
+    wait until CLK'Event and CLK = '1';
+        OUTPUT <= MEM(to_integer(unsigned(ADDR)));       
+                        
 end process;
 
 
