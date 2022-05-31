@@ -37,7 +37,7 @@ use IEEE.STD_LOGIC_SIGNED.ALL;
 entity UAL is
     Port ( A : in STD_LOGIC_VECTOR (7 downto 0); 
            B : in STD_LOGIC_VECTOR (7 downto 0);
-           CTRL_ALU : in STD_LOGIC_VECTOR (2 downto 0); --Type of operation: ADD | SUB | MUL | DIV
+           CTRL_ALU : in STD_LOGIC_VECTOR (2 downto 0); --Type of operation: ADD | SOU | MUL | DIV
            N : out STD_LOGIC; --Negative output: if S<0 then N<=1 else N<=0 
            O : out STD_LOGIC; --Overflow: O<=1 when A OP B > 8 bits
            Z : out STD_LOGIC; --Output is equal to zero: if S==0 then Z<=1 else Z<=0 
@@ -51,7 +51,7 @@ begin
 process(A,B,CTRL_ALU) --THE PROCESS IS RE EXECUTED EACH TIME ONE OF THESE CHANGES
     begin
         if CTRL_ALU="001" then OP<=(x"00"&A) + (x"00"&B); --OP ADD
-        elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SUB
+        elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SOU
         elsif CTRL_ALU="010" then OP<= A * B; --OP MUL
         elsif CTRL_ALU="100" then OP<= shr(A,"1"); --OP DIV (ONLY BY 2 : LEFT SHIFT)
         end if;
