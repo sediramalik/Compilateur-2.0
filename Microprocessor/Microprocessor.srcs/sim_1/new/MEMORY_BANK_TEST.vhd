@@ -32,7 +32,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity MEMORY_BANK_TEST is
-
 end MEMORY_BANK_TEST;
 
 architecture Behavioral of MEMORY_BANK_TEST is

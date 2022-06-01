@@ -42,35 +42,38 @@ component MICROPROCESSOR is
  );
 end component;
 
---inputs
-signal CLK:  STD_LOGIC :='0' ;
-signal ADDR :  std_logic_vector(7 downto 0) := (others => '0');
+--INPUTS
+signal testCLK:  STD_LOGIC :='0' ;
+signal testADDR :  std_logic_vector(7 downto 0) := (others => '0');
 
 begin
 
 MICROPROCESSOR_MAP: MICROPROCESSOR
 PORT MAP(
-CLK => CLK,
-ADDR => ADDR
+CLK => testCLK,
+ADDR => testADDR
 );
 
 --SIMULATE CLOCK
 SIM_CLK : process
 begin
-CLK <= NOT(CLK);
-WAIT FOR 5ns;
+testCLK <= NOT(testCLK);
+wait for 5ns;
 end process;
 
 
 --THE INSTRUCTIONS HAVE BEEN INITIALIZED IN THE INSTRUCTION BANK FILE
---WE LOADED THE 4 FIRST SLOTS
+--WE LOADED THE 8 FIRST SLOTS
 --WE WILL NOW SEE IF THE COMPONENTS WORK PROPERLY BY ANALIZING THEIR FIELD CONTENTS
-ADDR <= "00000000" ,
-        "00000001" after 100ns,
-        "00000010" after 200ns,
-        "00000011" after 300ns,
-        "00000100" after 400ns,
-        "00000101" after 500ns,
-        "00000110" after 600ns,
-        "00000111" after 700ns;
+
+testADDR <= "00000000", --AFC 0 5, REG(0) WILL CONTAIN 5
+            "00000001" after 100ns, --AFC 1 6, REG(1) WILL CONTAIN 6
+            "00000010" after 200ns, --ADD 2 0 1, REG(2) WILL CONTAIN 11
+            "00000011" after 300ns, --COP 3 2, REG(3) WILL CONTAIN 11
+            "00000100" after 400ns, --AFC 5 9, REG(5) WILL CONTAIN 9
+            "00000101" after 500ns, --STORE 0 5, MEM(0) WILL CONTAIN 9 !NOTE! WE STORE IN THE MEMORY BANK AND NOT THE REGISTER FILE
+            "00000110" after 600ns, --LOAD 4 0, REG(4) WILL CONTAIN 9  
+            "00000111" after 700ns, --MUL 7 4 1, REG(7) WILL CONTAIN 9*6=54 AKA 0X36
+            "00001000" after 800ns, --SOU 8 3 5, REG(8) WILL CONTAIN 11-9=2
+            "00001001" after 900ns; --DIV 9 1 0, REG(9) WILL CONTAIN 6/2=3 !NOTE! THE LAST ARG IS USELESS, WE JUST DEVIDE BY 2 (LEFT SHIFT ONCE)
 end Behavioral;

@@ -32,7 +32,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity REGISTER_FILE_Test is
-
 end REGISTER_FILE_Test;
 
 architecture Behavioral of REGISTER_FILE_Test is

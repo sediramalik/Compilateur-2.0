@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1654030338">
-  <File Type="VDS-TIMING-PB" Name="MICROPROCESSOR_timing_summary_synth.pb"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="MICROPROCESSOR_timing_summary_synth.rpt"/>
+<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1654089155">
+  <File Type="PA-TCL" Name="MICROPROCESSOR.tcl"/>
+  <File Type="REPORTS-TCL" Name="MICROPROCESSOR_reports.tcl"/>
+  <File Type="RDS-RDS" Name="MICROPROCESSOR.vds"/>
   <File Type="RDS-DCP" Name="MICROPROCESSOR.dcp"/>
   <File Type="RDS-UTIL-PB" Name="MICROPROCESSOR_utilization_synth.pb"/>
   <File Type="RDS-UTIL" Name="MICROPROCESSOR_utilization_synth.rpt"/>
-  <File Type="RDS-PROPCONSTRS" Name="MICROPROCESSOR_drc_synth.rpt"/>
-  <File Type="RDS-RDS" Name="MICROPROCESSOR.vds"/>
-  <File Type="REPORTS-TCL" Name="MICROPROCESSOR_reports.tcl"/>
-  <File Type="PA-TCL" Name="MICROPROCESSOR.tcl"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/INSTRUCTION_BANK.vhd">

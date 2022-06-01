@@ -1,28 +1,8 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 08.04.2022 13:40:34
--- Design Name: 
--- Module Name: UAL - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
-use IEEE.NUMERIC_STD.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_SIGNED.ALL;
+
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -36,7 +16,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity UAL is
     Port ( A : in STD_LOGIC_VECTOR (7 downto 0); 
            B : in STD_LOGIC_VECTOR (7 downto 0);
-           CTRL_ALU : in STD_LOGIC_VECTOR (2 downto 0); --Type of operation: ADD | SOU | MUL | DIV
+           CTRL_ALU : in STD_LOGIC_VECTOR (2 downto 0); --Type of operation: ADD | SUB | MUL | DIV
            N : out STD_LOGIC; --Negative output: if S<0 then N<=1 else N<=0 
            O : out STD_LOGIC; --Overflow: O<=1 when A OP B > 8 bits
            Z : out STD_LOGIC; --Output is equal to zero: if S==0 then Z<=1 else Z<=0 
@@ -50,9 +30,9 @@ begin
 process(A,B,CTRL_ALU) --THE PROCESS IS RE EXECUTED EACH TIME ONE OF THESE CHANGES
     begin
         if CTRL_ALU="001" then OP<=(x"00"&A) + (x"00"&B); --OP ADD
-        elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SOU
+        elsif CTRL_ALU="011" then OP<=(x"00"&A) - (x"00"&B); --OP SUB
         elsif CTRL_ALU="010" then OP<= A * B; --OP MUL
-        elsif CTRL_ALU="100" then OP<= STD_LOGIC_VECTOR(to_unsigned(to_integer(unsigned(X"00" &A)) / to_integer(unsigned(X"00" &B)),16));
+        elsif CTRL_ALU="100" then OP(7 downto 0)<= shr(A,"1"); --OP DIV (ONLY BY 2 : LEFT SHIFT)
         end if;
 end process;
 
