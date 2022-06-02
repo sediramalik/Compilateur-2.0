@@ -25,7 +25,7 @@ clean:
 	rm $(OBJ) y.tab.c y.tab.h lex.yy.c ASM
 
 test:   all
-	./$(BIN) < Test.c
+	./$(BIN) < test.c
 	
 depth:   all
 	./$(BIN) < Depth.c
@@ -53,6 +53,9 @@ while_:   all
 	
 everything:   all
 	./$(BIN) < Everything.c
+	
+interpreter:   all
+	./$(BIN) < Interpreter.c
 	
 	
 	

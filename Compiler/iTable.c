@@ -4,6 +4,7 @@
 #include "iTable.h"
 
 int iTableSize = 0;
+int REG[16];
 FILE *ASM;
 
 instruction *init_iTable()
@@ -216,5 +217,41 @@ void updateJMPInstructionFunction(instruction *t, int patch, char *functionName,
         {
             t[i].arg1 = patch - argsDeclared;
         }
+    }
+}
+
+void interpretCode(instruction *t, int tableSize) //ONLY FOR SIMPLE OPERATIONS, JUMPS AND COMPARAISONS NOT IMPLEMENTED
+{
+    for (int i = 0; i < tableSize; i++)
+    {
+
+        if (strcmp(t[i].iName, "ADD")==0)
+            REG[t[i].arg1] = REG[t[i].arg2] + REG[t[i].arg3];
+
+        if (strcmp(t[i].iName, "MUL")==0)
+            REG[t[i].arg1] = REG[t[i].arg2] * REG[t[i].arg3];
+
+        if (strcmp(t[i].iName, "SUB")==0)
+            REG[t[i].arg1] = REG[t[i].arg2] - REG[t[i].arg3];
+
+        if (strcmp(t[i].iName, "DIV")==0)
+            REG[t[i].arg1] = REG[t[i].arg2] / REG[t[i].arg3];
+
+        if (strcmp(t[i].iName, "COP")==0)
+            REG[t[i].arg1] = REG[t[i].arg2];
+
+        if (strcmp(t[i].iName, "AFC")==0)
+            REG[t[i].arg1] = t[i].arg2;
+
+
+    }
+}
+
+void printInterpreter()
+{
+    printf("\n");
+    for (int i = 0; i < 16; i++)
+    {
+        printf("REG [ %d ] = %d \n", i, REG[i]);
     }
 }

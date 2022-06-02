@@ -16,6 +16,7 @@ typedef struct
     int arg1;
     int arg2;
     int arg3;
+
 } condition;
 
 instruction *init_iTable();
@@ -33,3 +34,7 @@ void printJMPFunctionInstruction(instruction i);
 findLine(instruction *t, char *functionName, char * Instruction);
 void updateJMPInstructionFunction(instruction *t, int patch, char *functionName, int argsDeclared);
 void updateCOPInstruction(instruction *t, int address, char *functionName);
+void interpreteur(instruction *t, int nb_instr);
+void print_interpreteur();
+void interpretCode(instruction *t, int tableSize);
+void printInterpreter();

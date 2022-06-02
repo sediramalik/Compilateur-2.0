@@ -1,6 +1,5 @@
 void main(){
-    int a;
-    int b;
+    int a,b;
     int c;
     const int d = 5;
     const int e;

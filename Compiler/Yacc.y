@@ -529,6 +529,14 @@ int main(void) {
 
   print_pTable(pt);  
 
+  printf("Interpreting code \n");
+
+  interpretCode(it,iTableSize);
+
+  printf("Printing register table:\n");
+  
+  printInterpreter();
+
   fclose (ASM);
   return 0;
 }
