@@ -51,4 +51,9 @@ voidfun:   all
 while_:   all
 	./$(BIN) < While.c
 	
+everything:   all
+	./$(BIN) < Everything.c
+	
+	
+	
 	
