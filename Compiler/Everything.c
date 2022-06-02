@@ -48,4 +48,3 @@ int fun4(int a, int b, int c, int d, int e){
     result = a + b - c * d / e;
     return result;
 }
-S
