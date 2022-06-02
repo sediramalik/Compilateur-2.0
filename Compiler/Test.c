@@ -1,15 +1,13 @@
 void main(){
 
-    int a = 10;
-    int b = 20;
-    int c = 30;
+int a = 10;
 
-    while (false){
-        print(a);
-    }
+int b;
+b = fun(a);
 
-    while (true){
-        print(b);
-    }
+}
 
+int fun(int x){
+    x = x + 1;
+    return x;
 }

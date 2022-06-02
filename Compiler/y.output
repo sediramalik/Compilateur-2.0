@@ -287,7 +287,7 @@ Nonterminals, with rules where they appear
     $@14 (63)
         on left: 49
         on right: 50
-    Operand (64)
+    Operand <nb> (64)
         on left: 52 53 54 55
         on right: 56 57 58 59 60 72 73 74 79 80 81
     Operations (65)

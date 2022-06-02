@@ -43,6 +43,7 @@ tCONST
 %token <string> tID //Etiquette nom variable/fonction
 %type <nb> Type
 %type <string> FunCall
+%type <nb> Operand
 //%type <string> FunName
 %start Program
 
@@ -54,7 +55,9 @@ tCONST
 //A MAIN IS OBLIGATORY AND ALL OTHER FUNCTIONS MUST BE DECLARED AFTER THE MAIN FUNCTION (TO AVOID MESSING WITH THE JMP INSTRUCTIONS OF THE FUNCTIONS)
 Program: Main Functions;
 
-Main: tVOID tMAIN tPO tPF tAO Body tAF;
+Main: tVOID tMAIN tPO tPF tAO Body tAF{
+  instruction end = addInstruction(it,"NOP",-1,-1,-1);
+};
 
 Functions: Function | Function Functions;
 
@@ -277,6 +280,7 @@ NextVar : Type tV tID {
 
 Operand:  FunCall{
   printf("OPERAND FunCall FOUND \n");
+  $$ = 1; //OPERAND IS SET TO 1 FOR FUNCALL
   //WHEN WE ASSIGN A VARIABLE TO A FUNCTION (a = fun(b)) WE DON'T NEED A TMP VARIABLE. WE SIMPLY PATCH THE COP INSTRUCTION AT THE END.)
 }
         | Operations
@@ -333,7 +337,7 @@ VarAssign : tID tEQUAL Operand tPV {
     else{
      printf("Depth of the variable %s is %d\n",$1,getSymbolByName(st,$1).depth); 
     instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
-    unstack(st);
+    if ($3!=1) unstack(st); //IF IT IS A FUNCALL WE DO NOT UNSTACK BECAUSE WE DID NOT USE ANY TMP VARIABLES
   }
   }
   else if (getSymbolByName(st,$1).type == 2){
