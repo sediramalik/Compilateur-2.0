@@ -26,3 +26,29 @@ clean:
 
 test:   all
 	./$(BIN) < Test.c
+	
+depth:   all
+	./$(BIN) < Depth.c
+
+ifelse:   all
+	./$(BIN) < IfElse.c
+	
+intfun:   all
+	./$(BIN) < IntFun.c
+	
+intfunp:   all
+	./$(BIN) < IntFunP.c
+	
+op:   all
+	./$(BIN) < Op.c
+
+var:   all
+	./$(BIN) < Var.c
+	
+voidfun:   all
+	./$(BIN) < VoidFun.c
+	
+while_:   all
+	./$(BIN) < While.c
+	
+	

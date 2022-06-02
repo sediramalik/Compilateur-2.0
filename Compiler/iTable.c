@@ -88,6 +88,7 @@ instruction addInstructionWithReturn(instruction *t, char *iName, int arg1, int 
     i.arg2 = arg2;
     i.arg3 = arg3;
     strcpy(i.ret, function);
+    printf("----------------funName inside function-----------------: %s\n",i.ret);
     t[iTableSize] = i;
     iTableSize++;
     //fprintf(ASM, "%d\t %s\t %d\t %d\t %d\t %s\t", i.num, i.iName, i.arg1, i.arg2, i.arg3, i.function);
@@ -193,10 +194,14 @@ void updateCOPInstruction(instruction *t, int address, char *functionName)
 {
     for (int i = 0; i < iTableSize; i++)
     {
+        printf("Function name: %s\n",functionName);
+        printf("Instruction:\n");
+        printInstruction(t[i]);
+        printf("Instruction return: %s\n",t[i].ret);
         if (strcmp(functionName, t[i].ret) == 0)
         {
             printf("////////////////////////////////////////");
-            printf("Address: %s\n",address);
+            //printf("Address: %s\n",address);
             printf("////////////////////////////////////////");
             t[i].arg2 = address;
         }

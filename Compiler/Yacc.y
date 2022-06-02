@@ -73,6 +73,7 @@ Function: tINT tID tPO{
 } 
   Body
   tRETURN tID tPV {
+    printf("!!!!!!!!!!!!!Patching COP Instruction!!!!!!!!!!!!!!!!\n");
     updateCOPInstruction(it,getAddrName(st,$11),$2);
   }
   tAF{
@@ -336,8 +337,15 @@ VarAssign : tID tEQUAL Operand tPV {
     }
     else{
      printf("Depth of the variable %s is %d\n",$1,getSymbolByName(st,$1).depth); 
-    instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
-    if ($3!=1) unstack(st); //IF IT IS A FUNCALL WE DO NOT UNSTACK BECAUSE WE DID NOT USE ANY TMP VARIABLES
+    if ($3 != 1){
+        instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
+        unstack(st); //IF IT IS A FUNCALL WE DO NOT UNSTACK BECAUSE WE DID NOT USE ANY TMP VARIABLES
+    }
+
+    else {
+        instruction i = addInstructionWithReturn(it,"COP",getAddrName(st,$1),sTableSize-1,-1,funName);
+    }
+
   }
   }
   else if (getSymbolByName(st,$1).type == 2){
