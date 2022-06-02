@@ -70,7 +70,7 @@ Function: tINT tID tPO{
 } 
   Body
   tRETURN tID tPV {
-    updateCOPInstruction(it,getAddrName(st,$11,sTableDepth),$2);
+    updateCOPInstruction(it,getAddrName(st,$11),$2);
   }
   tAF{
   int returnLine = findJMPLine(it,$2) + 1; 
@@ -127,7 +127,7 @@ DecArgs: tINT tID{
 NextDecArg: tV DecArgs |;
 
 CallArgs: tID{
-  addParameter(pt,funName,getAddrName(st,$1,sTableDepth));
+  addParameter(pt,funName,getAddrName(st,$1));
 } CallArgNext
  | tNB CallArgNext
  |;
@@ -209,9 +209,10 @@ tAF {
 Print: tPRINT tPO PrintArg tPF tPV;
 PrintArg : //OPERAND NOT IMPLEMENTED YET!
   tID {
-    printf("/////////////////////////////////////////////////////");
-    printf("%d\n",getAddrName(st,$1,sTableDepth));
-    instruction i = addInstruction(it,"PRI",getAddrName(st,$1,sTableDepth),-1,-1); 
+    printf("##############################################\n");
+    printf("TableDepth: %d\n");
+    printf("Addr: %d\n",getAddrName(st,$1));
+    instruction i = addInstruction(it,"PRI",getAddrName(st,$1),-1,-1); 
   }
   | tNB {
     symbol tmp = addSymbol(st,"tmp_nb_print",1);
@@ -230,7 +231,7 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
     else {symbol s = addSymbol(st,$3,$1);}
     symbol tmp = addSymbol(st,"tmp_nb",1); 
     instruction i = addInstruction(it,"AFC",tmp.addr,$5,-1);
-    instruction j = addInstruction(it,"COP",getAddrName(st,$3,sTableDepth),sTableSize-1,-1);
+    instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
     unstack(st);
 
 }
@@ -244,8 +245,8 @@ VarDeclarationAndAssign : Type tINT tID tEQUAL tNB tPV {
    printf("DECLARATION & ASSIGN FOUND\n"); 
    symbol s = addSymbol(st,$3,$1);
    symbol tmp = addSymbol(st,"tmp_nb",1); 
-   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$5,sTableDepth),-1);
-   instruction j = addInstruction(it,"COP",getAddrName(st,$3,sTableDepth),sTableSize-1,-1);
+   instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$5),-1);
+   instruction j = addInstruction(it,"COP",getAddrName(st,$3),sTableSize-1,-1);
    unstack(st);
 };
 
@@ -282,7 +283,7 @@ Operand:  FunCall{
   printf("OPERAND tID FOUND \n");
   printf("tID to add in symbol table as tmp: \n");
   symbol tmp = addSymbol(st,"tmp_id",1); 
-  instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1,sTableDepth),-1);
+  instruction i = addInstruction(it,"COP",tmp.addr,getAddrName(st,$1),-1);
 
 }
         | tNB{ //MUST BE STORED IN A TMP VARIABLE
@@ -323,26 +324,27 @@ Operations: Operand tADD Operand{
 
 //CONST ASSIGN IS ONLY POSSIBLE IF THE CONSTANT HAS BEEN DECLARED WITHOUT ASSIGNING IT
 VarAssign : tID tEQUAL Operand tPV {
-  if (getSymbolByName(st,$1,sTableDepth).type == 1){
+  if (getSymbolByName(st,$1).type == 1){
     printf("VAR ASSIGN FOUND \n");
-    if (getAddrName(st,$1,sTableDepth)==-1){
+    if (getAddrName(st,$1)==-1){
       printf("ERROR: Variable %s not declared! \n",$1);
     }
     else{
-    instruction i = addInstruction(it,"COP",getAddrName(st,$1,sTableDepth),sTableSize-1,-1);
+     printf("Depth of the variable %s is %d\n",$1,getSymbolByName(st,$1).depth); 
+    instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
     unstack(st);
   }
   }
-  else if (getSymbolByName(st,$1,sTableDepth).type == 2){
-    if (!getSymbolByName(st,$1,sTableDepth).assigned){
+  else if (getSymbolByName(st,$1).type == 2){
+    if (!getSymbolByName(st,$1).assigned){
       printf("CONST ASSIGN FOUND \n");
-      if (getAddrName(st,$1,sTableDepth)==-1){
+      if (getAddrName(st,$1)==-1){
        printf("ERROR: Constant %s not declared! \n",$1);
       }
       else{
-      instruction i = addInstruction(it,"COP",getAddrName(st,$1,sTableDepth),sTableSize-1,-1);
+      instruction i = addInstruction(it,"COP",getAddrName(st,$1),sTableSize-1,-1);
       printf("Changing assign status from 0 to 1\n");
-      const_assigned(&st[getAddrName(st,$1,sTableDepth)]);
+      const_assigned(&st[getAddrName(st,$1)]);
       print_sTable(st);
       unstack(st);
       }
@@ -387,7 +389,7 @@ whileCondition: tWHILE tPO{count=iTableSize;} whileBoolExpression tPF {nbrInstr=
 
 ifBoolExpression: ifComparaison
               | tID {
-instruction i = addInstruction(it,"JMF",getAddrName(st,$1,sTableDepth),-1,-1); //PATCHED LATER    
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER    
 ifCond = construct_cond(0,0,1);         
               }
               | tTRUE //NOTHING TO DO
@@ -443,7 +445,7 @@ ifComparaison: Operand tEQEQ Operand {
 
 whileBoolExpression: whileComparaison
               | tID {
-instruction i = addInstruction(it,"JMF",getAddrName(st,$1,sTableDepth),-1,-1); //PATCHED LATER 
+instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER 
 // limitedLoop=1; 
 whileCond = construct_cond(0,0,1);
                 

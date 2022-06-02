@@ -48,7 +48,7 @@ symbol addSymbol(symbol *t, char *sName, int type)
     return s;
 }
 
-symbol addSymbolAssigned(symbol *t, char *sName, int type) //FOR CONSTANTS
+symbol addSymbolAssigned(symbol *t, char *sName, int type) // FOR CONSTANTS
 {
     symbol s;
     s.assigned = 1;
@@ -100,32 +100,55 @@ void decrementDepth(char *condition)
 
 int getAddr(symbol *t, symbol target)
 {
-    for (int i = 0; i < sTableSize; i++)
+    int ret = -1;
+    int depthAux=sTableDepth;
+    depthAux++;
+    while ((ret == -1) && depthAux >= 0)
     {
-        if (t[i].addr == target.addr) // IF THEY'RE EQUAL
-            return t[i].addr;
+        depthAux--;
+        for (int i = 0; i < sTableSize; i++)
+        {
+            if (t[i].addr == target.addr) // IF THEY'RE EQUAL
+                ret = t[i].addr;
+        }
     }
-    return -1; // NO SUCH SYMBOL FOUND IN TABLE
+    return ret; // NO SUCH SYMBOL FOUND IN TABLE
 }
 
-//ONLY VARIABLES OF THE SAME DEPTH CAN BE ASSIGNED TO EACH OTHER
-int getAddrName(symbol *t, char *targetname, int sTableDepth)
+// ONLY VARIABLES OF THE SAME DEPTH CAN BE ASSIGNED TO EACH OTHER
+int getAddrName(symbol *t, char *targetname)
 {
-    for (int i = 0; i < sTableSize; i++)
+    int target = -1;
+    int depthAux=sTableDepth;
+    depthAux++;
+    while ((target == -1) && depthAux >= 0)
     {
-        if ((strcmp(t[i].sName, targetname) == 0) && (t[i].depth == sTableDepth))
-            return i;
+        depthAux--;
+        for (int i = 0; i < sTableSize; i++)
+        {
+            if ((strcmp(t[i].sName, targetname) == 0) && (t[i].depth == depthAux))
+                target = i;
+        }
+        // NO SUCH SYMBOL FOUND IN TABLE
     }
-    return -1; // NO SUCH SYMBOL FOUND IN TABLE
+    return target;
 }
 
-symbol getSymbolByName(symbol *t, char *targetname, int sTableDepth)
+symbol getSymbolByName(symbol *t, char *targetname)
 {
-    for (int i = 0; i < sTableSize; i++)
+    int target = -1;
+    int depthAux=sTableDepth;
+    depthAux++;
+    while ((target == -1) && depthAux >= 0)
     {
-        if ((strcmp(t[i].sName, targetname) == 0) && (t[i].depth == sTableDepth))
-            return t[i];
+        depthAux--;
+        for (int i = 0; i < sTableSize; i++)
+        {
+            if ((strcmp(t[i].sName, targetname) == 0) && (t[i].depth == depthAux))
+                target = i;
+        }
     }
+    return t[target];
 }
 
 int unstack(symbol *t)
