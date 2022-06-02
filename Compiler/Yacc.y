@@ -175,8 +175,8 @@ tAO { //DEPTH HANDELING
   incrementDepth("WHILE");
   countWHILE=iTableSize;
 
-  if (whileCond.arg1) {
-    instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER    
+  if (whileCond.arg1) { //TRUE
+    //instruction i = addInstruction(it,"JMP",-1,-1,-1); //PATCHED LATER    
   } 
 
 }
@@ -185,7 +185,8 @@ tAF {
   int whileAsmLines=iTableSize-countWHILE;
 
   if (whileCond.arg1) { //WHILE TRUE
-    updateJMPInstruction(it, whileAsmLines-1);
+    instruction i = addInstruction(it,"JMP",-1,-1,-1);
+    updateJMPInstructionBackwards(it, whileAsmLines-1);
   } 
   else if (whileCond.arg2){ //WHILE FALSE
     //updateJMFInstruction(it, ifAsmLines);
@@ -446,12 +447,10 @@ ifComparaison: Operand tEQEQ Operand {
 whileBoolExpression: whileComparaison
               | tID {
 instruction i = addInstruction(it,"JMF",getAddrName(st,$1),-1,-1); //PATCHED LATER 
-// limitedLoop=1; 
 whileCond = construct_cond(0,0,1);
                 
               }
-              | tTRUE {
-//infiniteLoop=1;    
+              | tTRUE {   
 whileCond = construct_cond(1,0,0);          
               }
               | tFALSE{

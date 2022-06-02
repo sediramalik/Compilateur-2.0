@@ -2,15 +2,14 @@ void main(){
 
     int a = 10;
     int b = 20;
+    int c = 30;
 
-    if (a == b){
-        int a = 300;
-        int b = 400;
-        a = b;
+    while (false){
+        print(a);
     }
 
-    a = 50;
-    b = 60;
+    while (true){
+        print(b);
+    }
 
 }
-
